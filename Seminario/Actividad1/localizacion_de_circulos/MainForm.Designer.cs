@@ -52,6 +52,7 @@ namespace localizacion_de_circulos
 			this.openFileDialogImg = new System.Windows.Forms.OpenFileDialog();
 			this.btn_analyze = new System.Windows.Forms.Button();
 			this.btn_generate = new System.Windows.Forms.Button();
+			this.listBoxCircles = new System.Windows.Forms.ListBox();
 			this.tabControl.SuspendLayout();
 			this.tabOrigin.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigin)).BeginInit();
@@ -113,7 +114,7 @@ namespace localizacion_de_circulos
 			// 
 			this.btn_load.Location = new System.Drawing.Point(739, 47);
 			this.btn_load.Name = "btn_load";
-			this.btn_load.Size = new System.Drawing.Size(139, 35);
+			this.btn_load.Size = new System.Drawing.Size(139, 40);
 			this.btn_load.TabIndex = 1;
 			this.btn_load.Text = "Cargar";
 			this.btn_load.UseVisualStyleBackColor = true;
@@ -126,9 +127,9 @@ namespace localizacion_de_circulos
 			// btn_analyze
 			// 
 			this.btn_analyze.AutoSize = true;
-			this.btn_analyze.Location = new System.Drawing.Point(739, 88);
+			this.btn_analyze.Location = new System.Drawing.Point(739, 102);
 			this.btn_analyze.Name = "btn_analyze";
-			this.btn_analyze.Size = new System.Drawing.Size(139, 35);
+			this.btn_analyze.Size = new System.Drawing.Size(139, 40);
 			this.btn_analyze.TabIndex = 1;
 			this.btn_analyze.Text = "Analizar";
 			this.btn_analyze.UseVisualStyleBackColor = true;
@@ -136,19 +137,29 @@ namespace localizacion_de_circulos
 			// 
 			// btn_generate
 			// 
-			this.btn_generate.Location = new System.Drawing.Point(739, 129);
+			this.btn_generate.Location = new System.Drawing.Point(739, 157);
 			this.btn_generate.Name = "btn_generate";
-			this.btn_generate.Size = new System.Drawing.Size(139, 35);
+			this.btn_generate.Size = new System.Drawing.Size(139, 40);
 			this.btn_generate.TabIndex = 2;
 			this.btn_generate.Text = "Generar";
 			this.btn_generate.UseVisualStyleBackColor = true;
 			this.btn_generate.Click += new System.EventHandler(this.BtnGenerateClick);
 			// 
+			// listBoxCircles
+			// 
+			this.listBoxCircles.FormattingEnabled = true;
+			this.listBoxCircles.ItemHeight = 16;
+			this.listBoxCircles.Location = new System.Drawing.Point(739, 215);
+			this.listBoxCircles.Name = "listBoxCircles";
+			this.listBoxCircles.Size = new System.Drawing.Size(139, 324);
+			this.listBoxCircles.TabIndex = 3;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(890, 570);
+			this.ClientSize = new System.Drawing.Size(894, 570);
+			this.Controls.Add(this.listBoxCircles);
 			this.Controls.Add(this.btn_generate);
 			this.Controls.Add(this.btn_analyze);
 			this.Controls.Add(this.btn_load);
@@ -163,6 +174,7 @@ namespace localizacion_de_circulos
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ListBox listBoxCircles;
 		private System.Windows.Forms.Button btn_generate;
 		private System.Windows.Forms.Button btn_analyze;
 		private System.Windows.Forms.OpenFileDialog openFileDialogImg;
@@ -185,16 +197,20 @@ namespace localizacion_de_circulos
 			
 			//cargar la imagen en el tab Origen
 			pictureBoxOrigin.ImageLocation = openFileDialogImg.FileName;
+			
+			while( listBoxCircles.Items.Count > 0) {
+				listBoxCircles.Items.RemoveAt(0);
+			}
 		}
 		
 		void BtnAnalyzeClick(object sender, System.EventArgs e) {
 			//analizar el primer pixel negro
 			bmp= new Bitmap(openFileDialogImg.FileName);
+			listBoxCircles.Items.Add("(x, y) -> radio");
 	        for (int y = 0; y < bmp.Height; y++) {
 	            for (int x = 0; x < bmp.Width; x++) {
 					if(bmp.GetPixel(x,y).ToArgb().Equals(Color.Black.ToArgb())) {
 						drawCenter(x, y);
-						//return;
 					}
 				}
 			}
@@ -205,24 +221,30 @@ namespace localizacion_de_circulos
 			//generar imagen resultante
             tabControl.SelectedIndex = 1;
             pictureBoxDestiny.Image = bmp;
+            
 		}
 		
 		void drawCenter(int x, int y) {
 			int x_f = x;
 			int y_f = y;
 			
-			while(bmp.GetPixel(x,y_f).ToArgb().Equals(Color.Black.ToArgb())) { y_f++; }
-			while(bmp.GetPixel(x_f,y).ToArgb().Equals(Color.Black.ToArgb())) { x_f++; }
+			while(y_f < bmp.Height && bmp.GetPixel(x,y_f).ToArgb().Equals(Color.Black.ToArgb())) { y_f++; }
+			while(x_f < bmp.Width && bmp.GetPixel(x_f,y).ToArgb().Equals(Color.Black.ToArgb())) { x_f++; }
 			
 			pos.x = (x_f+x)/2;
 			pos.y = (y_f+y)/2;
+			int radius = pos.y-y;
 			const int anchor = 7;
 			
-			if(isCircle(pos, y_f-y)) {
-				fillCircle(pos, pos.y-y);
+			if(isCircle(pos, y_f-y) && radius > 1) {
+				string circle = "("+pos.x+","+pos.y+") -> "+(y_f-y);
+				listBoxCircles.Items.Add(circle);
+				fillCircle(pos, radius);
 				for(int i = pos.x-anchor; i < pos.x+anchor;i++) {
 					for(int j = pos.y-anchor; j < pos.y+anchor;j++) {
-						bmp.SetPixel(i,j, Color.BlueViolet);
+						if(i >= 0 && i < bmp.Width && j >= 0 && j < bmp.Height) {
+							bmp.SetPixel(i,j, Color.BlueViolet);
+						}
 					}
 				}
 			}
@@ -232,14 +254,14 @@ namespace localizacion_de_circulos
 			Position runner = posInit;
 			runner.y -= radius;
 			
-			while(runner.y <= posInit.y+radius) {
+			while(runner.y <= posInit.y+radius && runner.y < bmp.Height) {
 				runner.x = posInit.x;
-				while(bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.Black.ToArgb())) {
-					bmp.SetPixel(runner.x--,runner.y, Color.Cyan);
-				}
-				runner.x = posInit.x+1;
-				while(bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.Black.ToArgb())) {
+				while(runner.x < bmp.Width && bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.Black.ToArgb())) {
 					bmp.SetPixel(runner.x++,runner.y, Color.Cyan);
+				}
+				runner.x = posInit.x-1;
+				while( runner.x > 0 && bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.Black.ToArgb())) {
+					bmp.SetPixel(runner.x--,runner.y, Color.Cyan);
 				}
 				runner.y++;
 			}
@@ -248,10 +270,10 @@ namespace localizacion_de_circulos
 		bool isCircle(Position center, int height) {
 			int width = 0, x = center.x;
 			
-			while(bmp.GetPixel(x, center.y).ToArgb().Equals(Color.Black.ToArgb())) { x++; }
+			while(x < bmp.Width && bmp.GetPixel(x, center.y).ToArgb().Equals(Color.Black.ToArgb())) { x++; }
 			width += x;
 			
-			while(bmp.GetPixel(center.x, center.y).ToArgb().Equals(Color.Black.ToArgb())) { center.x--; }
+			while( center.x > 0 && bmp.GetPixel(center.x, center.y).ToArgb().Equals(Color.Black.ToArgb())) { center.x--; }
 			width -= center.x;
 			
 			return height - width <= 10 ? true : false;
