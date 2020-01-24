@@ -198,84 +198,124 @@ namespace localizacion_de_circulos
 			//cargar la imagen en el tab Origen
 			pictureBoxOrigin.ImageLocation = openFileDialogImg.FileName;
 			
+			//limpia la lista de datos
 			while( listBoxCircles.Items.Count > 0) {
 				listBoxCircles.Items.RemoveAt(0);
 			}
 		}
 		
 		void BtnAnalyzeClick(object sender, System.EventArgs e) {
-			//analizar el primer pixel negro
+			// genera una copia de la imagen de origen para manipularla
 			bmp= new Bitmap(openFileDialogImg.FileName);
+			
+			//agrega el texto visible del formato que tiene la lista
 			listBoxCircles.Items.Add("(x, y) -> radio");
+			
 	        for (int y = 0; y < bmp.Height; y++) {
 	            for (int x = 0; x < bmp.Width; x++) {
+					//busca el primer pixel negro
 					if(bmp.GetPixel(x,y).ToArgb().Equals(Color.Black.ToArgb())) {
-						drawCenter(x, y);
+						//al encontrarlo busca si se puede generar un circulo
+						searchCircle(x, y);
 					}
 				}
 			}
-			System.Windows.Forms.MessageBox.Show("El analisiss se ha compeltado.");
+			System.Windows.Forms.MessageBox.Show("El analisis se ha compeltado con exito.");
 		}
 		
 		void BtnGenerateClick(object sender, System.EventArgs e) {
-			//generar imagen resultante
+			//cambia la vista a la imagen modificada
             tabControl.SelectedIndex = 1;
+            
+			//generar imagen resultante
             pictureBoxDestiny.Image = bmp;
             
 		}
 		
-		void drawCenter(int x, int y) {
-			int x_f = x;
-			int y_f = y;
+		void searchCircle(int x, int y) {
+			int x_f = x;//x final
+			int y_f = y;//y final
 			
+			//mientras que no sobrepase el alto de la imagen seguira buscando el tope inferior del circulo
 			while(y_f < bmp.Height && bmp.GetPixel(x,y_f).ToArgb().Equals(Color.Black.ToArgb())) { y_f++; }
+			
+			//mienstras que no sobrepase el ancho de la imagen seguira buscado el tope superior derecho
 			while(x_f < bmp.Width && bmp.GetPixel(x_f,y).ToArgb().Equals(Color.Black.ToArgb())) { x_f++; }
 			
+			//nos genera el centro en X
 			pos.x = (x_f+x)/2;
+			//y en Y
 			pos.y = (y_f+y)/2;
+			//guardamos el raidio
 			int radius = pos.y-y;
-			const int anchor = 7;
 			
-			if(isCircle(pos, y_f-y) && radius > 1) {
+			//si detecta que es un circulo y no omite elruido
+			if(isCircle(pos, y_f-y) && radius > 10) {
 				string circle = "("+pos.x+","+pos.y+") -> "+(y_f-y);
+				//guarda en la lista los datos del circulo
 				listBoxCircles.Items.Add(circle);
+				//rellena el cruclo
 				fillCircle(pos, radius);
-				for(int i = pos.x-anchor; i < pos.x+anchor;i++) {
-					for(int j = pos.y-anchor; j < pos.y+anchor;j++) {
-						if(i >= 0 && i < bmp.Width && j >= 0 && j < bmp.Height) {
-							bmp.SetPixel(i,j, Color.BlueViolet);
-						}
+				//dibuja el centro
+				drawCenter(pos);
+			}
+		}
+		
+		void drawCenter(Position pos) {
+			//da el ancho del punto central de cada circulo
+			const int WIDTH = 7;
+			for(int i = pos.x - WIDTH; i < pos.x + WIDTH; i++) {
+				for(int j = pos.y - WIDTH; j < pos.y + WIDTH; j++) {
+					if(i >= 0 && i < bmp.Width && j >= 0 && j < bmp.Height) {
+						//pinta los pixeles
+						bmp.SetPixel(i,j, Color.BlueViolet);
 					}
 				}
 			}
 		}
 		
 		void fillCircle(Position posInit, int radius) {
+			//el corredor se situal en la posicion inicial
 			Position runner = posInit;
+			//despues se coloca en el punto superior
 			runner.y -= radius;
 			
+			//e ira desendiendo hasta colorear todo el circulo o toparse con el fin del mapa
 			while(runner.y <= posInit.y+radius && runner.y < bmp.Height) {
+				//resetea la posicion x
 				runner.x = posInit.x;
 				while(runner.x < bmp.Width && bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.Black.ToArgb())) {
+					//colorea la mitad derecha de la fila
 					bmp.SetPixel(runner.x++,runner.y, Color.Cyan);
 				}
+				
+				//reseteal el valor de la x de nuevo
 				runner.x = posInit.x-1;
 				while( runner.x > 0 && bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.Black.ToArgb())) {
+					//para colorear la mitd izquierda
 					bmp.SetPixel(runner.x--,runner.y, Color.Cyan);
 				}
+				
+				//baja a la siguiente file
 				runner.y++;
 			}
 		}
 		
 		bool isCircle(Position center, int height) {
+			//queremos buscar el ancho del circulo
 			int width = 0, x = center.x;
 			
+			//obtenemos del inicio del mapa hasta el fin del circulo (anchura)
 			while(x < bmp.Width && bmp.GetPixel(x, center.y).ToArgb().Equals(Color.Black.ToArgb())) { x++; }
+			//lo agregamos
 			width += x;
-			
+		
+			//obtenemos del inicio del mapa al inicio del circulo
 			while( center.x > 0 && bmp.GetPixel(center.x, center.y).ToArgb().Equals(Color.Black.ToArgb())) { center.x--; }
+			//lo restamos y obtenemos la anchura del circulo
 			width -= center.x;
 			
+			//con el operador ternario verificamos si es un circulo (10 pixeles de diferencia en susdiametros)
 			return height - width <= 10 ? true : false;
 		}
 		
