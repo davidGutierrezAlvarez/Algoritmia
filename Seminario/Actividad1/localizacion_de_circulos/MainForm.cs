@@ -117,7 +117,7 @@ namespace localizacion_de_circulos
 				//si no es circulo, revisar si es un toroide
 				if(!isToroide(pos)) {
 					//en casa de que no sea toroide tendra que ser un ovalo y se eliminara
-					fillCircle(pos, Color.Pink);
+					fillCircle(pos, Color.White);
 				}
 			}
 		}
@@ -136,7 +136,6 @@ namespace localizacion_de_circulos
 		}
 		
 		void fillCircle(Circle posInit, Color c_f) {
-			//c_i es el colo oroginial y c_f color final
 			//el corredor se situal en la posicion inicial
 			Circle runner = posInit;
 			//despues se coloca en el punto superior
@@ -154,10 +153,9 @@ namespace localizacion_de_circulos
 				//reseteal el valor de la x de nuevo
 				runner.x = posInit.x-1;
 				while( runner.x >= 0 && !bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb())) {
-					//para colorear la mitd izquierda
+					//colorear la mitd izquierda de la fila
 					bmp.SetPixel(runner.x--,runner.y, c_f);
 				}
-				
 				//baja a la siguiente file
 				runner.y++;
 			}
@@ -166,11 +164,10 @@ namespace localizacion_de_circulos
 		void fillToroide(Circle posInit, int r_i) {
 			//el corredor se situal en la posicion inicial
 			Circle runner = posInit;
-			//despues se coloca en el punto superior
-			//runner.radius = r_i;
 			
-			runner.y -= posInit.radius+1;
-			//posInit.y -= posInit.radius+2;
+			//la altura del corredor se situara en el punto mas alto de la figura
+			//puede existir el caso de que la posicion salga del mapa, y debemos evitarla
+			runner.y -= posInit.radius >= runner.y ? runner.y : posInit.radius+1;
 			
 			//e ira desendiendo hasta colorear todo el circulo o toparse con el fin del mapa
 			while(runner.y <= posInit.y+posInit.radius && runner.y < bmp.Height) {
@@ -179,8 +176,9 @@ namespace localizacion_de_circulos
 				
 				while((runner.x < bmp.Width) &&
 				      (!bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb()) || posInit.x + r_i > runner.x)) {
-					
+					//pintar la mitad derecha
 					if(bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb())) {
+						//pintar de blanco == omitir
 							bmp.SetPixel(runner.x++,runner.y, Color.White);	
 					} else {
 						//colorea la mitad derecha de la fila
@@ -191,17 +189,16 @@ namespace localizacion_de_circulos
 				//reseteal el valor de la x de nuevo se resta uno ya que el pixel central fue pintado arriba
 				runner.x = posInit.x-1;
 				while((runner.x >= 0) &&
-				      (!bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb()) || posInit.x - r_i < runner.x)) {
+				      (!bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb()) || posInit.x - r_i <= runner.x)) {
 					//para colorear la mitd izquierda
-					
 					if(bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb())) {
+						//pintar de blanco == omitir
 						bmp.SetPixel(runner.x--,runner.y, Color.White);
 					} else {
 						//colorea la mitad izquierda de la fila
 						bmp.SetPixel(runner.x--,runner.y, Color.Red);
 					}
 				}
-				
 				//baja a la siguiente file
 				runner.y++;
 			}
@@ -211,40 +208,47 @@ namespace localizacion_de_circulos
 		bool isToroide(Circle toro) {
 			//primero colocamos el centro en el tope superior
 			toro.y -= toro.radius--;
+			
 			//inicamos h en el tope del circulo interno
-			int h = 0, w = 0, r_i = 0, margin_error;
-			//bmp.SetPixel(pos.x--,pos.y, Color.Red);
+			int height = 0, width_intern = 0, width_extern = 0, radius_inter = 0, margin_error_intern, margin_error_extern;
 			
 			//parte superior
-			while(toro.y+h < bmp.Height && bmp.GetPixel(toro.x, toro.y+h).ToArgb().Equals(Color.Black.ToArgb())) { h++; }
+			while(toro.y+height < bmp.Height && bmp.GetPixel(toro.x, toro.y+height).ToArgb().Equals(Color.Black.ToArgb())) { height++; }
 			
-			r_i = h;
+			//guarda su valor par poder sacar la diferencia
+			radius_inter = height;
+			
 			//centro
-			while(toro.y+h < bmp.Height && !bmp.GetPixel(toro.x, toro.y+h).ToArgb().Equals(Color.Black.ToArgb())) { h++;}
+			while(toro.y+height < bmp.Height && !bmp.GetPixel(toro.x, toro.y+height).ToArgb().Equals(Color.Black.ToArgb())) { height++;}
 			//	MessageBox.Show("x="+pos.x+"\ny="+(pos.y+h)+"\nname="+bmp.GetPixel(pos.x, pos.y+h).Name);
 			
-			r_i = (h-r_i)/2;
-			//si llego hasta abajo sin encontrar la parte inferior del circulo entonces no es un toroidal
-			if(toro.y+h == bmp.Height) { return false; }
-			//en caso contrario buscar el limite de la parte inferior
+			//el radio interno sera la mitad de la altura obtenida
+			radius_inter = (height-radius_inter)/2;
 			
 			//parte inferior
-			while(toro.y+h < bmp.Height && bmp.GetPixel(toro.x, toro.y+h).ToArgb().Equals(Color.Black.ToArgb())) { h++; }
-			//el radio interno sera la mitad de la altura obtenida
-			//MessageBox.Show("x="+pos.x+"\ny="+(pos.y)+"\nname====="+bmp.GetPixel(pos.x, pos.y+h).Name+"\nradio==="+pos.radius);
+			while(toro.y+height < bmp.Height && bmp.GetPixel(toro.x, toro.y+height).ToArgb().Equals(Color.Black.ToArgb())) { height++; }
 			
 			//actualizo los datos del circulo
-			toro.radius = h/2;
-			toro.y += h/2;
+			toro.radius = height/2;
+			toro.y += height/2;
 			
 			//analizar en fila
-			while(toro.x-w > 0 && !bmp.GetPixel(toro.x-w, toro.y).ToArgb().Equals(Color.Black.ToArgb())) { w++; }
+			while(toro.x-width_intern > 0 && !bmp.GetPixel(toro.x-width_intern, toro.y).ToArgb().Equals(Color.Black.ToArgb())) { width_intern++; }
 			
-			margin_error = w - r_i;
-			MessageBox.Show("margeni="+margin_error+"\nw="+w+"\nh="+h+""+(w*2)+"\nr_i2="+r_i);
+			//al ancho externo se le añade el interno ya existente
+			width_extern += width_intern;
+			while(toro.x-width_extern > 0 && bmp.GetPixel(toro.x-width_extern, toro.y).ToArgb().Equals(Color.Black.ToArgb())) { width_extern++; }
 			
-			if(toro.radius > r_i && margin_error >= -10  && margin_error <= 10) {
-				fillToroide(toro, r_i);
+			//obtengo el marger de error del circulo interno
+			margin_error_intern = width_intern - radius_inter;
+			
+			//obtengo el margen de error desde el centro hasta el fin del toroide
+			margin_error_extern = width_extern - toro.radius;
+			
+			
+			if(toro.radius > radius_inter && marginErrorPixels(margin_error_intern) && marginErrorPixels(margin_error_extern) & width_intern > 5) {
+				//MessageBox.Show("w2="+w2+"\nw="+w+"\nw+w2="+(w+w2)+"\nradio="+toro.radius);
+				fillToroide(toro, radius_inter);
 				drawCenter(toro);
 				return true;
 			}
@@ -253,29 +257,26 @@ namespace localizacion_de_circulos
 		
 		bool isCircle(Circle center, Color color_extern) {
 			//queremos buscar el ancho del circulo
-			int width = 0, x = center.x, h=0;
-			/*if(center.x-h >= 0 && center.y-h >= 0 && 
-			   !bmp.GetPixel(center.x-center.radius*Math.sqrt(2)+5, center.y-center.radius*Math.sqrt(2)+5).ToArgb().Equals(color_extern.ToArgb()) &&
-			   bmp.GetPixel(center.x-center.radius*Math.sqrt(2)-5, center.y-center.radius*Math.sqrt(2)-5).ToArgb().Equals(color_extern.ToArgb())) {
-				h = 1;
-			}*/
+			int width = 0, x = center.x, margin_error;
+			
 			//obtenemos del inicio del mapa hasta el fin del circulo (anchura)
 			while(x < bmp.Width && !bmp.GetPixel(x, center.y).ToArgb().Equals(color_extern.ToArgb())) { x++; }
 			//lo agregamos
 			width += x;
 		
 			//obtenemos del inicio del mapa al inicio del circulo
-			
 			while( center.x > 0 && !bmp.GetPixel(center.x, center.y).ToArgb().Equals(color_extern.ToArgb())) { center.x--; }
+			
 			//lo restamos y obtenemos la anchura del circulo
 			width -= center.x;
 			
 			//con el operador ternario verificamos si es un circulo (10 pixeles de diferencia en susdiametros)
-			//MessageBox.Show("h"+center.radius*2+"\nw"+width+"=="+center.x+","+center.y);
-			//System.Windows.Forms.MessageBox.Show("h = "+h);
-			return center.radius*2 - width < 10 && center.radius*2 - width > - 10 ? true : false;
+			margin_error = center.radius*2 - width;
+			
+			return marginErrorPixels(margin_error);
 		}
 		
+		bool marginErrorPixels(int margin_error) { return margin_error >= -10 && margin_error <= 10; }
 
 
 	}
