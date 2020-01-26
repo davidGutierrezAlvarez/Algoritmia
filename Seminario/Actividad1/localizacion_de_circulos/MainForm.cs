@@ -177,7 +177,7 @@ namespace localizacion_de_circulos
 				//resetea la posicion x
 				runner.x = posInit.x;
 				
-				while((runner.x < bmp.Width && runner.x < posInit.x + posInit.radius) &&
+				while((runner.x < bmp.Width) &&
 				      (!bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb()) || posInit.x + r_i > runner.x)) {
 					
 					if(bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb())) {
@@ -190,14 +190,16 @@ namespace localizacion_de_circulos
 				
 				//reseteal el valor de la x de nuevo se resta uno ya que el pixel central fue pintado arriba
 				runner.x = posInit.x-1;
-				while((runner.x >= 0 && runner.x > posInit.x - posInit.radius) &&
+				while((runner.x >= 0) &&
 				      (!bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb()) || posInit.x - r_i < runner.x)) {
 					//para colorear la mitd izquierda
 					
-					
+					if(bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb())) {
+						bmp.SetPixel(runner.x--,runner.y, Color.White);
+					} else {
 						//colorea la mitad izquierda de la fila
 						bmp.SetPixel(runner.x--,runner.y, Color.Red);
-					
+					}
 				}
 				
 				//baja a la siguiente file
