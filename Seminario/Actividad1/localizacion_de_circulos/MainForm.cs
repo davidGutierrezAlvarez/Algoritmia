@@ -30,19 +30,17 @@ namespace localizacion_de_circulos
 		}
 		
 		void BtnLoadClick(object sender, System.EventArgs e) {
-			//selecciona el tab Origen
-			tabControl.SelectedIndex = 0;
-			
 			//abrir ventana de dialogo
 			while(openFileDialogImg.ShowDialog() != System.Windows.Forms.DialogResult.OK){ /*fuerza la apertura de un archivo*/ }
+			
+			//selecciona el tab Origen
+			tabControl.SelectedIndex = 0;
 			
 			//cargar la imagen en el tab Origen
 			pictureBoxOrigin.ImageLocation = openFileDialogImg.FileName;
 			
 			//limpia la lista de datos
-			while( listBoxCircles.Items.Count > 0) {
-				listBoxCircles.Items.RemoveAt(0);
-			}
+			listBoxCircles.Items.Clear();
 		}
 		
 		void BtnAnalyzeClick(object sender, System.EventArgs e) {
