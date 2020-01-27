@@ -134,13 +134,18 @@ namespace localizacion_de_circulos
 		}
 		
 		void fillCircle(Circle posInit, Color c_f) {
+			//se agregan 5 pixeles para el pargen de error entre los pixeles con ruido
+			posInit.radius += 5;
+			
 			//el corredor se situal en la posicion inicial
 			Circle runner = posInit;
+			
 			//despues se coloca en el punto superior
-			runner.y -= posInit.radius++;
+			//siempre evitando que salga del mapa de bits
+			runner.y -= runner.y < posInit.radius ? runner.y : posInit.radius;
 			
 			//e ira desendiendo hasta colorear todo el circulo o toparse con el fin del mapa
-			while(runner.y <= posInit.y+posInit.radius && runner.y < bmp.Height) {
+			while(posInit.y+posInit.radius > runner.y && runner.y < bmp.Height) {
 				//resetea la posicion x
 				runner.x = posInit.x;
 				while(runner.x < bmp.Width && !bmp.GetPixel(runner.x, runner.y).ToArgb().Equals(Color.White.ToArgb())) {
@@ -165,7 +170,7 @@ namespace localizacion_de_circulos
 			
 			//la altura del corredor se situara en el punto mas alto de la figura
 			//puede existir el caso de que la posicion salga del mapa, y debemos evitarla
-			runner.y -= posInit.radius >= runner.y ? runner.y : posInit.radius+1;
+			runner.y -= runner.y < posInit.radius ? runner.y : posInit.radius+1;
 			
 			//e ira desendiendo hasta colorear todo el circulo o toparse con el fin del mapa
 			while(runner.y <= posInit.y+posInit.radius && runner.y < bmp.Height) {
