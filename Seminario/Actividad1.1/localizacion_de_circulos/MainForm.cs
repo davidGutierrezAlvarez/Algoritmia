@@ -121,10 +121,13 @@ namespace localizacion_de_circulos
 				//si no es circulo, revisar si es un toroide
 				if(!isToroide(pos)) {
 					//en casa de que no sea toroide tendra que ser un ovalo y se eliminara
+					if(isElipse(pos));
 					fillCircle(pos, Color.White);
 				}
 			}
 		}
+		
+		
 		
 		void drawCenter(Circle pos) {
 			//da el ancho del punto central de cada circulo
@@ -290,6 +293,33 @@ namespace localizacion_de_circulos
 			margin_error = center.radius*2 - width;
 			
 			return marginErrorPixels(margin_error);
+		}
+		
+		bool isElipse(Circle elipse) {
+			int	x, limit;
+			//x nos dara el punto que recorrera el mapa de forma horizontal
+			//limit nos dara el limite en (x) del area del elipse
+			
+			for(int y = elipse.y-elipse.radius; y <= elipse.y; y++) {
+				x = elipse.x;
+				limit = limitXInElipse(y-elipse.y, elipse.radius, r2);
+				
+				while(x <= limit+elipse.x){
+					//usando una cuarta pate e l circulo dibujo dentro de los 4 cuadrantes
+					if(elipse.x*2-x >= 0 && y >= 0)
+						bmp.SetPixel(elipse.x*2-x, y, color);//cuadrante 2
+					
+					if(elipse.x*2-x >= 0 && elipse.y*2-y < bmp.Height)
+						bmp.SetPixel(elipse.x*2-x, elipse.y*2-y, color);//cuadrante 3
+					
+					if(x < bmp.Width && elipse.y*2-y < bmp.Height)
+						bmp.SetPixel(x,  elipse.y*2-y, color);//cuadrante 4
+					
+					if(x < bmp.Width && y >= 0)
+						bmp.SetPixel(x, y, color);//cuadrante 1
+					x++;
+				}
+			}
 		}
 		
 		bool marginErrorPixels(int margin_error) { return margin_error >= -10 && margin_error <= 10; }
