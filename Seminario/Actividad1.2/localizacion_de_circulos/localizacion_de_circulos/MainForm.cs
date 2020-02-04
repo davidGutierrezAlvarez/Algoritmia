@@ -111,15 +111,18 @@ namespace localizacion_de_circulos
 							//si es un circulo debe pintarlo de otro color
 							fillCircle(Color.Red);
 							drawCenter();
+							string circle = "("+figure.getX()+","+figure.getY()+") -> "+figure.getR();
+							//guarda en la lista los datos del circulo
+							listBoxCircles.Items.Add("("+figure.getX()+","+figure.getY()+") -> "+figure.getR());
 						}else if((toroide = isToroide()) != null) {			
-							fillToroide(toroide, Color.Orange);
+							fillToroide(toroide, Color.Green);
 							//drawCenter();
 						}else if(isElipse()) {
 							//borrar elipse
 							eraseElipse();
 						}else {
 							//ignorar
-							fillFigure(Color.Orange);
+							fillFigure(Color.Green);
 							//fillCircle(Color.Orange);
 						}
 					}
@@ -189,10 +192,10 @@ namespace localizacion_de_circulos
 			margin_error = figure.getR()*2 - width;
 			r2 = width/2;
 			//nos regresa true si la diferencia entre la altura y anchura es menor a 10 pixeles
-			//return marginErrorPixels(margin_error);
+			return marginErrorPixels(margin_error);
 			
 			//un circulo tambien es una figura eliptica
-			return isElipse();
+			//return isElipse();
 		}
 		
 		Figure isToroide() {
@@ -362,7 +365,6 @@ namespace localizacion_de_circulos
 			}
 		}
 		
-		
 		void fillFigure(Color color) {
 			figure.setR(figure.getR()+2);
 			for(int i = figure.getX() - figure.getR(); i < figure.getX() + figure.getR(); i++) {
@@ -370,7 +372,7 @@ namespace localizacion_de_circulos
 					if(i >= 0 && i < bmp.Width && j >= 0 && j < bmp.Height) {
 						//pinta los pixeles
 						if(!bmp.GetPixel(i,j).ToArgb().Equals(Color.White.ToArgb()))
-						{bmp.SetPixel(i,j, Color.Green);}
+							{bmp.SetPixel(i,j, Color.Green);}
 					}
 				}
 			}
@@ -391,11 +393,5 @@ namespace localizacion_de_circulos
 		bool marginErrorPixels(int margin_error) { return margin_error >= -10 && margin_error <= 10; }
 
 		
-		
-		
-	
-		void isColor(int r, int g, int b) {
-			
-		}
 	}
 }
