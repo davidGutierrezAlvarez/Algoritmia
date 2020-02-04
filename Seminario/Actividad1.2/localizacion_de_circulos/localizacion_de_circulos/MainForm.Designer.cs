@@ -36,19 +36,20 @@ namespace localizacion_de_circulos
 		/// </summary>
 		private void InitializeComponent() {
 			this.tabControl = new System.Windows.Forms.TabControl();
+			this.tabOrigen = new System.Windows.Forms.TabPage();
+			this.pictureBoxOrigen = new System.Windows.Forms.PictureBox();
 			this.tabDestiny = new System.Windows.Forms.TabPage();
+			this.pictureBoxDestiny = new System.Windows.Forms.PictureBox();
 			this.close = new System.Windows.Forms.Label();
 			this.listBoxCircles = new System.Windows.Forms.ListBox();
 			this.lblLoad = new System.Windows.Forms.Label();
 			this.lblAnalize = new System.Windows.Forms.Label();
 			this.lblGenerate = new System.Windows.Forms.Label();
-			this.tabOrigen = new System.Windows.Forms.TabPage();
-			this.pictureBoxOrigen = new System.Windows.Forms.PictureBox();
-			this.pictureBoxDestiny = new System.Windows.Forms.PictureBox();
+			this.openFileDialogImg = new System.Windows.Forms.OpenFileDialog();
 			this.tabControl.SuspendLayout();
-			this.tabDestiny.SuspendLayout();
 			this.tabOrigen.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).BeginInit();
+			this.tabDestiny.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxDestiny)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -62,87 +63,6 @@ namespace localizacion_de_circulos
 			this.tabControl.SelectedIndex = 0;
 			this.tabControl.Size = new System.Drawing.Size(847, 636);
 			this.tabControl.TabIndex = 1;
-			// 
-			// tabDestiny
-			// 
-			this.tabDestiny.Controls.Add(this.pictureBoxDestiny);
-			this.tabDestiny.Location = new System.Drawing.Point(4, 29);
-			this.tabDestiny.Name = "tabDestiny";
-			this.tabDestiny.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDestiny.Size = new System.Drawing.Size(839, 603);
-			this.tabDestiny.TabIndex = 1;
-			this.tabDestiny.Text = "Destino";
-			this.tabDestiny.UseVisualStyleBackColor = true;
-			// 
-			// close
-			// 
-			this.close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(35)))));
-			this.close.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.close.Font = new System.Drawing.Font("Arial Rounded MT Bold", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.close.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(28)))), ((int)(((byte)(74)))));
-			this.close.Location = new System.Drawing.Point(1005, 1);
-			this.close.Name = "close";
-			this.close.Size = new System.Drawing.Size(21, 32);
-			this.close.TabIndex = 1;
-			this.close.Text = "x";
-			this.close.Click += new System.EventHandler(this.CloseClick);
-			// 
-			// listBoxCircles
-			// 
-			this.listBoxCircles.FormattingEnabled = true;
-			this.listBoxCircles.ItemHeight = 16;
-			this.listBoxCircles.Location = new System.Drawing.Point(867, 214);
-			this.listBoxCircles.Name = "listBoxCircles";
-			this.listBoxCircles.Size = new System.Drawing.Size(159, 436);
-			this.listBoxCircles.TabIndex = 5;
-			// 
-			// lblLoad
-			// 
-			this.lblLoad.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.lblLoad.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblLoad.ForeColor = System.Drawing.Color.White;
-			this.lblLoad.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-			this.lblLoad.Location = new System.Drawing.Point(867, 43);
-			this.lblLoad.Name = "lblLoad";
-			this.lblLoad.Size = new System.Drawing.Size(157, 48);
-			this.lblLoad.TabIndex = 6;
-			this.lblLoad.Text = "Cargar";
-			this.lblLoad.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.lblLoad.CursorChanged += new System.EventHandler(this.LblLoadCursorChanged);
-			this.lblLoad.Click += new System.EventHandler(this.clickLoad);
-			this.lblLoad.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LblLoadMouseDown);
-			this.lblLoad.MouseUp += new System.Windows.Forms.MouseEventHandler(this.LblLoadMouseUp);
-			// 
-			// lblAnalize
-			// 
-			this.lblAnalize.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.lblAnalize.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblAnalize.ForeColor = System.Drawing.Color.White;
-			this.lblAnalize.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-			this.lblAnalize.Location = new System.Drawing.Point(869, 96);
-			this.lblAnalize.Name = "lblAnalize";
-			this.lblAnalize.Size = new System.Drawing.Size(157, 48);
-			this.lblAnalize.TabIndex = 7;
-			this.lblAnalize.Text = "Analizar";
-			this.lblAnalize.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.lblAnalize.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LblAnalizeMouseDown);
-			this.lblAnalize.MouseUp += new System.Windows.Forms.MouseEventHandler(this.LblAnalizeMouseUp);
-			// 
-			// lblGenerate
-			// 
-			this.lblGenerate.Cursor = System.Windows.Forms.Cursors.Hand;
-			this.lblGenerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblGenerate.ForeColor = System.Drawing.Color.White;
-			this.lblGenerate.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-			this.lblGenerate.Location = new System.Drawing.Point(869, 149);
-			this.lblGenerate.Name = "lblGenerate";
-			this.lblGenerate.Size = new System.Drawing.Size(157, 48);
-			this.lblGenerate.TabIndex = 7;
-			this.lblGenerate.Text = "Generar";
-			this.lblGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.lblGenerate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LblGenerateMouseDown);
-			this.lblGenerate.MouseUp += new System.Windows.Forms.MouseEventHandler(this.LblGenerateMouseUp);
 			// 
 			// tabOrigen
 			// 
@@ -166,6 +86,17 @@ namespace localizacion_de_circulos
 			this.pictureBoxOrigen.TabIndex = 1;
 			this.pictureBoxOrigen.TabStop = false;
 			// 
+			// tabDestiny
+			// 
+			this.tabDestiny.Controls.Add(this.pictureBoxDestiny);
+			this.tabDestiny.Location = new System.Drawing.Point(4, 29);
+			this.tabDestiny.Name = "tabDestiny";
+			this.tabDestiny.Padding = new System.Windows.Forms.Padding(3);
+			this.tabDestiny.Size = new System.Drawing.Size(839, 603);
+			this.tabDestiny.TabIndex = 1;
+			this.tabDestiny.Text = "Destino";
+			this.tabDestiny.UseVisualStyleBackColor = true;
+			// 
 			// pictureBoxDestiny
 			// 
 			this.pictureBoxDestiny.Location = new System.Drawing.Point(0, 0);
@@ -174,6 +105,82 @@ namespace localizacion_de_circulos
 			this.pictureBoxDestiny.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBoxDestiny.TabIndex = 1;
 			this.pictureBoxDestiny.TabStop = false;
+			// 
+			// close
+			// 
+			this.close.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(35)))));
+			this.close.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.close.Font = new System.Drawing.Font("Arial Rounded MT Bold", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.close.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(28)))), ((int)(((byte)(74)))));
+			this.close.Location = new System.Drawing.Point(1001, 0);
+			this.close.Name = "close";
+			this.close.Size = new System.Drawing.Size(28, 34);
+			this.close.TabIndex = 1;
+			this.close.Text = "x";
+			this.close.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.close.Click += new System.EventHandler(this.CloseClick);
+			// 
+			// listBoxCircles
+			// 
+			this.listBoxCircles.FormattingEnabled = true;
+			this.listBoxCircles.ItemHeight = 16;
+			this.listBoxCircles.Location = new System.Drawing.Point(867, 214);
+			this.listBoxCircles.Name = "listBoxCircles";
+			this.listBoxCircles.Size = new System.Drawing.Size(159, 436);
+			this.listBoxCircles.TabIndex = 5;
+			// 
+			// lblLoad
+			// 
+			this.lblLoad.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.lblLoad.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblLoad.ForeColor = System.Drawing.Color.White;
+			this.lblLoad.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+			this.lblLoad.Location = new System.Drawing.Point(867, 43);
+			this.lblLoad.Name = "lblLoad";
+			this.lblLoad.Size = new System.Drawing.Size(157, 48);
+			this.lblLoad.TabIndex = 6;
+			this.lblLoad.Text = "Cargar";
+			this.lblLoad.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblLoad.Click += new System.EventHandler(this.clickLoad);
+			this.lblLoad.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LblLoadMouseDown);
+			this.lblLoad.MouseUp += new System.Windows.Forms.MouseEventHandler(this.LblLoadMouseUp);
+			// 
+			// lblAnalize
+			// 
+			this.lblAnalize.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.lblAnalize.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblAnalize.ForeColor = System.Drawing.Color.White;
+			this.lblAnalize.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+			this.lblAnalize.Location = new System.Drawing.Point(869, 96);
+			this.lblAnalize.Name = "lblAnalize";
+			this.lblAnalize.Size = new System.Drawing.Size(157, 48);
+			this.lblAnalize.TabIndex = 7;
+			this.lblAnalize.Text = "Analizar";
+			this.lblAnalize.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblAnalize.Click += new System.EventHandler(this.LblAnalizeClick);
+			this.lblAnalize.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LblAnalizeMouseDown);
+			this.lblAnalize.MouseUp += new System.Windows.Forms.MouseEventHandler(this.LblAnalizeMouseUp);
+			// 
+			// lblGenerate
+			// 
+			this.lblGenerate.Cursor = System.Windows.Forms.Cursors.Hand;
+			this.lblGenerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblGenerate.ForeColor = System.Drawing.Color.White;
+			this.lblGenerate.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+			this.lblGenerate.Location = new System.Drawing.Point(869, 149);
+			this.lblGenerate.Name = "lblGenerate";
+			this.lblGenerate.Size = new System.Drawing.Size(157, 48);
+			this.lblGenerate.TabIndex = 7;
+			this.lblGenerate.Text = "Generar";
+			this.lblGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.lblGenerate.Click += new System.EventHandler(this.LblGenerateClick);
+			this.lblGenerate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LblGenerateMouseDown);
+			this.lblGenerate.MouseUp += new System.Windows.Forms.MouseEventHandler(this.LblGenerateMouseUp);
+			// 
+			// openFileDialogImg
+			// 
+			this.openFileDialogImg.FileName = "openFileDialog";
 			// 
 			// MainForm
 			// 
@@ -192,17 +199,17 @@ namespace localizacion_de_circulos
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "MainForm";
 			this.Text = "localizacion de circulos";
-			this.Load += new System.EventHandler(this.MainFormLoad);
 			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainFormMouseDown);
 			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainFormMouseMove);
 			this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainFormMouseUp);
 			this.tabControl.ResumeLayout(false);
-			this.tabDestiny.ResumeLayout(false);
 			this.tabOrigen.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).EndInit();
+			this.tabDestiny.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxDestiny)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.OpenFileDialog openFileDialogImg;
 		private System.Windows.Forms.PictureBox pictureBoxDestiny;
 		private System.Windows.Forms.PictureBox pictureBoxOrigen;
 		private System.Windows.Forms.Label lblGenerate;
@@ -213,8 +220,9 @@ namespace localizacion_de_circulos
 		private System.Windows.Forms.TabPage tabDestiny;
 		private System.Windows.Forms.TabPage tabOrigen;
 		private System.Windows.Forms.TabControl tabControl;
-		
-		
+		private System.Drawing.Bitmap bmp;
+		private Figure figure = new Figure();
+		private int r2;
 		
 		
 	}
