@@ -15,31 +15,47 @@ namespace localizacion_de_circulos {
 	/// </summary>
 	public class Figure {
 		private int x, y, r;
-		private Color c;
 		
 		public Figure() { }
+		
 		public Figure(Figure f) {
 			this.x = f.x;
 			this.y = f.y;
 			this.r = f.r;
-			this.c = f.c;
 		}
-		public Figure(int x, int y, int r, Color c) {
+		
+		public Figure(int x, int y, int r) {
 			//inicializar con los valores definidos
 			this.x = x;
 			this.y = y;
 			this.r = r;
-			this.c = c;
 		}
 		
-		public int getX() { return x; }
-		public int getY() { return y; }
-		public int getR() { return r; }
-		public Color getC() { return c; }
+		public int X {
+			get { return this.x; }
+			set { this.x = value; }
+		}
 		
-		public void setX(int x) { this.x = x; }
-		public void setY(int y) { this.y = y; }
-		public void setR(int r) { this.r = r; }
-		public void setC(Color c) { this.c = c; }
+		public int Y {
+			get { return this.y; }
+			set { this.y = value; }
+		}
+		
+		public int R {
+			get { return this.r; }
+			set { this.r = value; }
+		}
+		
+		public float distance(int x, int y) {
+			return (float)Math.Sqrt(Math.Pow(Math.Abs(x - this.x), 2) + Math.Pow(Math.Abs(y - this.y), 2));
+		}
+		
+		public bool collision(Figure c2) {
+			return this.r+5 + c2.r > distance(c2.X, c2.Y);
+		}
+		
+		public override string ToString() {
+			return "("+x+","+y+") -> "+r;
+		}
 	}
 }

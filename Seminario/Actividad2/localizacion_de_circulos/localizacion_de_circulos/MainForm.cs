@@ -24,7 +24,8 @@ namespace localizacion_de_circulos {
 			//
 			InitializeComponent();
 			
-			
+			lineColor = Color.Red;
+			lblColor.BackColor = lineColor;
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
@@ -51,27 +52,27 @@ namespace localizacion_de_circulos {
 		}
 		
 		void LblLoadMouseDown(object sender, MouseEventArgs e) {
-			this.lblLoad.ForeColor = System.Drawing.Color.Red;
+			this.lblLoad.ForeColor = Color.Red;
 		}
 		
 		void LblLoadMouseUp(object sender, MouseEventArgs e) {
-			this.lblLoad.ForeColor = System.Drawing.Color.White;
+			this.lblLoad.ForeColor = Color.White;
 		}
 		
 		void LblAnalizeMouseDown(object sender, MouseEventArgs e) {
-			this.lblAnalize.ForeColor = System.Drawing.Color.Red;
+			this.lblAnalize.ForeColor = Color.Red;
 		}
 
 		void LblAnalizeMouseUp(object sender, MouseEventArgs e) {
-			this.lblAnalize.ForeColor = System.Drawing.Color.White;
+			this.lblAnalize.ForeColor = Color.White;
 		}
 		
 		void LblGenerateMouseDown(object sender, MouseEventArgs e) {
-			this.lblGenerate.ForeColor = System.Drawing.Color.Red;
+			this.lblGenerate.ForeColor = Color.Red;
 		}
 		
 		void LblGenerateMouseUp(object sender, MouseEventArgs e) {
-			this.lblGenerate.ForeColor = System.Drawing.Color.White;
+			this.lblGenerate.ForeColor = Color.White;
 		}
 		
 		///////////////////////////////////////////////////////////////////////////
@@ -80,7 +81,7 @@ namespace localizacion_de_circulos {
 		
 		void clickLoad(object sender, System.EventArgs e) {
 			//abrir ventana de dialogo
-			while(openFileDialogImg.ShowDialog() != System.Windows.Forms.DialogResult.OK){ /*fuerza la apertura de un archivo*/ }
+			while(openFileDialogImg.ShowDialog() != DialogResult.OK){ /*fuerza la apertura de un archivo*/ }
 			
 			//selecciona el tab Origen
 			tabControl.SelectedIndex = 0;
@@ -95,6 +96,10 @@ namespace localizacion_de_circulos {
 		
 		void LblAnalizeClick(object sender, EventArgs e) {
 			// genera una copia de la imagen de origen para manipularla
+			if(openFileDialogImg.FileName == "dialog") {
+				MessageBox.Show("Primero debe seleccionar una imagen.");
+				return;
+			}
 			bmp= new Bitmap(openFileDialogImg.FileName);
 			Figure toroide = new Figure();
 			//agrega el texto visible del formato que tiene la lista
@@ -106,44 +111,34 @@ namespace localizacion_de_circulos {
 					if(bmp.GetPixel(x,y).ToArgb().Equals(Color.Black.ToArgb())) {
 						//al encontrarlo busca si se puede generar un circulo
 						//searchCircle(analisisFigure(x, y, Color.Black));
-						searchCenter(x, y, Color.Black);
 						
-						//LineaBresenham(0,0, 1000, 200);
-						//guardara el centro y el radio en figure
-						if(isCircle(Color.White)) {
-							//si es un circulo debe pintarlo de otro color
-							fillCircle(Color.Red);
-							figures.AddLast(new Figure(figure));
-							//drawCenter();
-							string circle = "("+figure.getX()+","+figure.getY()+") -> "+figure.getR();
-							//guarda en la lista los datos del circulo
-							listBoxCircles.Items.Add("("+figure.getX()+","+figure.getY()+") -> "+figure.getR());
-						}else if((toroide = isToroide()) != null) {			
-							fillToroide(toroide, Color.Green);
-							//drawCenter();
-						}else if(isElipse()) {
-							//borrar elipse
-							eraseElipse();
-						}else {
-							//ignorar
-							fillFigure(Color.Green);
-							//fillCircle(Color.Orange);
-						}
+						if(!col(new Figure(x, y, 1))) {
+							//si el pixel negro encontrado no colisiona con algun circulo existente comenzara el analisis
+							searchCenter(x, y, Color.Black);
+							if(isCircle(Color.White)) {
+								//si es un circulo debe pintarlo de otro color
+								figures.AddLast(new Figure(circle));
+							}
+						}	
 					}
 				}
 			}
-			// generar todos los puntos entr los circulos
 			MessageBox.Show("El analisis se ha compeltado con exito.");
-		
 		}
 				
 		void LblGenerateClick(object sender, EventArgs e) {
 			//cambia la vista a la imagen modificada
-            tabControl.SelectedIndex = 1;
-            
+            tabControl.SelectedIndex = 0;
+                        
+            foreach(Figure circle in figures) {
+            	//fillCircle(circle, Color.Red);
+				//drawCenter(circle);
+				//guarda en la lista los datos del circulo
+				listBoxCircles.Items.Add(circle.ToString());
+            }
 			//generar imagen resultante
 			union();
-            pictureBoxDestiny.Image = bmp;
+            pictureBoxOrigen.Image = bmp;
 		}
 		
 		void searchCenter(int x, int y, Color color) {
@@ -168,124 +163,45 @@ namespace localizacion_de_circulos {
 			while(x_f < bmp.Width && bmp.GetPixel(x_f,y).ToArgb().Equals(color.ToArgb())) { x_f++; }
 			
 			//nos genera el centro en X
-			figure.setX((x_f+x)/2);
+			circle.X = (x_f+x)/2;
 			//y en Y
-			figure.setY((y_f+y)/2);
+			circle.Y = (y_f+y)/2;
 			//guardamos el raidio, le agregamos uno, que es el cesgo que obtenemos
 			//al iniciar el analisis en la segunda fila
-			figure.setR(figure.getY()-y+1);
-			//inicializamos el color de la figura
-			figure.setC(Color.Red);
+			circle.R = circle.Y-y+1;
 		}
 		
 		bool isCircle(Color color_extern) {
 			//queremos buscar el ancho del circulo
-			int width = 0, x = figure.getX(), margin_error;
+			int width = 0, x = circle.X, margin_error;
 			
 			//obtenemos del inicio del mapa hasta el fin del circulo (anchura)
-			while(x < bmp.Width && !bmp.GetPixel(x, figure.getY()).ToArgb().Equals(color_extern.ToArgb())) { x++; }
+			while(x < bmp.Width && !bmp.GetPixel(x, circle.Y).ToArgb().Equals(color_extern.ToArgb())) { x++; }
 			//lo agregamos
 			width += x;
-			x = figure.getX();
+			x = circle.X;
 			//obtenemos del inicio del mapa al inicio del circulo
-			while(x > 0 && !bmp.GetPixel(x, figure.getY()).ToArgb().Equals(color_extern.ToArgb())) { x--; }
+			while(x > 0 && !bmp.GetPixel(x, circle.Y).ToArgb().Equals(color_extern.ToArgb())) { x--; }
 			//obtenemos del inicio del mapa al inicio del circulo
 			
 			//lo restamos y obtenemos la anchura del circulo
 			width -= x;
 			
 			//con el operador ternario verificamos si es un circulo (10 pixeles de diferencia en susdiametros)
-			margin_error = figure.getR()*2 - width;
-			r2 = width/2;
+			margin_error = circle.R*2 - width;
+			//r2 = width/2;
 			//nos regresa true si la diferencia entre la altura y anchura es menor a 10 pixeles
 			return marginErrorPixels(margin_error);
 			
 			//un circulo tambien es una figura eliptica
 			//return isElipse();
 		}
-		
-		Figure isToroide() {
-			Figure toro = new Figure(figure.getX(), figure.getY(), figure.getR(), figure.getC());
-			//primero colocamos el centro en el tope superior
-			toro.setY(toro.getY() - toro.getR());
-			
-			//inicamos h en el tope del circulo interno
-			int height = 0, width_intern = 0, width_extern = 0, radius_inter = 0, margin_error_intern, margin_error_extern;
-			
-			//parte superior
-			while(toro.getY()+height < bmp.Height && bmp.GetPixel(toro.getX(), toro.getY()+height).ToArgb().Equals(Color.Black.ToArgb())) { height++; }
-			
-			//guarda su valor par poder sacar la diferencia
-			radius_inter = height;
-			
-			//centro
-			while(toro.getY()+height < bmp.Height && !bmp.GetPixel(toro.getX(), toro.getY()+height).ToArgb().Equals(Color.Black.ToArgb())) { height++;}
-			//	MessageBox.Show("x="+pos.x+"\ny="+(pos.y+h)+"\nname="+bmp.GetPixel(pos.x, pos.y+h).Name);
-			
-			//el radio interno sera la mitad de la altura obtenida
-			radius_inter = (height-radius_inter)/2;
-			
-			//parte inferior
-			while(toro.getY()+height < bmp.Height && bmp.GetPixel(toro.getX(), toro.getY()+height).ToArgb().Equals(Color.Black.ToArgb())) { height++; }
-			
-			//actualizo los datos del circulo
-			toro.setR(height/2);
-			toro.setY(toro.getY() + height/2);
-			
-			//analizar en fila
-			while(toro.getX()-width_intern > 0 && !bmp.GetPixel(toro.getX()-width_intern, toro.getY()).ToArgb().Equals(Color.Black.ToArgb())) { width_intern++; }
-			
-			//al ancho externo se le añade el interno ya existente
-			width_extern += width_intern;
-			while(toro.getX()-width_extern > 0 && bmp.GetPixel(toro.getX()-width_extern, toro.getY()).ToArgb().Equals(Color.Black.ToArgb())) { width_extern++; }
-			
-			//obtengo el marger de error del circulo interno
-			margin_error_intern = width_intern - radius_inter;
-			
-			//obtengo el margen de error desde el centro hasta el fin del toroide
-			margin_error_extern = width_extern - toro.getR();
-			
-			
-			if(toro.getR() > radius_inter && marginErrorPixels(margin_error_intern) && marginErrorPixels(margin_error_extern) & width_intern > 5) {
-				//MessageBox.Show("w2="+w2+"\nw="+w+"\nw+w2="+(w+w2)+"\nradio="+toro.radius);
-				return toro;
-			}
-			return null;			
-		}
-		
-		bool isElipse() {
-			int	x;
-			//x nos dara el punto que recorrera el mapa de forma horizontal
-			//limit nos dara el limite en (x) del area del elipse
-			
-			//aumento los radios para generar el analisis del elipse
-			figure.setR(figure.getR()+4);
-			r2+=4;
-			
-			for(int y = figure.getY()-figure.getR(); y <= figure.getY(); y++) {
-				x = limitXInElipse(y-figure.getY(), figure.getR(), r2)+figure.getX();
-				//si hay colision de color negro en la busqueda no es una elipse
-				
-				if(figure.getX()*2-x >= 0 && y >= 0 && !bmp.GetPixel(figure.getX()*2-x, y).ToArgb().Equals(Color.White.ToArgb()))
-					return false;//cuadrante 2
-				
-				if(figure.getX()*2-x >= 0 && figure.getY()*2-y < bmp.Height && !bmp.GetPixel(figure.getX()*2-x, figure.getY()*2-y).ToArgb().Equals(Color.White.ToArgb()))
-					return false;//cuadrante 3
-				
-				if(x < bmp.Width && figure.getY()*2-y < bmp.Height && !bmp.GetPixel(x,  figure.getY()*2-y).ToArgb().Equals(Color.White.ToArgb()))
-					return false;//cuadrante 4
-				
-				if(x < bmp.Width && x >= 0 && y >= 0 && !bmp.GetPixel(x, y).ToArgb().Equals(Color.White.ToArgb()))
-					return false;//cuadrante 1
-			}
-			return true;
-		}
-		
-		void drawCenter() {
+
+		void drawCenter(Figure circle) {
 			//da el ancho del punto central de cada circulo
 			const int WIDTH = 7;
-			for(int i = figure.getX() - WIDTH; i < figure.getX() + WIDTH; i++) {
-				for(int j = figure.getY() - WIDTH; j < figure.getY() + WIDTH; j++) {
+			for(int i = circle.X - WIDTH; i < circle.X + WIDTH; i++) {
+				for(int j = circle.Y - WIDTH; j < circle.Y + WIDTH; j++) {
 					if(i >= 0 && i < bmp.Width && j >= 0 && j < bmp.Height) {
 						//pinta los pixeles
 						bmp.SetPixel(i,j, Color.Silver);
@@ -295,24 +211,24 @@ namespace localizacion_de_circulos {
 		}
 		
 		void eraseElipse() {
-			int	x, limit;
+			int	x, limit=0;
 			//x nos dara el punto que recorrera el mapa de forma horizontal
 			//limit nos dara el limite en (x) del area del elipse
 			
-			for(int y = figure.getY()-figure.getR(); y <= figure.getY(); y++) {
-				x = figure.getX();
-				limit = limitXInElipse(y-figure.getY(), figure.getR(), r2);
+			for(int y = circle.Y-circle.R; y <= circle.Y; y++) {
+				x = circle.X;
+				//limit = limitXInElipse(y-circle.getY(), circle.getR(), r2);
 				
-				while(x <= limit+figure.getX()){
+				while(x <= limit+circle.X){
 					//usando una cuarta pate e l circulo dibujo dentro de los 4 cuadrantes
-					if(figure.getX()*2-x >= 0 && y >= 0)
-						bmp.SetPixel(figure.getX()*2-x, y, Color.White);//cuadrante 2
+					if(circle.X*2-x >= 0 && y >= 0)
+						bmp.SetPixel(circle.X*2-x, y, Color.White);//cuadrante 2
 					
-					if(figure.getX()*2-x >= 0 && figure.getY()*2-y < bmp.Height)
-						bmp.SetPixel(figure.getX()*2-x, figure.getY()*2-y, Color.White);//cuadrante 3
+					if(circle.X*2-x >= 0 && circle.Y*2-y < bmp.Height)
+						bmp.SetPixel(circle.X*2-x, circle.Y*2-y, Color.White);//cuadrante 3
 					
-					if(x < bmp.Width && figure.getY()*2-y < bmp.Height)
-						bmp.SetPixel(x,  figure.getY()*2-y, Color.White);//cuadrante 4
+					if(x < bmp.Width && circle.Y*2-y < bmp.Height)
+						bmp.SetPixel(x,  circle.Y*2-y, Color.White);//cuadrante 4
 					
 					if(x < bmp.Width && y >= 0)
 						bmp.SetPixel(x, y, Color.White);//cuadrante 1
@@ -321,65 +237,27 @@ namespace localizacion_de_circulos {
 			}
 		}
 		
-		void fillCircle(Color color) {
+		void fillCircle(Figure circle, Color color) {
 			int x, limit;
 			//aumentamos el radio para evadir el sesgo
-			figure.setR(figure.getR()+3);
-			for(int y = figure.getY()-figure.getR(); y <= figure.getY(); y++) {
-				x = figure.getX();
-				limit = limitXInCircle(figure.getR(), figure.getY(), y);
-				while(x <= limit+figure.getX()){
+			circle.R = circle.R+3;
+			for(int y = circle.Y-circle.R; y <= circle.Y; y++) {
+				x = circle.X;
+				limit = limitXInCircle(circle.R, circle.Y, y);
+				while(x <= limit+circle.X){
 					//usando una cuarta pate e l circulo dibujo dentro de los 4 cuadrantes
-					if(figure.getX()*2-x >= 0 && y >= 0 && !bmp.GetPixel(figure.getX()*2-x, y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(figure.getX()*2-x, y, color);//cuadrante 2
+					if(circle.X*2-x >= 0 && y >= 0 && !bmp.GetPixel(circle.X*2-x, y).ToArgb().Equals(Color.White.ToArgb()))
+						bmp.SetPixel(circle.X*2-x, y, color);//cuadrante 2
 					
-					if(figure.getX()*2-x >= 0 && figure.getY()*2-y < bmp.Height && !bmp.GetPixel(figure.getX()*2-x, figure.getY()*2-y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(figure.getX()*2-x, figure.getY()*2-y, color);//cuadrante 3
+					if(circle.X*2-x >= 0 && circle.Y*2-y < bmp.Height && !bmp.GetPixel(circle.X*2-x, circle.Y*2-y).ToArgb().Equals(Color.White.ToArgb()))
+						bmp.SetPixel(circle.X*2-x, circle.Y*2-y, color);//cuadrante 3
 					
-					if(x < bmp.Width && figure.getY()*2-y < bmp.Height && !bmp.GetPixel(x,  figure.getY()*2-y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(x,  figure.getY()*2-y, color);//cuadrante 4
+					if(x < bmp.Width && circle.Y*2-y < bmp.Height && !bmp.GetPixel(x,  circle.Y*2-y).ToArgb().Equals(Color.White.ToArgb()))
+						bmp.SetPixel(x,  circle.Y*2-y, color);//cuadrante 4
 					
 					if(x < bmp.Width && y >= 0 && !bmp.GetPixel(x, y).ToArgb().Equals(Color.White.ToArgb()))
 						bmp.SetPixel(x, y, color);//cuadrante 1
 					x++;
-				}
-			}
-		}
-		
-		void fillToroide(Figure figure, Color color) {
-			int x, limit;
-			//aumentamos el radio para evadir el sesgo
-			figure.setR(figure.getR()+3);
-			for(int y = figure.getY()-figure.getR(); y <= figure.getY(); y++) {
-				x = figure.getX();
-				limit = limitXInCircle(figure.getR(), figure.getY(), y);
-				while(x <= limit+figure.getX()){
-					//usando una cuarta pate e l circulo dibujo dentro de los 4 cuadrantes
-					if(figure.getX()*2-x >= 0 && y >= 0 && !bmp.GetPixel(figure.getX()*2-x, y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(figure.getX()*2-x, y, color);//cuadrante 2
-					
-					if(figure.getX()*2-x >= 0 && figure.getY()*2-y < bmp.Height && !bmp.GetPixel(figure.getX()*2-x, figure.getY()*2-y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(figure.getX()*2-x, figure.getY()*2-y, color);//cuadrante 3
-					
-					if(x < bmp.Width && figure.getY()*2-y < bmp.Height && !bmp.GetPixel(x,  figure.getY()*2-y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(x,  figure.getY()*2-y, color);//cuadrante 4
-					
-					if(x < bmp.Width && y >= 0 && !bmp.GetPixel(x, y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(x, y, color);//cuadrante 1
-					x++;
-				}
-			}
-		}
-		
-		void fillFigure(Color color) {
-			figure.setR(figure.getR()+2);
-			for(int i = figure.getX() - figure.getR(); i < figure.getX() + figure.getR(); i++) {
-				for(int j = figure.getY() - figure.getR(); j < figure.getY() + figure.getR(); j++) {
-					if(i >= 0 && i < bmp.Width && j >= 0 && j < bmp.Height) {
-						//pinta los pixeles
-						if(!bmp.GetPixel(i,j).ToArgb().Equals(Color.White.ToArgb()))
-							{bmp.SetPixel(i,j, Color.Green);}
-					}
 				}
 			}
 		}
@@ -387,14 +265,7 @@ namespace localizacion_de_circulos {
 		int limitXInCircle(int r, int y1, int y2) {
 			return (int)Math.Sqrt(Math.Pow(r, 2) - Math.Pow(y2-y1, 2));
 		}
-		
-		int limitXInElipse(int y, int a, int b) {
-			//a => r1 => rh
-			//b => r2 => rw
-			return (int)Math.Sqrt(Math.Pow(b, 2) - Math.Pow((b*y/a), 2));
 				
- 		}
-		
 		bool marginErrorPixels(int margin_error) { return margin_error >= -10 && margin_error <= 10; }
 
 		void LineaBresenham(int X1, int Y1, int X2, int Y2) {
@@ -512,7 +383,7 @@ namespace localizacion_de_circulos {
 		
 		bool collision(int x, int y) {
 			if(bmp.GetPixel(x, y).ToArgb().Equals(Color.White.ToArgb()) ||
-			   bmp.GetPixel(x, y).ToArgb().Equals(Color.Red.ToArgb()) ) {
+			   bmp.GetPixel(x, y).ToArgb().Equals(Color.Black.ToArgb()) ) {
 				return false;
 			}
 			//MessageBox.Show(bmp.GetPixel(x, y).Name);
@@ -558,23 +429,38 @@ namespace localizacion_de_circulos {
 		
 		void pintar(int x, int y) {
 			if(x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height)
-				bmp.SetPixel(x, y, Color.Black);
+				bmp.SetPixel(x, y, lineColor);
 		}
 		
 		void union() {
 			Figure c = new Figure();
 			
 			while(figures.First != null) {
-				c.setX(figures.First().getX());
-				c.setY(figures.First().getY());
+				c.X = figures.First().X;
+				c.Y = figures.First().Y;
 				figures.RemoveFirst();
 				
 				foreach(Figure circle in figures) {
-					//MessageBox.Show("x1="+circle.getX()+"\ny1="+circle.getY()+"\nx2="+figure.getX()+"\ny2="+figure.getY());
-					if(!collisionDDA(c.getX(), c.getY(), circle.getX(), circle.getY()))
-						DDA(c.getX(), c.getY(), circle.getX(), circle.getY());
+					//if(!collisionDDA(c.X, c.Y, circle.X, circle.Y))
+						DDA(c.X, c.Y, circle.X, circle.Y);
 				}
 			}
+		}
+	
+		bool col(Figure c1) {
+			foreach(Figure circle in figures) {
+				if(circle.collision(c1)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		
+		void Button1Click(object sender, EventArgs e) {
+			while(colorDialog.ShowDialog() != DialogResult.OK){ /*fuerza la apertura de un archivo*/ }
+			lblColor.BackColor = colorDialog.Color;
+			lineColor = colorDialog.Color;
 		}
 	}
 }

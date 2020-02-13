@@ -38,25 +38,26 @@ namespace localizacion_de_circulos
 			this.tabControl = new System.Windows.Forms.TabControl();
 			this.tabOrigen = new System.Windows.Forms.TabPage();
 			this.pictureBoxOrigen = new System.Windows.Forms.PictureBox();
-			this.tabDestiny = new System.Windows.Forms.TabPage();
-			this.pictureBoxDestiny = new System.Windows.Forms.PictureBox();
+			this.tabOptions = new System.Windows.Forms.TabPage();
+			this.lblColor = new System.Windows.Forms.Label();
+			this.btnColor = new System.Windows.Forms.Button();
 			this.close = new System.Windows.Forms.Label();
 			this.listBoxCircles = new System.Windows.Forms.ListBox();
 			this.lblLoad = new System.Windows.Forms.Label();
 			this.lblAnalize = new System.Windows.Forms.Label();
 			this.lblGenerate = new System.Windows.Forms.Label();
 			this.openFileDialogImg = new System.Windows.Forms.OpenFileDialog();
+			this.colorDialog = new System.Windows.Forms.ColorDialog();
 			this.tabControl.SuspendLayout();
 			this.tabOrigen.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).BeginInit();
-			this.tabDestiny.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBoxDestiny)).BeginInit();
+			this.tabOptions.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl
 			// 
 			this.tabControl.Controls.Add(this.tabOrigen);
-			this.tabControl.Controls.Add(this.tabDestiny);
+			this.tabControl.Controls.Add(this.tabOptions);
 			this.tabControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabControl.Location = new System.Drawing.Point(14, 14);
 			this.tabControl.Name = "tabControl";
@@ -74,7 +75,7 @@ namespace localizacion_de_circulos
 			this.tabOrigen.Padding = new System.Windows.Forms.Padding(3);
 			this.tabOrigen.Size = new System.Drawing.Size(839, 603);
 			this.tabOrigen.TabIndex = 0;
-			this.tabOrigen.Text = "Origen";
+			this.tabOrigen.Text = "Analisis";
 			this.tabOrigen.UseVisualStyleBackColor = true;
 			// 
 			// pictureBoxOrigen
@@ -86,25 +87,34 @@ namespace localizacion_de_circulos
 			this.pictureBoxOrigen.TabIndex = 1;
 			this.pictureBoxOrigen.TabStop = false;
 			// 
-			// tabDestiny
+			// tabOptions
 			// 
-			this.tabDestiny.Controls.Add(this.pictureBoxDestiny);
-			this.tabDestiny.Location = new System.Drawing.Point(4, 29);
-			this.tabDestiny.Name = "tabDestiny";
-			this.tabDestiny.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDestiny.Size = new System.Drawing.Size(839, 603);
-			this.tabDestiny.TabIndex = 1;
-			this.tabDestiny.Text = "Destino";
-			this.tabDestiny.UseVisualStyleBackColor = true;
+			this.tabOptions.Controls.Add(this.lblColor);
+			this.tabOptions.Controls.Add(this.btnColor);
+			this.tabOptions.Location = new System.Drawing.Point(4, 29);
+			this.tabOptions.Name = "tabOptions";
+			this.tabOptions.Padding = new System.Windows.Forms.Padding(3);
+			this.tabOptions.Size = new System.Drawing.Size(839, 603);
+			this.tabOptions.TabIndex = 1;
+			this.tabOptions.Text = "Opciones";
+			this.tabOptions.UseVisualStyleBackColor = true;
 			// 
-			// pictureBoxDestiny
+			// lblColor
 			// 
-			this.pictureBoxDestiny.Location = new System.Drawing.Point(0, 0);
-			this.pictureBoxDestiny.Name = "pictureBoxDestiny";
-			this.pictureBoxDestiny.Size = new System.Drawing.Size(839, 603);
-			this.pictureBoxDestiny.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.pictureBoxDestiny.TabIndex = 1;
-			this.pictureBoxDestiny.TabStop = false;
+			this.lblColor.Location = new System.Drawing.Point(182, 55);
+			this.lblColor.Name = "lblColor";
+			this.lblColor.Size = new System.Drawing.Size(51, 51);
+			this.lblColor.TabIndex = 1;
+			// 
+			// btnColor
+			// 
+			this.btnColor.Location = new System.Drawing.Point(6, 55);
+			this.btnColor.Name = "btnColor";
+			this.btnColor.Size = new System.Drawing.Size(158, 51);
+			this.btnColor.TabIndex = 0;
+			this.btnColor.Text = "Color de linea";
+			this.btnColor.UseVisualStyleBackColor = true;
+			this.btnColor.Click += new System.EventHandler(this.Button1Click);
 			// 
 			// close
 			// 
@@ -180,7 +190,7 @@ namespace localizacion_de_circulos
 			// 
 			// openFileDialogImg
 			// 
-			this.openFileDialogImg.FileName = "openFileDialog";
+			this.openFileDialogImg.FileName = "dialog";
 			// 
 			// MainForm
 			// 
@@ -205,26 +215,26 @@ namespace localizacion_de_circulos
 			this.tabControl.ResumeLayout(false);
 			this.tabOrigen.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).EndInit();
-			this.tabDestiny.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBoxDestiny)).EndInit();
+			this.tabOptions.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label lblColor;
+		private System.Windows.Forms.ColorDialog colorDialog;
+		private System.Windows.Forms.Button btnColor;
 		private System.Windows.Forms.OpenFileDialog openFileDialogImg;
-		private System.Windows.Forms.PictureBox pictureBoxDestiny;
 		private System.Windows.Forms.PictureBox pictureBoxOrigen;
 		private System.Windows.Forms.Label lblGenerate;
 		private System.Windows.Forms.Label lblAnalize;
 		private System.Windows.Forms.Label lblLoad;
 		private System.Windows.Forms.ListBox listBoxCircles;
 		private System.Windows.Forms.Label close;
-		private System.Windows.Forms.TabPage tabDestiny;
+		private System.Windows.Forms.TabPage tabOptions;
 		private System.Windows.Forms.TabPage tabOrigen;
 		private System.Windows.Forms.TabControl tabControl;
 		private System.Drawing.Bitmap bmp;
-		private Figure figure = new Figure();
-		private int r2;
+		private Figure circle = new Figure();
 		private System.Collections.Generic.LinkedList<Figure> figures;
-		
+		private System.Drawing.Color lineColor = new System.Drawing.Color();
 		
 	}
 }
