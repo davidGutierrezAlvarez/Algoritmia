@@ -18,6 +18,7 @@ namespace localizacion_de_circulos {
 	/// </summary>
 	public partial class MainForm : Form {
 		int mov, movX, movY;
+		Graph graph = new Graph();
 		public MainForm() {
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -25,7 +26,8 @@ namespace localizacion_de_circulos {
 			InitializeComponent();
 			
 			lineColor = Color.Red;
-			lblColor.BackColor = lineColor;
+			textColor = Color.White;
+			lblColorLine.BackColor = lineColor;
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
@@ -75,9 +77,26 @@ namespace localizacion_de_circulos {
 			this.lblGenerate.ForeColor = Color.White;
 		}
 		
+		void Button1Click(object sender, EventArgs e) {
+			while(colorDialog.ShowDialog() != DialogResult.OK){ /*fuerza la apertura de un archivo*/ }
+			lblColorLine.BackColor = colorDialog.Color;
+			lineColor = colorDialog.Color;
+		}
+	
+		void BtnTextColorClick(object sender, EventArgs e) {
+			while(colorDialog.ShowDialog() != DialogResult.OK){ /*fuerza la apertura de un archivo*/ }
+			lblColorText.BackColor = colorDialog.Color;
+			textColor = colorDialog.Color;
+		}
+	
 		///////////////////////////////////////////////////////////////////////////
 		/// 
+		///
 		/// 
+		/// 
+		/// 
+		///////////////////////////////////////////////////////////////////////////
+		
 		
 		void clickLoad(object sender, System.EventArgs e) {
 			//abrir ventana de dialogo
@@ -87,11 +106,18 @@ namespace localizacion_de_circulos {
 			tabControl.SelectedIndex = 0;
 			
 			//cargar la imagen en el tab Origen
-			pictureBoxOrigen.ImageLocation = openFileDialogImg.FileName;
+			bmp = new Bitmap(openFileDialogImg.FileName);
+			pictureBoxOrigen.Image = bmp;
 			
+			Clean();
+		}
+		
+		void Clean() {
 			//limpia la lista de datos
 			listBoxCircles.Items.Clear();
 			figures = new LinkedList<Figure>();
+			treeViewCircles.Nodes.Clear();
+			graph.GetVertex().Clear();
 		}
 		
 		void LblAnalizeClick(object sender, EventArgs e) {
@@ -100,10 +126,26 @@ namespace localizacion_de_circulos {
 				MessageBox.Show("Primero debe seleccionar una imagen.");
 				return;
 			}
-			bmp= new Bitmap(openFileDialogImg.FileName);
+			
+			//analiza la imagen para generar los nodos del grafo
+			analizeImg();
+			
+			//cambia la vista a la imagen modificada
+            tabControl.SelectedIndex = 0;
+            
+			//genera las lineans con DDA
+			generateEdges();
+			//insertar etiquetas
+			drawLbl();
+			generateTreeView();
+			MessageBox.Show("El analisis se ha compeltado con exito.");
+		}
+			
+		void analizeImg() {
 			Figure toroide = new Figure();
 			//agrega el texto visible del formato que tiene la lista
 			listBoxCircles.Items.Add("(x, y) -> radio");
+			int id = 0;
 			
 	        for (int y = 0; y < bmp.Height; y++) {
 	            for (int x = 0; x < bmp.Width; x++) {
@@ -112,33 +154,31 @@ namespace localizacion_de_circulos {
 						//al encontrarlo busca si se puede generar un circulo
 						//searchCircle(analisisFigure(x, y, Color.Black));
 						
-						if(!col(new Figure(x, y, 1))) {
+						if(!pixelInArea(new Figure(x, y, 1))) {
 							//si el pixel negro encontrado no colisiona con algun circulo existente comenzara el analisis
 							searchCenter(x, y, Color.Black);
 							if(isCircle(Color.White)) {
 								//si es un circulo debe pintarlo de otro color
 								figures.AddLast(new Figure(circle));
+								//
+								listBoxCircles.Items.Add(circle.ToString());
+								//añado el circlo al Grafo
+								graph.AddVertex(new Figure(circle), id);
+								id++;
 							}
 						}	
 					}
 				}
 			}
-			MessageBox.Show("El analisis se ha compeltado con exito.");
 		}
-				
+		
 		void LblGenerateClick(object sender, EventArgs e) {
 			//cambia la vista a la imagen modificada
             tabControl.SelectedIndex = 0;
-                        
-            foreach(Figure circle in figures) {
-            	//fillCircle(circle, Color.Red);
-				//drawCenter(circle);
-				//guarda en la lista los datos del circulo
-				listBoxCircles.Items.Add(circle.ToString());
-            }
-			//generar imagen resultante
-			union();
-            pictureBoxOrigen.Image = bmp;
+            
+            //generar animacion del grafo
+            //if(se puede) entonces { anima }
+            //sino { decir que no se puede }
 		}
 		
 		void searchCenter(int x, int y, Color color) {
@@ -210,33 +250,6 @@ namespace localizacion_de_circulos {
 			}
 		}
 		
-		void eraseElipse() {
-			int	x, limit=0;
-			//x nos dara el punto que recorrera el mapa de forma horizontal
-			//limit nos dara el limite en (x) del area del elipse
-			
-			for(int y = circle.Y-circle.R; y <= circle.Y; y++) {
-				x = circle.X;
-				//limit = limitXInElipse(y-circle.getY(), circle.getR(), r2);
-				
-				while(x <= limit+circle.X){
-					//usando una cuarta pate e l circulo dibujo dentro de los 4 cuadrantes
-					if(circle.X*2-x >= 0 && y >= 0)
-						bmp.SetPixel(circle.X*2-x, y, Color.White);//cuadrante 2
-					
-					if(circle.X*2-x >= 0 && circle.Y*2-y < bmp.Height)
-						bmp.SetPixel(circle.X*2-x, circle.Y*2-y, Color.White);//cuadrante 3
-					
-					if(x < bmp.Width && circle.Y*2-y < bmp.Height)
-						bmp.SetPixel(x,  circle.Y*2-y, Color.White);//cuadrante 4
-					
-					if(x < bmp.Width && y >= 0)
-						bmp.SetPixel(x, y, Color.White);//cuadrante 1
-					x++;
-				}
-			}
-		}
-		
 		void fillCircle(Figure circle, Color color) {
 			int x, limit;
 			//aumentamos el radio para evadir el sesgo
@@ -246,88 +259,30 @@ namespace localizacion_de_circulos {
 				limit = limitXInCircle(circle.R, circle.Y, y);
 				while(x <= limit+circle.X){
 					//usando una cuarta pate e l circulo dibujo dentro de los 4 cuadrantes
-					if(circle.X*2-x >= 0 && y >= 0 && !bmp.GetPixel(circle.X*2-x, y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(circle.X*2-x, y, color);//cuadrante 2
+					if(!bmp.GetPixel(circle.X*2-x, y).ToArgb().Equals(Color.White.ToArgb()))
+						pintar(circle.X*2-x, y);//cuadrante 2
 					
-					if(circle.X*2-x >= 0 && circle.Y*2-y < bmp.Height && !bmp.GetPixel(circle.X*2-x, circle.Y*2-y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(circle.X*2-x, circle.Y*2-y, color);//cuadrante 3
+					if(!bmp.GetPixel(circle.X*2-x, circle.Y*2-y).ToArgb().Equals(Color.White.ToArgb()))
+						pintar(circle.X*2-x, circle.Y*2-y);//cuadrante 3
 					
-					if(x < bmp.Width && circle.Y*2-y < bmp.Height && !bmp.GetPixel(x,  circle.Y*2-y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(x,  circle.Y*2-y, color);//cuadrante 4
+					if(!bmp.GetPixel(x,  circle.Y*2-y).ToArgb().Equals(Color.White.ToArgb()))
+						pintar(x,  circle.Y*2-y);//cuadrante 4
 					
-					if(x < bmp.Width && y >= 0 && !bmp.GetPixel(x, y).ToArgb().Equals(Color.White.ToArgb()))
-						bmp.SetPixel(x, y, color);//cuadrante 1
+					if(!bmp.GetPixel(x, y).ToArgb().Equals(Color.White.ToArgb()))
+						pintar(x, y);//cuadrante 1
 					x++;
 				}
 			}
 		}
 		
-		int limitXInCircle(int r, int y1, int y2) {
-			return (int)Math.Sqrt(Math.Pow(r, 2) - Math.Pow(y2-y1, 2));
-		}
+		int limitXInCircle(int r, int y1, int y2) { return (int)Math.Sqrt(Math.Pow(r, 2) - Math.Pow(y2-y1, 2)); }
 				
 		bool marginErrorPixels(int margin_error) { return margin_error >= -10 && margin_error <= 10; }
 
-		void LineaBresenham(int X1, int Y1, int X2, int Y2) {
-			// 0 - Distancias que se desplazan en cada eje
-			int dY = (Y2 - Y1);
-			int dX = (X2 - X1);
-			int Yi,Xi, Yr, Xr;
-			// 1 - Incrementos para las secciones con avance inclinado
-			if (dY >= 0) {
-			  Yi = 1;
-			} else {
-			  dY = -dY;
-			  Yi = -1;
-			}
+		void DDA(Figure c1, Figure c2) {
 			
-			if (dX >= 0) {
-			  Xi = 1;
-			} else {
-			  dX = -dX;
-			  Xi = -1;
-			}
+			int x1 = c1.X, y1 = c1.Y, x2 = c2.X, y2 = c2.Y;
 			
-			// 2 - Incrementos para las secciones con avance recto:
-			if (dX >= dY) {
-			  Yr = 0;
-			  Xr = Xi;
-			} else {
-			  Xr = 0;
-			  Yr = Yi;
-			
-			  // Cuando dy es mayor que dx, se intercambian, para reutilizar el mismo bucle.
-			  // ver octantes blancos en la imagen encima del código
-			  int k = dX; dX = dY; dY = k;
-			}
-			
-			// 3  - Inicializar valores (y de error).
-			int X = X1, Y = Y1;
-			int avR = (2 * dY);
-			int av  = (avR - dX);
-			int avI = (av - dX);
-			
-			// 4  - Bucle para el trazado de las línea.
-			do {
-				//MessageBox.Show(av + " "+ X + " " + Y);
-				if(X > 0 && X < bmp.Width && Y > 0 && Y < bmp.Height)
-				{bmp.SetPixel(X, Y, Color.Black);}
-				//DibujarPixel(X, Y, Color); // Como mínimo se dibujará siempre 1 píxel (punto).
-				//Mensaje(av + " ") // (debug) para ver los valores de error global que van apareciendo.
-				if (av >= 0) {
-				  X = (X + Xi);    // X aumenta en inclinado.
-				  Y = (Y + Yi);    // Y aumenta en inclinado.
-				  av = (av + avI);    // Avance Inclinado
-				} else {
-				  X = (X + Xr);    // X aumenta en recto.
-				  Y = (Y + Yr);    // Y aumenta en recto.
-				  av = (av + avR);    // Avance Recto
-				}
-				//MessageBox.Show("="+X+","+X2);
-			} while(X != X2); // NOTA: La condición de 'Repetir Hasta', se debe cambiar si se elige 'Repetir Mientras'
-		}
-	
-		void DDA(int x1, int y1, int x2, int y2) {
 			float ax, ay, x, y, res, i = 0;
 			
 			
@@ -348,14 +303,20 @@ namespace localizacion_de_circulos {
 				x += ax;
 				y += ay;
 				i++;
+				
+				//genera una simple aimacion 
+				if(i%20 == 0)
+					pictureBoxOrigen.Refresh();
 			}			
 		}
 		
-		bool collisionDDA(int x1, int y1, int x2, int y2) {
-			float ax, ay, x, y, res, i = 0;
+		bool collisionDDA(Figure c1, Figure c2) {
+			c1.R += 5;
+			c2.R += 5;
+			int x1 = c1.X, y1 = c1.Y, x2 = c2.X, y2 = c2.Y;
+			float ax, ay, x, y, res, i = 0, distanceLineActual;
 			
 			
-			//res = Math.Abs(x2 - x1) >= Math.Abs(y2 - y1) ? Math.Abs(x2 - x1) : Math.Abs(y2 - y1);
 			if(Math.Abs(x2 - x1) >= Math.Abs(y2 - y1)) {
 				res = Math.Abs(x2 - x1);
 			} else {
@@ -368,86 +329,77 @@ namespace localizacion_de_circulos {
 			y = (float)y1;
 			
 			while(i <= res) {
-				if(x != x1 && y != y1) {
-					if(collision((int)x, (int)y)) {
+				distanceLineActual = c1.distance((int)x, (int)y);
+				if(distanceLineActual > c1.R && distanceLineActual < c1.distance(c2)-c2.R)
+					//este condicional impide el analizis dentro del area de los circulos
+					//esto evitara notar colisiones con el mismo circulo
+					if(collision((int)x, (int)y))
 						return true;
-					}
-				}
 				
 				x += ax;
 				y += ay;
 				i++;
 			}	
-			return false;			
+			return false;
 		}
 		
 		bool collision(int x, int y) {
-			if(bmp.GetPixel(x, y).ToArgb().Equals(Color.White.ToArgb()) ||
-			   bmp.GetPixel(x, y).ToArgb().Equals(Color.Black.ToArgb()) ) {
+			//busca colision
+			//si no es blanco, es una collision
+			if(bmp.GetPixel(x, y).ToArgb().Equals(Color.White.ToArgb()))
 				return false;
-			}
-			//MessageBox.Show(bmp.GetPixel(x, y).Name);
 			return true;
 		}
-		
-		void bresenham(int x1, int y1, int x2, int y2) {
-			int dx = Math.Abs(x1 - x2);
-			int dy = Math.Abs(y1 - y2);
-			float m = (float)dy / (float)dx;
-			int dy2, par, i = 1;
-			//dx = Math.Abs(dx);
-			//dy = Math.Abs(dy);
-			dy2 = dy*2;
-			par = dy2 - dx;
-			
-			if(m > 0) {
-				do {
-					pintar(x2, y2);
-					while(par >= 0) {
-						y2++;
-						par -= 2*dx;
-						pintar(x2, y2);
-					}
-					x2++;
-					par += dy2;
-					i++;
-				} while(i < dx);
-			} else {
-				do {
-					pintar(x2, y2);
-					while(par >= 0) {
-						y2--;
-						par -= 2*dx;
-						pintar(x2, y2);
-					}
-					x2++;
-					par += dy2;
-					i++;
-				} while(i < dx);
-			}
-		} 
 		
 		void pintar(int x, int y) {
 			if(x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height)
 				bmp.SetPixel(x, y, lineColor);
 		}
 		
-		void union() {
-			Figure c = new Figure();
+		void drawLbl() {
+			//dibujar etiqueta
+			Graphics grap = Graphics.FromImage(bmp);
 			
-			while(figures.First != null) {
-				c.X = figures.First().X;
-				c.Y = figures.First().Y;
-				figures.RemoveFirst();
-				
-				foreach(Figure circle in figures) {
-					//if(!collisionDDA(c.X, c.Y, circle.X, circle.Y))
-						DDA(c.X, c.Y, circle.X, circle.Y);
+			Font a = new Font("Arial", 22);
+			SolidBrush brocha = new SolidBrush(textColor);
+			
+			for(int i = 0; i<graph.getVertexCount(); i++)
+				grap.DrawString(""+i, a, brocha, graph.GetVertex()[i].Circle.X-13, graph.GetVertex()[i].Circle.Y-16);
+			pictureBoxOrigen.Refresh();
+		}
+		
+		void generateEdges() {//genera las aristas entre los vertices
+			float weight = 0;//peso -> ponderacion
+			int id = -1;
+			for(int i = 0; i < graph.getVertexCount(); i++) {
+				for(int j = i+1; j < graph.getVertexCount(); j++) {
+					//obtengo la distancia entre el centro de los circulos
+					weight = graph.GetVertex()[i].Circle.distance(graph.GetVertex()[j].Circle);
+					
+					if(!collisionDDA(graph.GetVertex()[i].Circle, graph.GetVertex()[j].Circle)) {
+						//si encuentra una colision...
+						graph.addEdge(++id, i, j, weight);
+						graph.addEdge(++id, j, i, weight);
+						//trazo la recta para validar las nuevas colisiones
+						DDA(graph.GetVertex()[i].Circle, graph.GetVertex()[j].Circle);
+					}
 				}
 			}
 		}
-	
-		bool col(Figure c1) {
+		
+		void generateTreeView() {
+			treeViewCircles.BeginUpdate();
+			for(int i = 0; i<graph.getVertexCount();i++) {
+				treeViewCircles.Nodes.Add("Origen: "+graph.GetVertex()[i].Id);
+				for(int j = 0; j<graph.GetVertex()[i].EL.Count;j++) {
+					treeViewCircles.Nodes[i].Nodes.Add("Destino: "+graph.GetVertex()[i].EL[j].Destino.Id);
+				}
+			}
+			treeViewCircles.EndUpdate();
+		}
+		
+		bool pixelInArea(Figure c1) {
+			//calcula coliciones entre 2 circulos o un circulo y un pixel
 			foreach(Figure circle in figures) {
 				if(circle.collision(c1)) {
 					return true;
@@ -456,11 +408,5 @@ namespace localizacion_de_circulos {
 			return false;
 		}
 		
-		
-		void Button1Click(object sender, EventArgs e) {
-			while(colorDialog.ShowDialog() != DialogResult.OK){ /*fuerza la apertura de un archivo*/ }
-			lblColor.BackColor = colorDialog.Color;
-			lineColor = colorDialog.Color;
-		}
 	}
 }

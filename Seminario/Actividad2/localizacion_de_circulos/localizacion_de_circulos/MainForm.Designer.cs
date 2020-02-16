@@ -39,7 +39,7 @@ namespace localizacion_de_circulos
 			this.tabOrigen = new System.Windows.Forms.TabPage();
 			this.pictureBoxOrigen = new System.Windows.Forms.PictureBox();
 			this.tabOptions = new System.Windows.Forms.TabPage();
-			this.lblColor = new System.Windows.Forms.Label();
+			this.lblColorLine = new System.Windows.Forms.Label();
 			this.btnColor = new System.Windows.Forms.Button();
 			this.close = new System.Windows.Forms.Label();
 			this.listBoxCircles = new System.Windows.Forms.ListBox();
@@ -48,6 +48,9 @@ namespace localizacion_de_circulos
 			this.lblGenerate = new System.Windows.Forms.Label();
 			this.openFileDialogImg = new System.Windows.Forms.OpenFileDialog();
 			this.colorDialog = new System.Windows.Forms.ColorDialog();
+			this.treeViewCircles = new System.Windows.Forms.TreeView();
+			this.lblColorText = new System.Windows.Forms.Label();
+			this.btnTextColor = new System.Windows.Forms.Button();
 			this.tabControl.SuspendLayout();
 			this.tabOrigen.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).BeginInit();
@@ -89,7 +92,9 @@ namespace localizacion_de_circulos
 			// 
 			// tabOptions
 			// 
-			this.tabOptions.Controls.Add(this.lblColor);
+			this.tabOptions.Controls.Add(this.btnTextColor);
+			this.tabOptions.Controls.Add(this.lblColorText);
+			this.tabOptions.Controls.Add(this.lblColorLine);
 			this.tabOptions.Controls.Add(this.btnColor);
 			this.tabOptions.Location = new System.Drawing.Point(4, 29);
 			this.tabOptions.Name = "tabOptions";
@@ -99,12 +104,12 @@ namespace localizacion_de_circulos
 			this.tabOptions.Text = "Opciones";
 			this.tabOptions.UseVisualStyleBackColor = true;
 			// 
-			// lblColor
+			// lblColorLine
 			// 
-			this.lblColor.Location = new System.Drawing.Point(182, 55);
-			this.lblColor.Name = "lblColor";
-			this.lblColor.Size = new System.Drawing.Size(51, 51);
-			this.lblColor.TabIndex = 1;
+			this.lblColorLine.Location = new System.Drawing.Point(182, 55);
+			this.lblColorLine.Name = "lblColorLine";
+			this.lblColorLine.Size = new System.Drawing.Size(51, 51);
+			this.lblColorLine.TabIndex = 1;
 			// 
 			// btnColor
 			// 
@@ -137,7 +142,7 @@ namespace localizacion_de_circulos
 			this.listBoxCircles.ItemHeight = 16;
 			this.listBoxCircles.Location = new System.Drawing.Point(867, 214);
 			this.listBoxCircles.Name = "listBoxCircles";
-			this.listBoxCircles.Size = new System.Drawing.Size(159, 436);
+			this.listBoxCircles.Size = new System.Drawing.Size(159, 164);
 			this.listBoxCircles.TabIndex = 5;
 			// 
 			// lblLoad
@@ -166,7 +171,7 @@ namespace localizacion_de_circulos
 			this.lblAnalize.Name = "lblAnalize";
 			this.lblAnalize.Size = new System.Drawing.Size(157, 48);
 			this.lblAnalize.TabIndex = 7;
-			this.lblAnalize.Text = "Analizar";
+			this.lblAnalize.Text = "Generar";
 			this.lblAnalize.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.lblAnalize.Click += new System.EventHandler(this.LblAnalizeClick);
 			this.lblAnalize.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LblAnalizeMouseDown);
@@ -182,7 +187,7 @@ namespace localizacion_de_circulos
 			this.lblGenerate.Name = "lblGenerate";
 			this.lblGenerate.Size = new System.Drawing.Size(157, 48);
 			this.lblGenerate.TabIndex = 7;
-			this.lblGenerate.Text = "Generar";
+			this.lblGenerate.Text = "Animar";
 			this.lblGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.lblGenerate.Click += new System.EventHandler(this.LblGenerateClick);
 			this.lblGenerate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.LblGenerateMouseDown);
@@ -192,12 +197,37 @@ namespace localizacion_de_circulos
 			// 
 			this.openFileDialogImg.FileName = "dialog";
 			// 
+			// treeViewCircles
+			// 
+			this.treeViewCircles.Location = new System.Drawing.Point(869, 384);
+			this.treeViewCircles.Name = "treeViewCircles";
+			this.treeViewCircles.Size = new System.Drawing.Size(157, 268);
+			this.treeViewCircles.TabIndex = 2;
+			// 
+			// lblColorText
+			// 
+			this.lblColorText.Location = new System.Drawing.Point(182, 112);
+			this.lblColorText.Name = "lblColorText";
+			this.lblColorText.Size = new System.Drawing.Size(51, 53);
+			this.lblColorText.TabIndex = 2;
+			// 
+			// btnTextColor
+			// 
+			this.btnTextColor.Location = new System.Drawing.Point(7, 112);
+			this.btnTextColor.Name = "btnTextColor";
+			this.btnTextColor.Size = new System.Drawing.Size(157, 51);
+			this.btnTextColor.TabIndex = 3;
+			this.btnTextColor.Text = "Color de texto";
+			this.btnTextColor.UseVisualStyleBackColor = true;
+			this.btnTextColor.Click += new System.EventHandler(this.BtnTextColorClick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
 			this.ClientSize = new System.Drawing.Size(1041, 664);
+			this.Controls.Add(this.treeViewCircles);
 			this.Controls.Add(this.lblGenerate);
 			this.Controls.Add(this.lblLoad);
 			this.Controls.Add(this.lblAnalize);
@@ -218,7 +248,10 @@ namespace localizacion_de_circulos
 			this.tabOptions.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.Label lblColor;
+		private System.Windows.Forms.Label lblColorText;
+		private System.Windows.Forms.Button btnTextColor;
+		private System.Windows.Forms.TreeView treeViewCircles;
+		private System.Windows.Forms.Label lblColorLine;
 		private System.Windows.Forms.ColorDialog colorDialog;
 		private System.Windows.Forms.Button btnColor;
 		private System.Windows.Forms.OpenFileDialog openFileDialogImg;
@@ -235,6 +268,7 @@ namespace localizacion_de_circulos
 		private Figure circle = new Figure();
 		private System.Collections.Generic.LinkedList<Figure> figures;
 		private System.Drawing.Color lineColor = new System.Drawing.Color();
+		private System.Drawing.Color textColor = new System.Drawing.Color();
 		
 	}
 }

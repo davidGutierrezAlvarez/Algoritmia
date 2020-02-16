@@ -50,6 +50,10 @@ namespace localizacion_de_circulos {
 			return (float)Math.Sqrt(Math.Pow(Math.Abs(x - this.x), 2) + Math.Pow(Math.Abs(y - this.y), 2));
 		}
 		
+		public float distance(Figure circle) {
+			return (float)Math.Sqrt(Math.Pow(Math.Abs(circle.X - this.x), 2) + Math.Pow(Math.Abs(circle.Y - this.y), 2));
+		}
+		
 		public bool collision(Figure c2) {
 			return this.r+5 + c2.r > distance(c2.X, c2.Y);
 		}

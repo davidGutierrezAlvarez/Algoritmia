@@ -13,47 +13,83 @@ namespace localizacion_de_circulos {
 	/// <summary>
 	/// Description of Graphic.
 	/// </summary>
-	public class Edge {
-		float weight;
-		Vertex v_d;
-		public Edge(float x, Vertex d) {
-				weight = x;
-				v_d = d;
+	public class Edge { /*arista*/
+		Vertex origen;
+		Vertex destino;
+		int id;
+		double weight;
+		
+		//Getters
+		public Vertex Origen  { get { return origen;  } }
+		public Vertex Destino { get { return destino; } }
+		public int Id         { get { return id;      } }
+		public double Weight  { get { return weight;  } }
+		
+		public Edge(int id, Vertex v1, Vertex v2, double Weight) {
+			this.id = id;
+			this.origen = v1;
+			this.destino = v2;
+			this.weight = Weight;
 		}
+		
+		/*
+		public override string ToString() {
+			return string.Format("[Edge Id Destino={0}, Id Arista={1}]", Destino.circle.Id, Id);
+		}*/
 	}
 		
-	public class Vertex {
-		List<Edge> eL;
-		Figure c;
+	public class Vertex { /*grafo*/
+		List<Edge> ListEdge;
+		Figure circle;
 		int id;//from 1 to n
-		Vertex(Figure c, int id) {
-			
+		
+		//Getters
+		public List<Edge> EL { get { return ListEdge; } }
+		public Figure Circle { get { return circle;   } }
+		public int Id        { get { return id;       } }
+		
+		public Vertex(Figure c, int id) {
+			this.id = id;
+			this.circle = c;
+			this.ListEdge = new List<Edge>();
 		}
 		
-		public void addEdge(Vertex v) {
-			
+		public void addEdge(Edge v) {
+			this.ListEdge.Add(v);
 		}
+		
 	}
 		
 	public class Graph {
-		List<Vertex> vL;
-		Figure c;
-		int id;
+		List<Vertex> listVertex;
 		
+		//Getters
+		public List<Vertex> ListVertex { get { return listVertex; } }
+
 		public Graph() {
-			vL = new List<Vertex>();
+			listVertex = new List<Vertex>();
 		}
+		
 		public int getVertexCount() {
-			return vL.Count;
-		}
-		public void addVertex(Figure c) {
-			//vL.Add(new vL.Count);
+			return listVertex.Count;
 		}
 		
-		public void addEdge(int i, int j) {
-			vL[i].addEdge(vL[j]);
+		public List<Vertex> GetVertex() {
+			return listVertex;
 		}
 		
+		public void addVertex(Vertex v) {
+			listVertex.Add(v);
+		}
+		
+		public void addEdge(int id, int i, int j, float weight) {
+			listVertex[i].addEdge(new Edge(id, listVertex[i], listVertex[j], weight));
+		}
+		
+		public void AddVertex(Figure circle, int id) {
+			//cada nuevo circulo que entre se agregara al grafo
+			listVertex.Add(new Vertex(circle, id));
+		}		
 	}
 
 }
