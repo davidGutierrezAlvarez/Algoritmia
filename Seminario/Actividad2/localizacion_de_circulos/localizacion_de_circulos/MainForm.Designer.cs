@@ -39,6 +39,8 @@ namespace localizacion_de_circulos
 			this.tabOrigen = new System.Windows.Forms.TabPage();
 			this.pictureBoxOrigen = new System.Windows.Forms.PictureBox();
 			this.tabOptions = new System.Windows.Forms.TabPage();
+			this.btnTextColor = new System.Windows.Forms.Button();
+			this.lblColorText = new System.Windows.Forms.Label();
 			this.lblColorLine = new System.Windows.Forms.Label();
 			this.btnColor = new System.Windows.Forms.Button();
 			this.close = new System.Windows.Forms.Label();
@@ -49,8 +51,7 @@ namespace localizacion_de_circulos
 			this.openFileDialogImg = new System.Windows.Forms.OpenFileDialog();
 			this.colorDialog = new System.Windows.Forms.ColorDialog();
 			this.treeViewCircles = new System.Windows.Forms.TreeView();
-			this.lblColorText = new System.Windows.Forms.Label();
-			this.btnTextColor = new System.Windows.Forms.Button();
+			this.lblclosestPair = new System.Windows.Forms.Label();
 			this.tabControl.SuspendLayout();
 			this.tabOrigen.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).BeginInit();
@@ -103,6 +104,23 @@ namespace localizacion_de_circulos
 			this.tabOptions.TabIndex = 1;
 			this.tabOptions.Text = "Opciones";
 			this.tabOptions.UseVisualStyleBackColor = true;
+			// 
+			// btnTextColor
+			// 
+			this.btnTextColor.Location = new System.Drawing.Point(7, 112);
+			this.btnTextColor.Name = "btnTextColor";
+			this.btnTextColor.Size = new System.Drawing.Size(157, 51);
+			this.btnTextColor.TabIndex = 3;
+			this.btnTextColor.Text = "Color de texto";
+			this.btnTextColor.UseVisualStyleBackColor = true;
+			this.btnTextColor.Click += new System.EventHandler(this.BtnTextColorClick);
+			// 
+			// lblColorText
+			// 
+			this.lblColorText.Location = new System.Drawing.Point(182, 112);
+			this.lblColorText.Name = "lblColorText";
+			this.lblColorText.Size = new System.Drawing.Size(51, 53);
+			this.lblColorText.TabIndex = 2;
 			// 
 			// lblColorLine
 			// 
@@ -204,29 +222,22 @@ namespace localizacion_de_circulos
 			this.treeViewCircles.Size = new System.Drawing.Size(157, 268);
 			this.treeViewCircles.TabIndex = 2;
 			// 
-			// lblColorText
+			// lblclosestPair
 			// 
-			this.lblColorText.Location = new System.Drawing.Point(182, 112);
-			this.lblColorText.Name = "lblColorText";
-			this.lblColorText.Size = new System.Drawing.Size(51, 53);
-			this.lblColorText.TabIndex = 2;
-			// 
-			// btnTextColor
-			// 
-			this.btnTextColor.Location = new System.Drawing.Point(7, 112);
-			this.btnTextColor.Name = "btnTextColor";
-			this.btnTextColor.Size = new System.Drawing.Size(157, 51);
-			this.btnTextColor.TabIndex = 3;
-			this.btnTextColor.Text = "Color de texto";
-			this.btnTextColor.UseVisualStyleBackColor = true;
-			this.btnTextColor.Click += new System.EventHandler(this.BtnTextColorClick);
+			this.lblclosestPair.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblclosestPair.ForeColor = System.Drawing.Color.White;
+			this.lblclosestPair.Location = new System.Drawing.Point(18, 657);
+			this.lblclosestPair.Name = "lblclosestPair";
+			this.lblclosestPair.Size = new System.Drawing.Size(839, 43);
+			this.lblclosestPair.TabIndex = 8;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
-			this.ClientSize = new System.Drawing.Size(1041, 664);
+			this.ClientSize = new System.Drawing.Size(1041, 704);
+			this.Controls.Add(this.lblclosestPair);
 			this.Controls.Add(this.treeViewCircles);
 			this.Controls.Add(this.lblGenerate);
 			this.Controls.Add(this.lblLoad);
@@ -248,6 +259,7 @@ namespace localizacion_de_circulos
 			this.tabOptions.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label lblclosestPair;
 		private System.Windows.Forms.Label lblColorText;
 		private System.Windows.Forms.Button btnTextColor;
 		private System.Windows.Forms.TreeView treeViewCircles;

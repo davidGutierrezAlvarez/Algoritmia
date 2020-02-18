@@ -117,6 +117,7 @@ namespace localizacion_de_circulos {
 			listBoxCircles.Items.Clear();
 			figures = new LinkedList<Figure>();
 			treeViewCircles.Nodes.Clear();
+			//limpio el grafo
 			graph.GetVertex().Clear();
 		}
 		
@@ -179,6 +180,8 @@ namespace localizacion_de_circulos {
             //generar animacion del grafo
             //if(se puede) entonces { anima }
             //sino { decir que no se puede }
+            drawEdges();
+            lblclosestPair.Text = graph.ToString();
 		}
 		
 		void searchCenter(int x, int y, Color color) {
@@ -358,31 +361,48 @@ namespace localizacion_de_circulos {
 		
 		void drawLbl() {
 			//dibujar etiqueta
+			int size = 22;
 			Graphics grap = Graphics.FromImage(bmp);
-			
-			Font a = new Font("Arial", 22);
+			Font font = new Font("Arial", size);
 			SolidBrush brocha = new SolidBrush(textColor);
 			
 			for(int i = 0; i<graph.getVertexCount(); i++)
-				grap.DrawString(""+i, a, brocha, graph.GetVertex()[i].Circle.X-13, graph.GetVertex()[i].Circle.Y-16);
+				grap.DrawString(""+i, font, brocha, graph.GetVertex()[i].Circle.X-(size/2+1), graph.GetVertex()[i].Circle.Y-(size/2+4));
 			pictureBoxOrigen.Refresh();
 		}
 		
 		void generateEdges() {//genera las aristas entre los vertices
-			float weight = 0;//peso -> ponderacion
+			//esta funcion se encarga tambien del closestPairPoints
+			//esto dentro del primer if
+			float weight = 0, minDist = bmp.Width;//peso -> ponderacion
 			int id = -1;
 			for(int i = 0; i < graph.getVertexCount(); i++) {
 				for(int j = i+1; j < graph.getVertexCount(); j++) {
 					//obtengo la distancia entre el centro de los circulos
 					weight = graph.GetVertex()[i].Circle.distance(graph.GetVertex()[j].Circle);
 					
+					if(weight < minDist) {
+						minDist = weight;
+						graph.closestPair(graph.GetVertex()[i] , graph.GetVertex()[j]);
+					}
+					
 					if(!collisionDDA(graph.GetVertex()[i].Circle, graph.GetVertex()[j].Circle)) {
 						//si encuentra una colision...
 						graph.addEdge(++id, i, j, weight);
 						graph.addEdge(++id, j, i, weight);
 						//trazo la recta para validar las nuevas colisiones
-						DDA(graph.GetVertex()[i].Circle, graph.GetVertex()[j].Circle);
 					}
+				}
+			}
+			//al terminar obtiene la menor distancia
+			graph.Distance = weight;
+		}
+		
+		void drawEdges() {
+			//dibuja los caminos del grafo
+			for(int i = 0; i<graph.getVertexCount();i++) {
+				for(int j = 0; j<graph.GetVertex()[i].EL.Count;j++) {
+					DDA(graph.GetVertex()[i].Circle, graph.GetVertex()[i].EL[j].Destino.Circle);
 				}
 			}
 		}

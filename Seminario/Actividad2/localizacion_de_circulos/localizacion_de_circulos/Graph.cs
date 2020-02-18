@@ -62,6 +62,14 @@ namespace localizacion_de_circulos {
 		
 	public class Graph {
 		List<Vertex> listVertex;
+		Vertex Origen;
+		Vertex Destino;
+		float distance;
+		
+		public float Distance {
+			get { return distance;  }
+			set { distance = value; }
+		}
 		
 		//Getters
 		public List<Vertex> ListVertex { get { return listVertex; } }
@@ -89,7 +97,51 @@ namespace localizacion_de_circulos {
 		public void AddVertex(Figure circle, int id) {
 			//cada nuevo circulo que entre se agregara al grafo
 			listVertex.Add(new Vertex(circle, id));
-		}		
+		}
+
+
+		public void ordenarVertices() {
+			Vertex aux;
+			for(int i = 0; i<listVertex.Count;i++) {
+				for(int j = 0; j<listVertex.Count - 1; j++) {
+					if(listVertex[j].Circle.R > listVertex[j+1].Circle.R) {
+						aux = listVertex[j+1];
+						listVertex[j+1] = listVertex[j];
+						listVertex[j] = aux;
+					}
+				}
+			}
+		}	
+		
+		
+		public void closestPairPoints() {
+			//no es usable :v
+			//ya que dentro de la generacion del grafo se es mas eficiente
+			//pero si es funcional
+			float minDist = 500, aux;
+			
+			for(int i = 0; i < listVertex.Count; i++) {
+				for(int j = i+1; j < listVertex.Count; j++) {
+					aux = listVertex[i].Circle.distance(listVertex[j].Circle);
+					
+					if(aux < minDist) {
+						minDist = aux;
+						closestPair(listVertex[i] , listVertex[j]);
+					}
+				}
+			}
+			distance = minDist;
+		}
+		
+		public void closestPair(Vertex o, Vertex d) {
+			Origen  = o;
+			Destino = d;
+		}
+		
+		public override String ToString() {
+			return "Mas sercanos: ("+ Origen.Id + " y " + Destino.Id + ") Distancia " +distance;
+		}
+		
 	}
 
 }
