@@ -66,7 +66,7 @@ namespace localizacion_de_circulos
 			this.tabControl.Location = new System.Drawing.Point(14, 14);
 			this.tabControl.Name = "tabControl";
 			this.tabControl.SelectedIndex = 0;
-			this.tabControl.Size = new System.Drawing.Size(847, 636);
+			this.tabControl.Size = new System.Drawing.Size(861, 636);
 			this.tabControl.TabIndex = 1;
 			// 
 			// tabOrigen
@@ -77,7 +77,7 @@ namespace localizacion_de_circulos
 			this.tabOrigen.Margin = new System.Windows.Forms.Padding(30, 3, 3, 3);
 			this.tabOrigen.Name = "tabOrigen";
 			this.tabOrigen.Padding = new System.Windows.Forms.Padding(3);
-			this.tabOrigen.Size = new System.Drawing.Size(839, 603);
+			this.tabOrigen.Size = new System.Drawing.Size(853, 603);
 			this.tabOrigen.TabIndex = 0;
 			this.tabOrigen.Text = "Analisis";
 			this.tabOrigen.UseVisualStyleBackColor = true;
@@ -86,10 +86,11 @@ namespace localizacion_de_circulos
 			// 
 			this.pictureBoxOrigen.Location = new System.Drawing.Point(0, 0);
 			this.pictureBoxOrigen.Name = "pictureBoxOrigen";
-			this.pictureBoxOrigen.Size = new System.Drawing.Size(839, 603);
+			this.pictureBoxOrigen.Size = new System.Drawing.Size(850, 600);
 			this.pictureBoxOrigen.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBoxOrigen.TabIndex = 1;
 			this.pictureBoxOrigen.TabStop = false;
+			this.pictureBoxOrigen.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PictureBoxOrigenMouseClick);
 			// 
 			// tabOptions
 			// 
@@ -100,7 +101,7 @@ namespace localizacion_de_circulos
 			this.tabOptions.Location = new System.Drawing.Point(4, 29);
 			this.tabOptions.Name = "tabOptions";
 			this.tabOptions.Padding = new System.Windows.Forms.Padding(3);
-			this.tabOptions.Size = new System.Drawing.Size(839, 603);
+			this.tabOptions.Size = new System.Drawing.Size(853, 603);
 			this.tabOptions.TabIndex = 1;
 			this.tabOptions.Text = "Opciones";
 			this.tabOptions.UseVisualStyleBackColor = true;
@@ -158,10 +159,11 @@ namespace localizacion_de_circulos
 			// 
 			this.listBoxCircles.FormattingEnabled = true;
 			this.listBoxCircles.ItemHeight = 16;
-			this.listBoxCircles.Location = new System.Drawing.Point(867, 214);
+			this.listBoxCircles.Location = new System.Drawing.Point(881, 214);
 			this.listBoxCircles.Name = "listBoxCircles";
 			this.listBoxCircles.Size = new System.Drawing.Size(159, 164);
 			this.listBoxCircles.TabIndex = 5;
+			this.listBoxCircles.SelectedIndexChanged += new System.EventHandler(this.ListBoxCirclesSelectedIndexChanged);
 			// 
 			// lblLoad
 			// 
@@ -169,7 +171,7 @@ namespace localizacion_de_circulos
 			this.lblLoad.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblLoad.ForeColor = System.Drawing.Color.White;
 			this.lblLoad.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-			this.lblLoad.Location = new System.Drawing.Point(867, 43);
+			this.lblLoad.Location = new System.Drawing.Point(881, 43);
 			this.lblLoad.Name = "lblLoad";
 			this.lblLoad.Size = new System.Drawing.Size(157, 48);
 			this.lblLoad.TabIndex = 6;
@@ -185,7 +187,7 @@ namespace localizacion_de_circulos
 			this.lblAnalize.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblAnalize.ForeColor = System.Drawing.Color.White;
 			this.lblAnalize.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-			this.lblAnalize.Location = new System.Drawing.Point(869, 96);
+			this.lblAnalize.Location = new System.Drawing.Point(883, 96);
 			this.lblAnalize.Name = "lblAnalize";
 			this.lblAnalize.Size = new System.Drawing.Size(157, 48);
 			this.lblAnalize.TabIndex = 7;
@@ -201,7 +203,7 @@ namespace localizacion_de_circulos
 			this.lblGenerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblGenerate.ForeColor = System.Drawing.Color.White;
 			this.lblGenerate.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-			this.lblGenerate.Location = new System.Drawing.Point(869, 149);
+			this.lblGenerate.Location = new System.Drawing.Point(883, 149);
 			this.lblGenerate.Name = "lblGenerate";
 			this.lblGenerate.Size = new System.Drawing.Size(157, 48);
 			this.lblGenerate.TabIndex = 7;
@@ -217,7 +219,7 @@ namespace localizacion_de_circulos
 			// 
 			// treeViewCircles
 			// 
-			this.treeViewCircles.Location = new System.Drawing.Point(869, 384);
+			this.treeViewCircles.Location = new System.Drawing.Point(883, 384);
 			this.treeViewCircles.Name = "treeViewCircles";
 			this.treeViewCircles.Size = new System.Drawing.Size(157, 268);
 			this.treeViewCircles.TabIndex = 2;
@@ -236,7 +238,7 @@ namespace localizacion_de_circulos
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
-			this.ClientSize = new System.Drawing.Size(1041, 704);
+			this.ClientSize = new System.Drawing.Size(1050, 704);
 			this.Controls.Add(this.lblclosestPair);
 			this.Controls.Add(this.treeViewCircles);
 			this.Controls.Add(this.lblGenerate);

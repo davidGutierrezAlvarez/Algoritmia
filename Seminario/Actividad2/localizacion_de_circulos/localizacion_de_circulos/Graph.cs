@@ -42,16 +42,20 @@ namespace localizacion_de_circulos {
 		List<Edge> ListEdge;
 		Figure circle;
 		int id;//from 1 to n
+		bool yaPasePorAqui;
 		
 		//Getters
 		public List<Edge> EL { get { return ListEdge; } }
 		public Figure Circle { get { return circle;   } }
 		public int Id        { get { return id;       } }
 		
+		public Vertex() { }
+		
 		public Vertex(Figure c, int id) {
 			this.id = id;
 			this.circle = c;
 			this.ListEdge = new List<Edge>();
+			yaPasePorAqui = false;
 		}
 		
 		public void addEdge(Edge v) {
@@ -62,18 +66,17 @@ namespace localizacion_de_circulos {
 		
 	public class Graph {
 		List<Vertex> listVertex;
-		Vertex Origen;
-		Vertex Destino;
+		Vertex origen;
+		Vertex destino;
 		float distance;
 		
+		//Getters
+		public List<Vertex> ListVertex { get { return listVertex; } }
 		public float Distance {
 			get { return distance;  }
 			set { distance = value; }
 		}
 		
-		//Getters
-		public List<Vertex> ListVertex { get { return listVertex; } }
-
 		public Graph() {
 			listVertex = new List<Vertex>();
 		}
@@ -85,34 +88,19 @@ namespace localizacion_de_circulos {
 		public List<Vertex> GetVertex() {
 			return listVertex;
 		}
-		
+
 		public void addVertex(Vertex v) {
 			listVertex.Add(v);
+		}
+		
+		public void addVertex(Figure circle, int id) {
+			//cada nuevo circulo que entre se agregara al grafo
+			listVertex.Add(new Vertex(circle, id));
 		}
 		
 		public void addEdge(int id, int i, int j, float weight) {
 			listVertex[i].addEdge(new Edge(id, listVertex[i], listVertex[j], weight));
 		}
-		
-		public void AddVertex(Figure circle, int id) {
-			//cada nuevo circulo que entre se agregara al grafo
-			listVertex.Add(new Vertex(circle, id));
-		}
-
-
-		public void ordenarVertices() {
-			Vertex aux;
-			for(int i = 0; i<listVertex.Count;i++) {
-				for(int j = 0; j<listVertex.Count - 1; j++) {
-					if(listVertex[j].Circle.R > listVertex[j+1].Circle.R) {
-						aux = listVertex[j+1];
-						listVertex[j+1] = listVertex[j];
-						listVertex[j] = aux;
-					}
-				}
-			}
-		}	
-		
 		
 		public void closestPairPoints() {
 			//no es usable :v
@@ -134,14 +122,31 @@ namespace localizacion_de_circulos {
 		}
 		
 		public void closestPair(Vertex o, Vertex d) {
-			Origen  = o;
-			Destino = d;
+			origen  = o;
+			destino = d;
 		}
+		
+		public bool vertexInCircuit(Vertex v) {
+			foreach(Vertex vertex in listVertex) {
+				if(vertex.Id == v.Id) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
 		
 		public override String ToString() {
-			return "Mas sercanos: ("+ Origen.Id + " y " + Destino.Id + ") Distancia " +distance;
+			if(origen != null)
+				return "Mas sercanos: ("+ origen.Id + " y " + destino.Id + ") Distancia " +distance;
+			else
+				return "No Se puede analizar los puntos mas cercanos.";
 		}
 		
+		public void Clear() {
+			origen = null;
+			destino = null;
+		}
 	}
 
 }
