@@ -138,7 +138,7 @@ namespace localizacion_de_circulos {
 		
 		public override String ToString() {
 			if(origen != null)
-				return "Mas sercanos: ("+ origen.Id + " y " + destino.Id + ") Distancia " +distance;
+				return "Más cercanos: ("+ origen.Id + " y " + destino.Id + ") Distancia " +distance;
 			else
 				return "No Se puede analizar los puntos mas cercanos.";
 		}

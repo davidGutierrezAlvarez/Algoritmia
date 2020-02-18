@@ -318,7 +318,7 @@ namespace localizacion_de_circulos {
 				i++;
 				
 				//genera una simple aimacion 
-				if(i%20 == 0)
+				if(i%30 == 0)
 					pictureBoxOrigen.Refresh();
 			}			
 		}
@@ -444,7 +444,7 @@ namespace localizacion_de_circulos {
 			//creamos un vertice auxiliar
 			Vertex aux = new Vertex();
 			//agregamos el vertice seleccionado
-			circuit.addVertex(graph.GetVertex()[oneVertex]);
+			circuit.addVertex(graph.GetVertex()[0]);
 			//cada vertice tiene un id
 			int count, id = -1;//
 			
@@ -458,21 +458,39 @@ namespace localizacion_de_circulos {
 					//genero el auxiliar...
 					aux = graph.GetVertex()[i].EL[j].Destino;
 					
+					//MessageBox.Show("O: " + graph.GetVertex()[i].EL[j].Origen.Id + "\nD: " + aux.Id);
 					if(!circuit.vertexInCircuit(aux) ) {
 						//si el vertice no esta dentro del grafo entonces
 						//lo agrego, y paso al siguiente
+						//MessageBox.Show("Circuito anteriro: " + circuit.GetVertex().Last().Id + "\nCircuito agregado: " + aux.Id);
 						circuit.addVertex(aux);
+						String s="";
+						foreach(Vertex v in circuit.GetVertex()) {
+							s += "," + v.Id;
+						}
+						MessageBox.Show(s+"\ni = " + i +"\nj = " + j + "\nO=" + graph.GetVertex()[i].EL[j].Origen.Id+ "\nD=" + graph.GetVertex()[i].EL[j].Destino.Id);
+						id = -1;
+						count = 0;
+						i = circuit.GetVertex().Last().Id;
 						break;
 					} else {
 						count++;
+						MessageBox.Show("Circuito No posible: " + aux.Id+"\ni = " + i +"\nj = " + j+ "\nCount" + count + "\nTotal: " + graph.GetVertex()[i].EL.Count );
 					}
-					if(count  == graph.GetVertex()[i].EL.Count-1) {
+					if(count  == graph.GetVertex()[i].EL.Count) {
 						//si no encontro ni un camino regro al paso anterior
 						//y hago pop del anterior para ir a otro vertice
 						//primero obtengo su id
 						id = circuit.GetVertex().Last().Id;
 						circuit.GetVertex().Remove(circuit.GetVertex().Last());
+						//MessageBox.Show("Circuito Eliminado: " + id);
 						i--;
+						String s="";
+						foreach(Vertex v in circuit.GetVertex()) {
+							s += ", " + v.Id;
+						}
+						MessageBox.Show(s +"\ni = " + i +"\nj = " + j);
+						break;
 					}
 				}
 			}
@@ -482,8 +500,8 @@ namespace localizacion_de_circulos {
 		
 		void drawCircuit(Graph circuit) {
 			//dibuja los caminos del grafo
-			for(int i = 0; i < graph.getVertexCount()-1;i++) {
-					DDA(graph.GetVertex()[i].Circle, graph.GetVertex()[i+1].Circle);
+			for(int i = 0; i < circuit.getVertexCount()-1;i++) {
+					DDA(circuit.GetVertex()[i].Circle, circuit.GetVertex()[i+1].Circle);
 			}
 		}
 		
