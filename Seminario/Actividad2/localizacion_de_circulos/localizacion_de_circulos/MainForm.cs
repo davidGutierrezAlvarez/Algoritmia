@@ -444,55 +444,50 @@ namespace localizacion_de_circulos {
 			//creamos un vertice auxiliar
 			Vertex aux = new Vertex();
 			//agregamos el vertice seleccionado
-			circuit.addVertex(graph.GetVertex()[0]);
+			circuit.addVertex(graph.GetVertex()[oneVertex]);
+			//inicio desde el vertice seleccionado
 			//cada vertice tiene un id
-			int count, id = -1;//
+			int count, id = -1, i = oneVertex, size = graph.getVertexCount();//
 			
-			for(int i = 0; i < graph.getVertexCount(); i++) {
+			
+			while(circuit.getVertexCount() < graph.getVertexCount()  &&  circuit.getVertexCount() > 0) {
+			//for(int i = 0; i < graph.getVertexCount(); i++) {
 				count = 0;//cuenta los caminos de cada vertice
 				for(int j = 0; j < graph.GetVertex()[i].EL.Count ; j++) {
 					//si ya lo contamos saltarlo
 					if(graph.GetVertex()[i].EL[j].Destino.Id <= id) {
+						count++;
 						continue;
 					}
+					
 					//genero el auxiliar...
 					aux = graph.GetVertex()[i].EL[j].Destino;
 					
-					//MessageBox.Show("O: " + graph.GetVertex()[i].EL[j].Origen.Id + "\nD: " + aux.Id);
 					if(!circuit.vertexInCircuit(aux) ) {
 						//si el vertice no esta dentro del grafo entonces
 						//lo agrego, y paso al siguiente
-						//MessageBox.Show("Circuito anteriro: " + circuit.GetVertex().Last().Id + "\nCircuito agregado: " + aux.Id);
 						circuit.addVertex(aux);
-						String s="";
-						foreach(Vertex v in circuit.GetVertex()) {
-							s += "," + v.Id;
-						}
-						MessageBox.Show(s+"\ni = " + i +"\nj = " + j + "\nO=" + graph.GetVertex()[i].EL[j].Origen.Id+ "\nD=" + graph.GetVertex()[i].EL[j].Destino.Id);
-						id = -1;
+						i = aux.Id;
 						count = 0;
-						i = circuit.GetVertex().Last().Id;
 						break;
 					} else {
 						count++;
-						MessageBox.Show("Circuito No posible: " + aux.Id+"\ni = " + i +"\nj = " + j+ "\nCount" + count + "\nTotal: " + graph.GetVertex()[i].EL.Count );
 					}
 					if(count  == graph.GetVertex()[i].EL.Count) {
-						//si no encontro ni un camino regro al paso anterior
-						//y hago pop del anterior para ir a otro vertice
-						//primero obtengo su id
+						//si no encontro ni un camino regreso al paso anterior
+						//primero obtengo su id, para comenzar las conexiones desde el siguiente
 						id = circuit.GetVertex().Last().Id;
+						//hago pop
 						circuit.GetVertex().Remove(circuit.GetVertex().Last());
-						//MessageBox.Show("Circuito Eliminado: " + id);
-						i--;
-						String s="";
-						foreach(Vertex v in circuit.GetVertex()) {
-							s += ", " + v.Id;
+						//mi i regresara al ultimo vertice
+						if(circuit.getVertexCount() > 0) {
+							//en el ultimo caso estara vacio
+							i = circuit.GetVertex().Last().Id;
 						}
-						MessageBox.Show(s +"\ni = " + i +"\nj = " + j);
 						break;
 					}
 				}
+				//id = -1;
 			}
 			
 			drawCircuit(circuit);
