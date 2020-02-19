@@ -39,7 +39,9 @@ namespace localizacion_de_circulos
 			this.tabOrigen = new System.Windows.Forms.TabPage();
 			this.pictureBoxOrigen = new System.Windows.Forms.PictureBox();
 			this.tabOptions = new System.Windows.Forms.TabPage();
+			this.btnCiruitColor = new System.Windows.Forms.Button();
 			this.btnTextColor = new System.Windows.Forms.Button();
+			this.lblColorCircuit = new System.Windows.Forms.Label();
 			this.lblColorText = new System.Windows.Forms.Label();
 			this.lblColorLine = new System.Windows.Forms.Label();
 			this.btnColor = new System.Windows.Forms.Button();
@@ -94,7 +96,9 @@ namespace localizacion_de_circulos
 			// 
 			// tabOptions
 			// 
+			this.tabOptions.Controls.Add(this.btnCiruitColor);
 			this.tabOptions.Controls.Add(this.btnTextColor);
+			this.tabOptions.Controls.Add(this.lblColorCircuit);
 			this.tabOptions.Controls.Add(this.lblColorText);
 			this.tabOptions.Controls.Add(this.lblColorLine);
 			this.tabOptions.Controls.Add(this.btnColor);
@@ -106,6 +110,16 @@ namespace localizacion_de_circulos
 			this.tabOptions.Text = "Opciones";
 			this.tabOptions.UseVisualStyleBackColor = true;
 			// 
+			// btnCiruitColor
+			// 
+			this.btnCiruitColor.Location = new System.Drawing.Point(7, 171);
+			this.btnCiruitColor.Name = "btnCiruitColor";
+			this.btnCiruitColor.Size = new System.Drawing.Size(157, 51);
+			this.btnCiruitColor.TabIndex = 3;
+			this.btnCiruitColor.Text = "Color de circuito";
+			this.btnCiruitColor.UseVisualStyleBackColor = true;
+			this.btnCiruitColor.Click += new System.EventHandler(this.btnCircuitClcik);
+			// 
 			// btnTextColor
 			// 
 			this.btnTextColor.Location = new System.Drawing.Point(7, 112);
@@ -115,6 +129,13 @@ namespace localizacion_de_circulos
 			this.btnTextColor.Text = "Color de texto";
 			this.btnTextColor.UseVisualStyleBackColor = true;
 			this.btnTextColor.Click += new System.EventHandler(this.BtnTextColorClick);
+			// 
+			// lblColorCircuit
+			// 
+			this.lblColorCircuit.Location = new System.Drawing.Point(182, 171);
+			this.lblColorCircuit.Name = "lblColorCircuit";
+			this.lblColorCircuit.Size = new System.Drawing.Size(51, 53);
+			this.lblColorCircuit.TabIndex = 2;
 			// 
 			// lblColorText
 			// 
@@ -261,6 +282,8 @@ namespace localizacion_de_circulos
 			this.tabOptions.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label lblColorCircuit;
+		private System.Windows.Forms.Button btnCiruitColor;
 		private System.Windows.Forms.Label lblclosestPair;
 		private System.Windows.Forms.Label lblColorText;
 		private System.Windows.Forms.Button btnTextColor;
@@ -279,9 +302,12 @@ namespace localizacion_de_circulos
 		private System.Windows.Forms.TabPage tabOrigen;
 		private System.Windows.Forms.TabControl tabControl;
 		private System.Drawing.Bitmap bmp;
+		private System.Drawing.Bitmap bmpAux;
+		private System.Drawing.Bitmap bmpBackGround;
 		private Figure circle = new Figure();
 		private System.Collections.Generic.LinkedList<Figure> figures;
 		private System.Drawing.Color lineColor = new System.Drawing.Color();
+		private System.Drawing.Color circuitLineColor = new System.Drawing.Color();
 		private System.Drawing.Color textColor = new System.Drawing.Color();
 		
 	}
