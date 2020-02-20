@@ -169,7 +169,7 @@ namespace localizacion_de_circulos
 			this.close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.close.Font = new System.Drawing.Font("Arial Rounded MT Bold", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.close.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(28)))), ((int)(((byte)(74)))));
-			this.close.Location = new System.Drawing.Point(1001, 0);
+			this.close.Location = new System.Drawing.Point(1039, 0);
 			this.close.Name = "close";
 			this.close.Size = new System.Drawing.Size(28, 34);
 			this.close.TabIndex = 1;
@@ -183,7 +183,7 @@ namespace localizacion_de_circulos
 			this.listBoxCircles.ItemHeight = 16;
 			this.listBoxCircles.Location = new System.Drawing.Point(881, 214);
 			this.listBoxCircles.Name = "listBoxCircles";
-			this.listBoxCircles.Size = new System.Drawing.Size(159, 164);
+			this.listBoxCircles.Size = new System.Drawing.Size(186, 164);
 			this.listBoxCircles.TabIndex = 5;
 			this.listBoxCircles.SelectedIndexChanged += new System.EventHandler(this.ListBoxCirclesSelectedIndexChanged);
 			// 
@@ -195,7 +195,7 @@ namespace localizacion_de_circulos
 			this.lblLoad.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.lblLoad.Location = new System.Drawing.Point(881, 43);
 			this.lblLoad.Name = "lblLoad";
-			this.lblLoad.Size = new System.Drawing.Size(157, 48);
+			this.lblLoad.Size = new System.Drawing.Size(186, 48);
 			this.lblLoad.TabIndex = 6;
 			this.lblLoad.Text = "Cargar";
 			this.lblLoad.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -211,7 +211,7 @@ namespace localizacion_de_circulos
 			this.lblAnalize.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.lblAnalize.Location = new System.Drawing.Point(883, 96);
 			this.lblAnalize.Name = "lblAnalize";
-			this.lblAnalize.Size = new System.Drawing.Size(157, 48);
+			this.lblAnalize.Size = new System.Drawing.Size(184, 48);
 			this.lblAnalize.TabIndex = 7;
 			this.lblAnalize.Text = "Generar";
 			this.lblAnalize.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -227,7 +227,7 @@ namespace localizacion_de_circulos
 			this.lblGenerate.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
 			this.lblGenerate.Location = new System.Drawing.Point(883, 149);
 			this.lblGenerate.Name = "lblGenerate";
-			this.lblGenerate.Size = new System.Drawing.Size(157, 48);
+			this.lblGenerate.Size = new System.Drawing.Size(184, 48);
 			this.lblGenerate.TabIndex = 7;
 			this.lblGenerate.Text = "Animar";
 			this.lblGenerate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -243,7 +243,7 @@ namespace localizacion_de_circulos
 			// 
 			this.treeViewCircles.Location = new System.Drawing.Point(883, 384);
 			this.treeViewCircles.Name = "treeViewCircles";
-			this.treeViewCircles.Size = new System.Drawing.Size(157, 268);
+			this.treeViewCircles.Size = new System.Drawing.Size(184, 266);
 			this.treeViewCircles.TabIndex = 2;
 			// 
 			// lblclosestPair
@@ -252,7 +252,7 @@ namespace localizacion_de_circulos
 			this.lblclosestPair.ForeColor = System.Drawing.Color.White;
 			this.lblclosestPair.Location = new System.Drawing.Point(18, 657);
 			this.lblclosestPair.Name = "lblclosestPair";
-			this.lblclosestPair.Size = new System.Drawing.Size(839, 43);
+			this.lblclosestPair.Size = new System.Drawing.Size(857, 43);
 			this.lblclosestPair.TabIndex = 8;
 			this.lblclosestPair.Text = "Más cercanos:";
 			// 
@@ -271,7 +271,7 @@ namespace localizacion_de_circulos
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
-			this.ClientSize = new System.Drawing.Size(1050, 755);
+			this.ClientSize = new System.Drawing.Size(1079, 755);
 			this.Controls.Add(this.lblCircuit);
 			this.Controls.Add(this.lblclosestPair);
 			this.Controls.Add(this.treeViewCircles);

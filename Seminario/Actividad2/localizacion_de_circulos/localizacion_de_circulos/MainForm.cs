@@ -129,7 +129,8 @@ namespace localizacion_de_circulos {
 			figures = new LinkedList<Figure>();
 			treeViewCircles.Nodes.Clear();
 			//limpio el grafo
-			lblclosestPair.Text = "";
+			lblclosestPair.Text = "Más cercanos:";
+			lblCircuit.Text = "Circuito:";
 			graph.GetVertex().Clear();
 			graph.Clear();
 		}
@@ -203,7 +204,7 @@ namespace localizacion_de_circulos {
 			pictureBoxOrigen.Image = bmp;
             //generar animacion del grafo
             
-            if(listBoxCircles.SelectedIndex == -1) {
+            if(circleInit < 0) {
             	MessageBox.Show("Primero debe seleccionar un Vertice.");
             	return;
             }
@@ -358,27 +359,26 @@ namespace localizacion_de_circulos {
 			x = (float)x1;
 			y = (float)y1;
 			
-			Pen pen = new Pen(color, 4);
-			Pen penT = new Pen(Color.Transparent, 4);
+			Brush b = new SolidBrush(color);
 			Graphics g = Graphics.FromImage(bmp);
 			
-	
 		
 			while(i <= res) {
-				//g.DrawEllipse(penT, x-ax, y-ay, c1.R, c1.R);
-				//g.DrawEllipse(pen, x, y, c1.R, c1.R);
-				fillCircle(new Figure((int)(x-ax), (int)(y-ay), c1.R), Color.Transparent);
-				fillCircle(new Figure((int)x, (int)y, c1.R), color);
+				//fillCircle(new Figure((int)(x-ax), (int)(y-ay), c1.R), Color.Transparent);
+				//fillCircle(new Figure((int)x, (int)y, c1.R), color);
+				g.Clear(Color.Transparent);
+				g.FillEllipse(b,  x-c1.R,    y-c1.R,    c1.R*2, c1.R*2);
 				
 				x += ax;
 				y += ay;
 				i++;
 				
 				//genera una simple aimacion 
-				if(i%15 == 0)
+				if(i%10 == 0)
 					pictureBoxOrigen.Refresh();
 			}
-			fillCircle(new Figure((int)x, (int)y, c1.R), Color.Transparent);		
+			//fillCircle(new Figure((int)x, (int)y, c1.R), Color.Transparent);	
+			g.Clear(Color.Transparent);
 		}
 		
 		
@@ -610,8 +610,12 @@ namespace localizacion_de_circulos {
 				s += circuit.GetVertex()[i].Id + ", ";
 				circuitCircles(circuit.GetVertex()[i].Circle, circuit.GetVertex()[i+1].Circle, color);
 			}
-			if(circuit.getVertexCount() > 0)
-				lblCircuit.Text = "Circuito: " + s + circuit.GetVertex()[0].Id;
+			if(circuit.getVertexCount() > 0) {
+				if(circuit.getVertexCount() == 2)
+					lblCircuit.Text = "Circuito: Solo hay un vertice";
+				else 
+					lblCircuit.Text = "Circuito: " + s + circuit.GetVertex()[0].Id;
+			}
 		}
 		
 		void PictureBoxOrigenMouseClick(object sender, MouseEventArgs e) {
@@ -632,14 +636,22 @@ namespace localizacion_de_circulos {
 		
 		void ListBoxCirclesSelectedIndexChanged(object sender, EventArgs e) {
 			int idCircle = listBoxCircles.SelectedIndex-1;
+			Graphics g = Graphics.FromImage(bmp);
+			
 			if(idCircle >= 0) {
-				fillCircle(graph.GetVertex()[idCircleSelct].Circle, Color.Transparent);
-				fillCircle(graph.GetVertex()[idCircle].Circle, circuitLineColor);
+				Brush b = new SolidBrush(circuitLineColor);
+				Figure c = new Figure(graph.GetVertex()[idCircle].Circle);
+				
+				g.Clear(Color.Transparent);
+				g.FillEllipse(b, c.X-(c.R+2), c.Y-(c.R+2), c.R*2+5, c.R*2+5);
+				
+				//fillCircle(graph.GetVertex()[idCircleSelct].Circle, Color.Transparent);
+				//fillCircle(graph.GetVertex()[idCircle].Circle, circuitLineColor);
 				pictureBoxOrigen.Image = bmp;
 				idCircleSelct = idCircle;
 				
 			} else {
-				fillCircle(graph.GetVertex()[idCircleSelct].Circle, Color.Transparent);
+				g.Clear(Color.Transparent);
 				pictureBoxOrigen.Image = bmp;
 			}
 		}

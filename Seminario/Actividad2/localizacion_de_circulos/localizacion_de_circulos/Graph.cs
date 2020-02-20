@@ -139,7 +139,7 @@ namespace localizacion_de_circulos {
 			if(origen != null)
 				return "Más cercanos: ("+ origen.Id + " y " + destino.Id + ") Distancia " + distance;
 			else
-				return "Más cercanos:  No hay par m+as cercanos.";
+				return "Más cercanos:  No hay par más cercanos.";
 		}
 		
 		public void Clear() {
