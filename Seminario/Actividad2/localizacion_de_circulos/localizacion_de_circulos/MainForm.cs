@@ -18,7 +18,7 @@ namespace localizacion_de_circulos {
 	/// </summary>
 	public partial class MainForm : Form {
 		int mov, movX, movY;
-		int x1=0,y1,x2,y2;
+		int x1=0,y1,x2,y2, idCircleSelct=0;
 		Graph graph = new Graph();
 		public MainForm() {
 			//
@@ -117,6 +117,7 @@ namespace localizacion_de_circulos {
 			//cargar la imagen en el tab Origen
 			bmp = new Bitmap(openFileDialogImg.FileName);
 			bmpBackGround = new Bitmap(openFileDialogImg.FileName);
+			bmpAux = new Bitmap(openFileDialogImg.FileName);
 			pictureBoxOrigen.Image = bmp;
 			
 			Clean();
@@ -156,6 +157,10 @@ namespace localizacion_de_circulos {
 			drawEdges(graph, lineColor);
 			//
             lblclosestPair.Text = graph.ToString();
+            
+			pictureBoxOrigen.BackgroundImage = bmp;
+			pictureBoxOrigen.BackgroundImageLayout = ImageLayout.Zoom;
+			bmp = new Bitmap(bmp);
 			MessageBox.Show("El analisis se ha compeltado con exito.");
 		}
 			
@@ -198,7 +203,7 @@ namespace localizacion_de_circulos {
 			pictureBoxOrigen.Image = bmp;
             //generar animacion del grafo
             
-            if( listBoxCircles.SelectedIndex == -1) {
+            if(listBoxCircles.SelectedIndex == -1) {
             	MessageBox.Show("Primero debe seleccionar un Vertice.");
             	return;
             }
@@ -280,14 +285,14 @@ namespace localizacion_de_circulos {
 			}
 		}
 		
-		void fillCircle(Figure circle, Color color, int radio) {
+		void fillCircle(Figure circle, Color color) {
 			int x, limit;
 			//aumentamos el radio para evadir el sesgo
 			//circle.R -= 23;
 			//int radio = 25;
-			for(int y = circle.Y-radio; y <= circle.Y; y++) {
+			for(int y = circle.Y-circle.R; y <= circle.Y; y++) {
 				x = circle.X;
-				limit = limitXInCircle(radio, circle.Y, y);
+				limit = limitXInCircle(circle.R, circle.Y, y);
 				while(x <= limit+circle.X){
 					//usando una cuarta pate e l circulo dibujo dentro de los 4 cuadrantes
 						pintar(circle.X*2-x, y, color);//cuadrante 2
@@ -307,7 +312,6 @@ namespace localizacion_de_circulos {
 		bool marginErrorPixels(int margin_error) { return margin_error >= -10 && margin_error <= 10; }
 
 		void DDA(Figure c1, Figure c2, Color color) {
-			
 			int x1 = c1.X, y1 = c1.Y, x2 = c2.X, y2 = c2.Y;
 			
 			float ax, ay, x, y, res, i = 0;
@@ -337,9 +341,51 @@ namespace localizacion_de_circulos {
 			}			
 		}
 		
+		void circuitCircles(Figure c1, Figure c2, Color color) {
+			int x1 = c1.X, y1 = c1.Y, x2 = c2.X, y2 = c2.Y;
+			
+			float ax, ay, x, y, res, i = 0;
+			
+			//res = Math.Abs(x2 - x1) >= Math.Abs(y2 - y1) ? Math.Abs(x2 - x1) : Math.Abs(y2 - y1);
+			if(Math.Abs(x2 - x1) >= Math.Abs(y2 - y1)) {
+				res = Math.Abs(x2 - x1);
+			} else {
+				res = Math.Abs(y2 - y1);
+			}
+			
+			ax = (x2 - x1) / res;
+			ay = (y2 - y1) / res;
+			x = (float)x1;
+			y = (float)y1;
+			
+			Pen pen = new Pen(color, 4);
+			Pen penT = new Pen(Color.Transparent, 4);
+			Graphics g = Graphics.FromImage(bmp);
+			
+	
+		
+			while(i <= res) {
+				//g.DrawEllipse(penT, x-ax, y-ay, c1.R, c1.R);
+				//g.DrawEllipse(pen, x, y, c1.R, c1.R);
+				fillCircle(new Figure((int)(x-ax), (int)(y-ay), c1.R), Color.Transparent);
+				fillCircle(new Figure((int)x, (int)y, c1.R), color);
+				
+				x += ax;
+				y += ay;
+				i++;
+				
+				//genera una simple aimacion 
+				if(i%15 == 0)
+					pictureBoxOrigen.Refresh();
+			}
+			fillCircle(new Figure((int)x, (int)y, c1.R), Color.Transparent);		
+		}
+		
+		
 		bool collisionDDA(Figure c1, Figure c2, Bitmap bmp_) {
-			c1.R += 5;
-			c2.R += 5;
+			float r1 = c1.R + 5, r2 = c2.R + 5;
+
+			
 			int x1 = c1.X, y1 = c1.Y, x2 = c2.X, y2 = c2.Y;
 			float ax, ay, x, y, res, i = 0, distanceLineActual;
 			
@@ -357,7 +403,7 @@ namespace localizacion_de_circulos {
 			
 			while(i <= res) {
 				distanceLineActual = c1.distance((int)x, (int)y);
-				if(distanceLineActual > c1.R && distanceLineActual < c1.distance(c2)-c2.R)
+				if(distanceLineActual > r1 && distanceLineActual < c1.distance(c2)-r2)
 					//este condicional impide el analizis dentro del area de los circulos
 					//esto evitara notar colisiones con el mismo circulo
 					if(collision((int)x, (int)y, bmp_))
@@ -419,7 +465,7 @@ namespace localizacion_de_circulos {
 				}
 			}
 			//al terminar obtiene la menor distancia
-			graph.Distance = weight;
+			graph.Distance = minDist;
 		}
 		
 		void drawEdges(Graph graph, Color color) {
@@ -436,7 +482,7 @@ namespace localizacion_de_circulos {
 			for(int i = 0; i<graph.getVertexCount();i++) {
 				treeViewCircles.Nodes.Add("Origen: "+graph.GetVertex()[i].Id);
 				for(int j = 0; j<graph.GetVertex()[i].EL.Count;j++) {
-					treeViewCircles.Nodes[i].Nodes.Add("Destino: "+graph.GetVertex()[i].EL[j].Destino.Id);
+					treeViewCircles.Nodes[i].Nodes.Add("Destino: "+graph.GetVertex()[i].EL[j].Destino.Id + " -> " + graph.GetVertex()[i].EL[j].Weight);
 				}
 			}
 			treeViewCircles.EndUpdate();
@@ -463,19 +509,13 @@ namespace localizacion_de_circulos {
 			//cada vertice tiene un id
 			int count, id = -1, i = oneVertex, size = graph.getVertexCount();//
 			
-			
+			pictureBoxOrigen.Image = bmpBackGround;
 			do {
 				count = 0;//cuenta los caminos de cada vertice
+				
+				
 				for(int j = 0; j < graph.GetVertex()[i].EL.Count ; j++) {
 					//si ya lo contamos saltarlo
-					/*
-					String s ="";
-					foreach(Vertex v in circuit.GetVertex()) {
-						s += " " + v.Id;
-					}
-					MessageBox.Show(s+"\nid="+id  +"\ni="+ graph.GetVertex()[i].Id+ "\norigen" + graph.GetVertex()[i].EL.Last().Origen.Id + " \ndestino="+ graph.GetVertex()[i].EL.Last().Destino.Id);
-					*/
-					//nos lanzara los pops necesarios
 					if(id == graph.GetVertex()[i].EL.Last().Destino.Id) {
 						id = circuit.GetVertex().Last().Id;
 						//hago pop
@@ -487,6 +527,14 @@ namespace localizacion_de_circulos {
 						}
 						break;
 					}
+					/*String s ="";
+					foreach(Vertex v in circuit.GetVertex()) {
+						s += " " + v.Id;
+					}
+					MessageBox.Show(s+"\nid="+id  +"\ni="+ graph.GetVertex()[i].Id+ "\norigen" + graph.GetVertex()[i].EL.Last().Origen.Id + " \ndestino="+ graph.GetVertex()[i].EL.Last().Destino.Id);
+					*/
+					//nos lanzara los pops necesarios
+					
 					
 					if(graph.GetVertex()[i].EL[j].Destino.Id <= id) {
 						//si ya paso por los puntos anteriores es obligatorio no pasar por ellos de nuevo
@@ -499,25 +547,14 @@ namespace localizacion_de_circulos {
 					aux = graph.GetVertex()[i].EL[j].Destino;
 					
 					if(!circuit.vertexInCircuit(aux) ) {
-						//primero limpar el mapa
-						pictureBoxOrigen.Image = new Bitmap(bmpBackGround);
-						//luego debemos dibujar los caminos
-						drawLineAux(circuit, circuitLineColor, bmpAux);
-						
-						if(collisionDDA(circuit.GetVertex().Last().Circle, aux.Circle, bmpAux)) {
-							MessageBox.Show(circuit.GetVertex().Last().Id + ", " + aux.Id);
-							//si hay una colision entonces seguir buscando
-							count++;
-						} else {
-							//en caso contrario agregar
-							//si el vertice no esta dentro del grafo entonces
-							//lo agrego, y paso al siguiente
-							circuit.addVertex(aux);
-							i = aux.Id;
-							count = 0;
-							id = -1;//cuando se agrega un vertice se elimina el NO posible anterior
-							break;
-						}
+						//en caso contrario agregar
+						//si el vertice no esta dentro del grafo entonces
+						//lo agrego, y paso al siguiente
+						circuit.addVertex(aux);
+						i = aux.Id;
+						count = 0;
+						id = -1;//cuando se agrega un vertice se elimina el NO posible anterior
+						break;
 					} else {
 						count++;
 					}
@@ -536,12 +573,26 @@ namespace localizacion_de_circulos {
 						break;
 					}
 				}
+				
 				if(circuit.getVertexCount() == graph.getVertexCount()) {
 					//si no hay colision al unir los puntos tendremos un circuito de hamilton
-					circuit.addVertex(graph.GetVertex()[oneVertex]);
+					
+					if(!collisionDDA(circuit.GetVertex().Last().Circle, graph.GetVertex()[oneVertex].Circle, bmpBackGround)) {
+						circuit.addVertex(graph.GetVertex()[oneVertex]);
+					}else {
+						id = circuit.GetVertex().Last().Id;
+						//hago pop
+						circuit.GetVertex().Remove(circuit.GetVertex().Last());
+						//mi i regresara al ultimo vertice
+						if(circuit.getVertexCount() > 0) {
+							//en el ultimo caso estara vacio
+							i = circuit.GetVertex().Last().Id;
+						}
+					}
 				}
 			} while(circuit.getVertexCount() < graph.getVertexCount()  &&  circuit.getVertexCount() > 0);
-			
+			pictureBoxOrigen.Image = bmp;
+			//bmpBackGround = new Bitmap(bmp);
 			drawCircuit(circuit, circuitLineColor);
 			if(circuit.getVertexCount() > 0) {
 				return circuit;
@@ -552,23 +603,16 @@ namespace localizacion_de_circulos {
 		
 		void drawCircuit(Graph circuit, Color color) {
 			//dibuja los caminos del grafo
+			String s = "";
+			//bmp = new Bitmap(bmpBackGround);
+			//pictureBoxOrigen.Image = bmp;
 			for(int i = 0; i < circuit.getVertexCount()-1;i++) {
-				DDA(circuit.GetVertex()[i].Circle, circuit.GetVertex()[i+1].Circle, color);
+				s += circuit.GetVertex()[i].Id + ", ";
+				circuitCircles(circuit.GetVertex()[i].Circle, circuit.GetVertex()[i+1].Circle, color);
 			}
+			if(circuit.getVertexCount() > 0)
+				lblCircuit.Text = "Circuito: " + s + circuit.GetVertex()[0].Id;
 		}
-
-
-		void drawLineAux(Graph circuit, Color color, Bitmap bmp) {
-			//dibuja los caminos del grafo
-			bmp = new Bitmap(bmpBackGround);
-			Pen pen = new Pen(color, 4);
-			Graphics g = Graphics.FromImage(bmp);
-			pictureBoxOrigen.Image = bmp;
-			for(int i = 0; i < circuit.getVertexCount()-1;i++) {
-				g.DrawLine(pen, circuit.GetVertex()[i].Circle.X, circuit.GetVertex()[i].Circle.Y, circuit.GetVertex()[i+1].Circle.X, circuit.GetVertex()[i+1].Circle.Y);
-			}
-		}
-		
 		
 		void PictureBoxOrigenMouseClick(object sender, MouseEventArgs e) {
 			//MessageBox.Show("x: "+ e.X +"\ny: "+ e.Y);
@@ -589,12 +633,13 @@ namespace localizacion_de_circulos {
 		void ListBoxCirclesSelectedIndexChanged(object sender, EventArgs e) {
 			int idCircle = listBoxCircles.SelectedIndex-1;
 			if(idCircle >= 0) {
-				bmpAux = new Bitmap(bmp);
-				fillCircle(graph.GetVertex()[idCircle].Circle, circuitLineColor, 20);
+				fillCircle(graph.GetVertex()[idCircleSelct].Circle, Color.Transparent);
+				fillCircle(graph.GetVertex()[idCircle].Circle, circuitLineColor);
 				pictureBoxOrigen.Image = bmp;
-				bmp = new Bitmap(bmpAux);
-				bmpAux.Dispose();
+				idCircleSelct = idCircle;
+				
 			} else {
+				fillCircle(graph.GetVertex()[idCircleSelct].Circle, Color.Transparent);
 				pictureBoxOrigen.Image = bmp;
 			}
 		}

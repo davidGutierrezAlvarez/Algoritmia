@@ -54,6 +54,7 @@ namespace localizacion_de_circulos
 			this.colorDialog = new System.Windows.Forms.ColorDialog();
 			this.treeViewCircles = new System.Windows.Forms.TreeView();
 			this.lblclosestPair = new System.Windows.Forms.Label();
+			this.lblCircuit = new System.Windows.Forms.Label();
 			this.tabControl.SuspendLayout();
 			this.tabOrigen.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).BeginInit();
@@ -253,13 +254,25 @@ namespace localizacion_de_circulos
 			this.lblclosestPair.Name = "lblclosestPair";
 			this.lblclosestPair.Size = new System.Drawing.Size(839, 43);
 			this.lblclosestPair.TabIndex = 8;
+			this.lblclosestPair.Text = "Más cercanos:";
+			// 
+			// lblCircuit
+			// 
+			this.lblCircuit.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblCircuit.ForeColor = System.Drawing.Color.White;
+			this.lblCircuit.Location = new System.Drawing.Point(14, 700);
+			this.lblCircuit.Name = "lblCircuit";
+			this.lblCircuit.Size = new System.Drawing.Size(861, 43);
+			this.lblCircuit.TabIndex = 9;
+			this.lblCircuit.Text = "Circuito:";
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
-			this.ClientSize = new System.Drawing.Size(1050, 704);
+			this.ClientSize = new System.Drawing.Size(1050, 755);
+			this.Controls.Add(this.lblCircuit);
 			this.Controls.Add(this.lblclosestPair);
 			this.Controls.Add(this.treeViewCircles);
 			this.Controls.Add(this.lblGenerate);
@@ -282,6 +295,7 @@ namespace localizacion_de_circulos
 			this.tabOptions.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label lblCircuit;
 		private System.Windows.Forms.Label lblColorCircuit;
 		private System.Windows.Forms.Button btnCiruitColor;
 		private System.Windows.Forms.Label lblclosestPair;

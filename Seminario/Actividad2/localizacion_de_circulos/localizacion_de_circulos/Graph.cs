@@ -42,7 +42,6 @@ namespace localizacion_de_circulos {
 		List<Edge> ListEdge;
 		Figure circle;
 		int id;//from 1 to n
-		bool yaPasePorAqui;
 		
 		//Getters
 		public List<Edge> EL { get { return ListEdge; } }
@@ -55,7 +54,6 @@ namespace localizacion_de_circulos {
 			this.id = id;
 			this.circle = c;
 			this.ListEdge = new List<Edge>();
-			yaPasePorAqui = false;
 		}
 		
 		public void addEdge(Edge v) {
@@ -69,6 +67,7 @@ namespace localizacion_de_circulos {
 		Vertex origen;
 		Vertex destino;
 		float distance;
+		bool isCircuitHamilton;
 		
 		//Getters
 		public List<Vertex> ListVertex { get { return listVertex; } }
@@ -79,6 +78,7 @@ namespace localizacion_de_circulos {
 		
 		public Graph() {
 			listVertex = new List<Vertex>();
+			isCircuitHamilton = true;
 		}
 		
 		public int getVertexCount() {
@@ -135,18 +135,21 @@ namespace localizacion_de_circulos {
 			return false;
 		}
 		
-		
 		public override String ToString() {
 			if(origen != null)
-				return "Más cercanos: ("+ origen.Id + " y " + destino.Id + ") Distancia " +distance;
+				return "Más cercanos: ("+ origen.Id + " y " + destino.Id + ") Distancia " + distance;
 			else
-				return "No Se puede analizar los puntos mas cercanos.";
+				return "Más cercanos:  No hay par m+as cercanos.";
 		}
 		
 		public void Clear() {
 			origen = null;
 			destino = null;
+			distance = 0;
+			isCircuitHamilton = true;
 		}
+		
+
 	}
 
 }
