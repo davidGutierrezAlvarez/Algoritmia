@@ -75,9 +75,18 @@ namespace localizacion_de_circulos {
 			get { return distance;  }
 			set { distance = value; }
 		}
+		public bool IsCircuitHamilton {
+			get { return isCircuitHamilton;  }
+			set { isCircuitHamilton = value; }
+		}
 		
 		public Graph() {
 			listVertex = new List<Vertex>();
+			isCircuitHamilton = true;
+		}
+		
+		public Graph(Graph g) {
+			listVertex = new List<Vertex>(g.listVertex);
 			isCircuitHamilton = true;
 		}
 		
@@ -141,6 +150,7 @@ namespace localizacion_de_circulos {
 			else
 				return "Más cercanos:  No hay par más cercanos.";
 		}
+		
 		
 		public void Clear() {
 			origen = null;

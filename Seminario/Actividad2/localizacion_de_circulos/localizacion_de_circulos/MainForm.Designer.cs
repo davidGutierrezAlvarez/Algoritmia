@@ -39,10 +39,11 @@ namespace localizacion_de_circulos
 			this.tabOrigen = new System.Windows.Forms.TabPage();
 			this.pictureBoxOrigen = new System.Windows.Forms.PictureBox();
 			this.tabOptions = new System.Windows.Forms.TabPage();
+			this.TableView = new System.Windows.Forms.DataGridView();
 			this.btnCiruitColor = new System.Windows.Forms.Button();
 			this.btnTextColor = new System.Windows.Forms.Button();
 			this.lblColorCircuit = new System.Windows.Forms.Label();
-			this.lblColorText = new System.Windows.Forms.Label();
+			this.lblTextColor = new System.Windows.Forms.Label();
 			this.lblColorLine = new System.Windows.Forms.Label();
 			this.btnColor = new System.Windows.Forms.Button();
 			this.close = new System.Windows.Forms.Label();
@@ -59,6 +60,7 @@ namespace localizacion_de_circulos
 			this.tabOrigen.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).BeginInit();
 			this.tabOptions.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.TableView)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl
@@ -97,10 +99,12 @@ namespace localizacion_de_circulos
 			// 
 			// tabOptions
 			// 
+			this.tabOptions.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
+			this.tabOptions.Controls.Add(this.TableView);
 			this.tabOptions.Controls.Add(this.btnCiruitColor);
 			this.tabOptions.Controls.Add(this.btnTextColor);
 			this.tabOptions.Controls.Add(this.lblColorCircuit);
-			this.tabOptions.Controls.Add(this.lblColorText);
+			this.tabOptions.Controls.Add(this.lblTextColor);
 			this.tabOptions.Controls.Add(this.lblColorLine);
 			this.tabOptions.Controls.Add(this.btnColor);
 			this.tabOptions.Location = new System.Drawing.Point(4, 29);
@@ -109,7 +113,15 @@ namespace localizacion_de_circulos
 			this.tabOptions.Size = new System.Drawing.Size(853, 603);
 			this.tabOptions.TabIndex = 1;
 			this.tabOptions.Text = "Opciones";
-			this.tabOptions.UseVisualStyleBackColor = true;
+			// 
+			// TableView
+			// 
+			this.TableView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.TableView.Location = new System.Drawing.Point(239, 53);
+			this.TableView.Name = "TableView";
+			this.TableView.RowTemplate.Height = 24;
+			this.TableView.Size = new System.Drawing.Size(608, 542);
+			this.TableView.TabIndex = 4;
 			// 
 			// btnCiruitColor
 			// 
@@ -138,12 +150,12 @@ namespace localizacion_de_circulos
 			this.lblColorCircuit.Size = new System.Drawing.Size(51, 53);
 			this.lblColorCircuit.TabIndex = 2;
 			// 
-			// lblColorText
+			// lblTextColor
 			// 
-			this.lblColorText.Location = new System.Drawing.Point(182, 112);
-			this.lblColorText.Name = "lblColorText";
-			this.lblColorText.Size = new System.Drawing.Size(51, 53);
-			this.lblColorText.TabIndex = 2;
+			this.lblTextColor.Location = new System.Drawing.Point(182, 112);
+			this.lblTextColor.Name = "lblTextColor";
+			this.lblTextColor.Size = new System.Drawing.Size(51, 53);
+			this.lblTextColor.TabIndex = 2;
 			// 
 			// lblColorLine
 			// 
@@ -252,7 +264,7 @@ namespace localizacion_de_circulos
 			this.lblclosestPair.ForeColor = System.Drawing.Color.White;
 			this.lblclosestPair.Location = new System.Drawing.Point(18, 657);
 			this.lblclosestPair.Name = "lblclosestPair";
-			this.lblclosestPair.Size = new System.Drawing.Size(857, 43);
+			this.lblclosestPair.Size = new System.Drawing.Size(1049, 43);
 			this.lblclosestPair.TabIndex = 8;
 			this.lblclosestPair.Text = "Más cercanos:";
 			// 
@@ -262,7 +274,7 @@ namespace localizacion_de_circulos
 			this.lblCircuit.ForeColor = System.Drawing.Color.White;
 			this.lblCircuit.Location = new System.Drawing.Point(14, 700);
 			this.lblCircuit.Name = "lblCircuit";
-			this.lblCircuit.Size = new System.Drawing.Size(861, 43);
+			this.lblCircuit.Size = new System.Drawing.Size(1053, 43);
 			this.lblCircuit.TabIndex = 9;
 			this.lblCircuit.Text = "Circuito:";
 			// 
@@ -293,13 +305,15 @@ namespace localizacion_de_circulos
 			this.tabOrigen.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).EndInit();
 			this.tabOptions.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.TableView)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.DataGridView TableView;
 		private System.Windows.Forms.Label lblCircuit;
 		private System.Windows.Forms.Label lblColorCircuit;
 		private System.Windows.Forms.Button btnCiruitColor;
 		private System.Windows.Forms.Label lblclosestPair;
-		private System.Windows.Forms.Label lblColorText;
+		private System.Windows.Forms.Label lblTextColor;
 		private System.Windows.Forms.Button btnTextColor;
 		private System.Windows.Forms.TreeView treeViewCircles;
 		private System.Windows.Forms.Label lblColorLine;

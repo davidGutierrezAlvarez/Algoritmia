@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Figure.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="Hamilton.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
