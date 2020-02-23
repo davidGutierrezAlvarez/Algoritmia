@@ -134,7 +134,7 @@ namespace localizacion_de_circulos {
 			lblCircuit.Text = "Circuito:";
 			graph.GetVertex().Clear();
 			graph.Clear();
-				TableView.Rows.Clear();
+			TableView.Rows.Clear();
 		}
 		
 		void LblAnalizeClick(object sender, EventArgs e) {
@@ -342,7 +342,7 @@ namespace localizacion_de_circulos {
 				i++;
 				
 				//genera una simple aimacion 
-				if(i%30 == 0)
+				if(i%40 == 0)
 					pictureBoxOrigen.Refresh();
 			}			
 		}
@@ -379,7 +379,7 @@ namespace localizacion_de_circulos {
 				i++;
 				
 				//genera una simple aimacion 
-				if(i%10 == 0)
+				if(i%18 == 0)
 					pictureBoxOrigen.Refresh();
 			}
 			//fillCircle(new Figure((int)x, (int)y, c1.R), Color.Transparent);	
@@ -625,8 +625,8 @@ namespace localizacion_de_circulos {
 			} while(circuit.getVertexCount() < graph.getVertexCount()  &&  circuit.getVertexCount() > 0);
 			pictureBoxOrigen.Image = bmp;
 			
-			drawCircuit(listCircuits, circuitLineColor);
 			if(listCircuits.Count > 0) {
+				drawCircuit(listCircuits, circuitLineColor);
 				return circuit;
 			} else {
 				return null;
