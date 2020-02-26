@@ -16,6 +16,9 @@ namespace localizacion_de_circulos {
 	/// <summary>
 	/// Description of MainForm.
 	/// </summary>
+	
+	delegate void Lambda();
+		
 	public partial class MainForm : Form {
 		int mov, movX, movY;
 		int x1=0,y1,x2,y2, idCircleSelct=0;
@@ -215,7 +218,7 @@ namespace localizacion_de_circulos {
             //inicializo mi auxiliar
             bmpAux = new Bitmap(bmp);
             
-            if(circuitHamiltonian(circleInit) == null) {
+            if(!circuitHamiltonian(circleInit)) {
 				MessageBox.Show("El circuito no se puede generar");
             }
             
@@ -228,7 +231,6 @@ namespace localizacion_de_circulos {
 			//es mas seguro analizar la fila siguiente
 			y++;
 			while(x > 0 && bmp.GetPixel(x,y).ToArgb().Equals(color.ToArgb())) { x--; }
-			//MessageBox.Show("valor="+bmp.GetPixel(x,y).Name);
 			//incrementa en uno para re-encontrar el pixel negro
 			x++;
 			
@@ -512,10 +514,10 @@ namespace localizacion_de_circulos {
 			return false;
 		}
 		
-		Graph circuitHamiltonian(int oneVertex) {
+		bool circuitHamiltonian(int oneVertex) {
 			
 			if(!graph.IsCircuitHamilton) {
-				return null;
+				return false;
 			}
 			
 			//lista de grafos
@@ -535,28 +537,31 @@ namespace localizacion_de_circulos {
 			int count, id = -1, i = oneVertex, size = graph.getVertexCount();//
 			
 			pictureBoxOrigen.Image = bmpBackGround;
+			
+			Lambda Pop = () => {
+				//si no encontro ni un camino regreso al vertice anterior
+				//primero obtengo su id, para comenzar las conexiones desde el siguiente
+				id = circuit.GetVertex().Last().Id;
+				//hago pop
+				circuit.GetVertex().Remove(circuit.GetVertex().Last());
+				//mi i regresara al ultimo vertice
+				//pop al peso
+				listWeight.Remove(listWeight.Last());
+				if(circuit.getVertexCount() > 0) {
+					//en el ultimo caso estara vacio
+					i = circuit.GetVertex().Last().Id;
+				}
+			};
+			
 			do {
 				count = 0;//cuenta los caminos de cada vertice
-				
-				
 				for(int j = 0; j < graph.GetVertex()[i].EL.Count ; j++) {
 					//si ya lo contamos saltarlo
 					if(id == graph.GetVertex()[i].EL.Last().Destino.Id) {
-						id = circuit.GetVertex().Last().Id;
-						//hago pop
-						circuit.GetVertex().Remove(circuit.GetVertex().Last());
-						//mi i regresara al ultimo vertice
-						//pop peso
-						listWeight.Remove(listWeight.Last());
-						if(circuit.getVertexCount() > 0) {
-							//en el ultimo caso estara vacio
-							i = circuit.GetVertex().Last().Id;
-						}
+						Pop();
 						break;
 					}
-					
 					//nos lanzara los pops necesarios
-					
 					
 					if(graph.GetVertex()[i].EL[j].Destino.Id <= id) {
 						//si ya paso por los puntos anteriores es obligatorio no pasar por ellos de nuevo
@@ -569,9 +574,8 @@ namespace localizacion_de_circulos {
 					aux = graph.GetVertex()[i].EL[j].Destino;
 					
 					if(!circuit.vertexInCircuit(aux) ) {
-						//en caso contrario agregar
 						//si el vertice no esta dentro del grafo entonces
-						//lo agrego, y paso al siguiente
+						//y paso al siguiente
 						circuit.addVertex(aux);
 						
 						//lista de pesos de un circuito
@@ -587,50 +591,29 @@ namespace localizacion_de_circulos {
 					}
 					
 					if(count  == graph.GetVertex()[i].EL.Count) {
-						//si no encontro ni un camino regreso al vertice anterior
-						//primero obtengo su id, para comenzar las conexiones desde el siguiente
-						id = circuit.GetVertex().Last().Id;
-						//hago pop
-						circuit.GetVertex().Remove(circuit.GetVertex().Last());
-						//mi i regresara al ultimo vertice
-						//pop al peso
-						listWeight.Remove(listWeight.Last());
-						if(circuit.getVertexCount() > 0) {
-							//en el ultimo caso estara vacio
-							i = circuit.GetVertex().Last().Id;
-						}
+						Pop();
 						break;
 					}
 				}
 				
 				if(circuit.getVertexCount() == graph.getVertexCount()) {
-					//si no hay colision al unir los puntos tendremos un circuito de hamilton
 					
 					if(!collisionDDA(circuit.GetVertex().Last().Circle, graph.GetVertex()[oneVertex].Circle, bmpBackGround)) {
-						//circuit.addVertex(graph.GetVertex()[oneVertex]);
+						//si se puede conectar el circuito, agregar a la lista de posibles
 						listCircuits.Add(new Hamilton(circuit, listWeight));
 					}
-					id = circuit.GetVertex().Last().Id;
-					//hago pop
-					circuit.GetVertex().Remove(circuit.GetVertex().Last());
-					//mi i regresara al ultimo vertice
-					//pop al peso
-					listWeight.Remove(listWeight.Last());
-					if(circuit.getVertexCount() > 0) {
-						//en el ultimo caso estara vacio
-						i = circuit.GetVertex().Last().Id;
-					}
-					
+					//hacer pop para analizar el siguiente
+					Pop();
 				}
-			} while(circuit.getVertexCount() < graph.getVertexCount()  &&  circuit.getVertexCount() > 0);
+			} while(circuit.getVertexCount() > 0);
 			pictureBoxOrigen.Image = bmp;
 			
 			if(listCircuits.Count > 0) {
 				drawCircuit(listCircuits, circuitLineColor);
-				return circuit;
-			} else {
-				return null;
+				return true;
 			}
+			return false;
+			
 		}
 		
 		void drawCircuit(List<Hamilton> lh, Color color) {
@@ -663,7 +646,7 @@ namespace localizacion_de_circulos {
 					lblCircuit.Text = "Circuito: Solo hay un vertice";
 					MessageBox.Show("El circuito no se puede generar");
 				} else
-					lblCircuit.Text = "Circuito: " + s + circuit.GetVertex()[0].Id;
+					lblCircuit.Text = "Circuito: " + s + circuit.GetVertex()[0].Id + " -> " + k;
 			}
 		}
 		
@@ -694,8 +677,6 @@ namespace localizacion_de_circulos {
 				g.Clear(Color.Transparent);
 				g.FillEllipse(b, c.X-(c.R+2), c.Y-(c.R+2), c.R*2+5, c.R*2+5);
 				
-				//fillCircle(graph.GetVertex()[idCircleSelct].Circle, Color.Transparent);
-				//fillCircle(graph.GetVertex()[idCircle].Circle, circuitLineColor);
 				pictureBoxOrigen.Image = bmp;
 				idCircleSelct = idCircle;
 				
