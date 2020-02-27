@@ -521,10 +521,12 @@ namespace localizacion_de_circulos {
 			}
 			
 			//lista de grafos
-			List<Hamilton> listCircuits = new List<Hamilton>();
-			List<double> listWeight = new List<double>();
+			//List<Hamilton> listCircuits = new List<Hamilton>();
+			//guarda el camino mas corto y el ultimo para hacer las comparaciones
+			Hamilton hamilton = new Hamilton();
+			Hamilton ultimo = new Hamilton();
+			bool existeCamino = false;
 			
-			listWeight.Add(0);
 			
 			//creamos el inicio del camino...
 			Graph circuit = new Graph();
@@ -534,19 +536,16 @@ namespace localizacion_de_circulos {
 			circuit.addVertex(graph.GetVertex()[oneVertex]);
 			//inicio desde el vertice seleccionado
 			//cada vertice tiene un id
-			int count, id = -1, i = oneVertex, size = graph.getVertexCount();//
-			
-			pictureBoxOrigen.Image = bmpBackGround;
-			
+			int count, id = -1, i = oneVertex;//
+						
 			Lambda Pop = () => {
 				//si no encontro ni un camino regreso al vertice anterior
 				//primero obtengo su id, para comenzar las conexiones desde el siguiente
 				id = circuit.GetVertex().Last().Id;
 				//hago pop
 				circuit.GetVertex().Remove(circuit.GetVertex().Last());
-				//mi i regresara al ultimo vertice
 				//pop al peso
-				listWeight.Remove(listWeight.Last());
+				//mi i regresara al ultimo vertice
 				if(circuit.getVertexCount() > 0) {
 					//en el ultimo caso estara vacio
 					i = circuit.GetVertex().Last().Id;
@@ -554,7 +553,7 @@ namespace localizacion_de_circulos {
 			};
 			
 			do {
-				count = 0;//cuenta los caminos de cada vertice
+				count = 0;//cuenta los caminos de cada vertice 
 				for(int j = 0; j < graph.GetVertex()[i].EL.Count ; j++) {
 					//si ya lo contamos saltarlo
 					if(id == graph.GetVertex()[i].EL.Last().Destino.Id) {
@@ -573,13 +572,10 @@ namespace localizacion_de_circulos {
 					//genero el auxiliar...
 					aux = graph.GetVertex()[i].EL[j].Destino;
 					
-					if(!circuit.vertexInCircuit(aux) ) {
+					if(!circuit.vertexInCircuit(aux)) {
 						//si el vertice no esta dentro del grafo entonces
 						//y paso al siguiente
 						circuit.addVertex(aux);
-						
-						//lista de pesos de un circuito
-						listWeight.Add(graph.GetVertex()[i].EL[j].Weight);
 						
 						i = aux.Id;
 						count = 0;
@@ -600,16 +596,22 @@ namespace localizacion_de_circulos {
 					
 					if(!collisionDDA(circuit.GetVertex().Last().Circle, graph.GetVertex()[oneVertex].Circle, bmpBackGround)) {
 						//si se puede conectar el circuito, agregar a la lista de posibles
-						listCircuits.Add(new Hamilton(circuit, listWeight));
+						//listCircuits.Add(new Hamilton(circuit));
+						ultimo = new Hamilton(circuit);
+						if( ultimo.weight < hamilton.weight) {
+							hamilton = ultimo;
+						}
+						existeCamino = true;
+						
 					}
 					//hacer pop para analizar el siguiente
 					Pop();
 				}
 			} while(circuit.getVertexCount() > 0);
-			pictureBoxOrigen.Image = bmp;
 			
-			if(listCircuits.Count > 0) {
-				drawCircuit(listCircuits, circuitLineColor);
+			if(existeCamino) {
+				//drawCircuit(listCircuits, circuitLineColor);
+				drawCircuit(hamilton, circuitLineColor);
 				return true;
 			}
 			return false;
@@ -622,14 +624,14 @@ namespace localizacion_de_circulos {
 			
 			//tomo el primer circuito, para comparar el tamaño de cada una
 			Graph circuit = lh[0].ListCircuits;
-			double minMov = lh[0].getWeight();
+			double minMov = lh[0].weight;
 			int k =0;
 			for(int i = 0; i < lh.Count; i++) {
 				lh[i].print();
 				TableView.Rows.Add(lh[i].Cases);
 								
-				if(minMov > lh[i].getWeight()) {
-					minMov = lh[i].getWeight();
+				if(minMov > lh[i].weight) {
+					minMov = lh[i].weight;
 					k = i;
 				}
 			}
@@ -646,7 +648,32 @@ namespace localizacion_de_circulos {
 					lblCircuit.Text = "Circuito: Solo hay un vertice";
 					MessageBox.Show("El circuito no se puede generar");
 				} else
-					lblCircuit.Text = "Circuito: " + s + circuit.GetVertex()[0].Id + " -> " + k;
+					lblCircuit.Text = "Circuito: " + s + circuit.GetVertex()[0].Id + " -> " + lh[k].weight;
+			}
+		}
+		
+		void drawCircuit(Hamilton hamilton, Color color) {
+			//dibuja los caminos del grafo
+			String s = "";
+			
+			//tomo el primer circuito, para comparar el tamaño de cada una
+			Graph circuit = hamilton.ListCircuits;
+			
+			hamilton.print();
+			TableView.Rows.Add(hamilton.Cases);
+				
+			
+			for(int i = 0; i < circuit.getVertexCount()-1;i++) {
+				s += circuit.GetVertex()[i].Id + ", ";
+				circuitCircles(circuit.GetVertex()[i].Circle, circuit.GetVertex()[i+1].Circle, color);
+			}
+			
+			if(circuit.getVertexCount() > 0) {
+				if(circuit.getVertexCount() == 2) {
+					lblCircuit.Text = "Circuito: Solo hay un vertice";
+					MessageBox.Show("El circuito no se puede generar");
+				} else
+					lblCircuit.Text = "Circuito: " + s + circuit.GetVertex()[0].Id + " -> " + hamilton.weight;
 			}
 		}
 		
