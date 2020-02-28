@@ -172,10 +172,10 @@ namespace localizacion_de_circulos {
 			TableView.ColumnCount = graph.getVertexCount()+2;
 			MessageBox.Show("El analisis se ha compeltado con exito.");
 			
-			
+			/*
 			if(saveFileDialog1.ShowDialog() == DialogResult.OK) {
 				pictureBoxOrigen.Image.Save(saveFileDialog1.FileName, System.Drawing.Imaging.ImageFormat.Png);
-			}
+			}*/
 		}
 			
 		void analizeImg() {
@@ -281,9 +281,6 @@ namespace localizacion_de_circulos {
 			//r2 = width/2;
 			//nos regresa true si la diferencia entre la altura y anchura es menor a 10 pixeles
 			return marginErrorPixels(margin_error);
-			
-			//un circulo tambien es una figura eliptica
-			//return isElipse();
 		}
 
 		void drawCenter(Figure circle) {
@@ -525,9 +522,9 @@ namespace localizacion_de_circulos {
 		}
 		
 		bool circuitHamiltonian(int oneVertex) {
-			/*if(!graph.IsCircuitHamilton) {
+			if(!graph.IsCircuitHamilton) {
 				return false;
-			}*/
+			}
 			
 			//guarda el camino mas corto y el ultimo para hacer las comparaciones
 			Hamilton hamilton = new Hamilton();
@@ -625,6 +622,7 @@ namespace localizacion_de_circulos {
 					//hacer pop para analizar el siguiente
 					Pop();
 				}
+			MessageBox.Show("ffdfdf");
 			} while(circuit.getVertexCount() > 0);
 			if(existeCamino && sizeCircuitMax+2 == hamilton.ListCircuits.getVertexCount()) {
 				drawCircuit(hamilton, circuitLineColor);
