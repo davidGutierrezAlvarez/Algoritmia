@@ -645,16 +645,20 @@ namespace localizacion_de_circulos {
 			TableView.Rows.Add(hamilton.Cases);
 				
 			
-			for(int i = 0; i < circuit.getVertexCount()-1;i++) {
-				s += circuit.GetVertex()[i].Id + ", ";
-				circuitCircles(circuit.GetVertex()[i].Circle, circuit.GetVertex()[i+1].Circle, color);
-			}
+			
 			
 			if(circuit.getVertexCount() > 0) {
-				if(circuit.getVertexCount() == 2) {
-					lblCircuit.Text = "Circuito: Solo hay un vertice";
+				if(circuit.getVertexCount() <= 3) {
+					if(circuit.getVertexCount() == 2)
+						lblCircuit.Text = "Circuito: Solo hay un vertice";
+					else
+						lblCircuit.Text = "Circuito: Solo hay dos vertices";
 					MessageBox.Show("El circuito no se puede generar");
 				} else
+					for(int i = 0; i < circuit.getVertexCount()-1;i++) {
+						s += circuit.GetVertex()[i].Id + ", ";
+						circuitCircles(circuit.GetVertex()[i].Circle, circuit.GetVertex()[i+1].Circle, color);
+					}
 					lblCircuit.Text = "Circuito: " + s + circuit.GetVertex()[0].Id + " -> " + hamilton.weight;
 			}
 		}
