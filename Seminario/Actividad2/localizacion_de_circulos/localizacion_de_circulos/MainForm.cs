@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+
 namespace localizacion_de_circulos {
 	/// <summary>
 	/// Description of MainForm.
@@ -170,6 +171,11 @@ namespace localizacion_de_circulos {
 			
 			TableView.ColumnCount = graph.getVertexCount()+2;
 			MessageBox.Show("El analisis se ha compeltado con exito.");
+			
+			
+			if(saveFileDialog1.ShowDialog() == DialogResult.OK) {
+				pictureBoxOrigen.Image.Save(saveFileDialog1.FileName, System.Drawing.Imaging.ImageFormat.Png);
+			}
 		}
 			
 		void analizeImg() {
@@ -346,7 +352,8 @@ namespace localizacion_de_circulos {
 				//genera una simple aimacion 
 				if(i%40 == 0)
 					pictureBoxOrigen.Refresh();
-			}			
+			}
+			pictureBoxOrigen.Refresh();	
 		}
 		
 		void circuitCircles(Figure c1, Figure c2, Color color) {
@@ -410,11 +417,14 @@ namespace localizacion_de_circulos {
 			
 			while(i <= res) {
 				distanceLineActual = c1.distance((int)x, (int)y);
-				if(distanceLineActual > r1 && distanceLineActual < c1.distance(c2)-r2)
+				if(distanceLineActual > r1 && distanceLineActual < c1.distance(c2)-r2) {
 					//este condicional impide el analizis dentro del area de los circulos
 					//esto evitara notar colisiones con el mismo circulo
 					if(collision((int)x, (int)y, bmp_))
 						return true;
+					if(collision((int)(x + ax), (int)y, bmp_))
+						return true;
+				}
 				
 				x += ax;
 				y += ay;
@@ -693,5 +703,7 @@ namespace localizacion_de_circulos {
 		
 		
 	
+		
+		
 	}
 }

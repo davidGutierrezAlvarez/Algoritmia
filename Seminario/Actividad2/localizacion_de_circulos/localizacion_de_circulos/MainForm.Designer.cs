@@ -56,6 +56,7 @@ namespace localizacion_de_circulos
 			this.treeViewCircles = new System.Windows.Forms.TreeView();
 			this.lblclosestPair = new System.Windows.Forms.Label();
 			this.lblCircuit = new System.Windows.Forms.Label();
+			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
 			this.tabControl.SuspendLayout();
 			this.tabOrigen.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).BeginInit();
@@ -278,6 +279,9 @@ namespace localizacion_de_circulos
 			this.lblCircuit.TabIndex = 9;
 			this.lblCircuit.Text = "Circuito:";
 			// 
+			// saveFileDialog1
+			// 
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -308,6 +312,7 @@ namespace localizacion_de_circulos
 			((System.ComponentModel.ISupportInitialize)(this.TableView)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
 		private System.Windows.Forms.DataGridView TableView;
 		private System.Windows.Forms.Label lblCircuit;
 		private System.Windows.Forms.Label lblColorCircuit;
