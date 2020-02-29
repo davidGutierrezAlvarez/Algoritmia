@@ -39,7 +39,6 @@ namespace localizacion_de_circulos
 			this.tabOrigen = new System.Windows.Forms.TabPage();
 			this.pictureBoxOrigen = new System.Windows.Forms.PictureBox();
 			this.tabOptions = new System.Windows.Forms.TabPage();
-			this.TableView = new System.Windows.Forms.DataGridView();
 			this.btnCiruitColor = new System.Windows.Forms.Button();
 			this.btnTextColor = new System.Windows.Forms.Button();
 			this.lblColorCircuit = new System.Windows.Forms.Label();
@@ -61,7 +60,6 @@ namespace localizacion_de_circulos
 			this.tabOrigen.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).BeginInit();
 			this.tabOptions.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.TableView)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl
@@ -101,7 +99,6 @@ namespace localizacion_de_circulos
 			// tabOptions
 			// 
 			this.tabOptions.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
-			this.tabOptions.Controls.Add(this.TableView);
 			this.tabOptions.Controls.Add(this.btnCiruitColor);
 			this.tabOptions.Controls.Add(this.btnTextColor);
 			this.tabOptions.Controls.Add(this.lblColorCircuit);
@@ -114,15 +111,6 @@ namespace localizacion_de_circulos
 			this.tabOptions.Size = new System.Drawing.Size(853, 603);
 			this.tabOptions.TabIndex = 1;
 			this.tabOptions.Text = "Opciones";
-			// 
-			// TableView
-			// 
-			this.TableView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.TableView.Location = new System.Drawing.Point(239, 53);
-			this.TableView.Name = "TableView";
-			this.TableView.RowTemplate.Height = 24;
-			this.TableView.Size = new System.Drawing.Size(608, 542);
-			this.TableView.TabIndex = 4;
 			// 
 			// btnCiruitColor
 			// 
@@ -279,9 +267,6 @@ namespace localizacion_de_circulos
 			this.lblCircuit.TabIndex = 9;
 			this.lblCircuit.Text = "Circuito:";
 			// 
-			// saveFileDialog1
-			// 
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -309,11 +294,9 @@ namespace localizacion_de_circulos
 			this.tabOrigen.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxOrigen)).EndInit();
 			this.tabOptions.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.TableView)).EndInit();
 			this.ResumeLayout(false);
 		}
 		private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-		private System.Windows.Forms.DataGridView TableView;
 		private System.Windows.Forms.Label lblCircuit;
 		private System.Windows.Forms.Label lblColorCircuit;
 		private System.Windows.Forms.Button btnCiruitColor;

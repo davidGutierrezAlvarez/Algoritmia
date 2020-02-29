@@ -40,6 +40,7 @@ namespace localizacion_de_circulos {
 		
 	public class Vertex { /*grafo*/
 		List<Edge> ListEdge;
+		public List<int> subGrafo;
 		Figure circle;
 		int id;//from 1 to n
 		
@@ -48,12 +49,13 @@ namespace localizacion_de_circulos {
 		public Figure Circle { get { return circle;   } }
 		public int Id        { get { return id;       } }
 		
-		public Vertex() { }
+		public Vertex() { this.subGrafo = new List<int>(); }
 		
 		public Vertex(Figure c, int id) {
 			this.id = id;
 			this.circle = c;
 			this.ListEdge = new List<Edge>();
+			this.subGrafo = new List<int>();
 		}
 		
 		public void addEdge(Edge v) {
@@ -67,7 +69,7 @@ namespace localizacion_de_circulos {
 		Vertex origen;
 		Vertex destino;
 		float distance;
-		bool isCircuitHamilton;
+		public int[,] Matriz;
 		
 		//Getters
 		public List<Vertex> ListVertex { get { return listVertex; } }
@@ -75,19 +77,14 @@ namespace localizacion_de_circulos {
 			get { return distance;  }
 			set { distance = value; }
 		}
-		public bool IsCircuitHamilton {
-			get { return isCircuitHamilton;  }
-			set { isCircuitHamilton = value; }
-		}
+		
 		
 		public Graph() {
 			listVertex = new List<Vertex>();
-			isCircuitHamilton = true;
 		}
 		
 		public Graph(Graph g) {
 			listVertex = new List<Vertex>(g.listVertex);
-			isCircuitHamilton = true;
 		}
 		
 		public int getVertexCount() {
@@ -111,25 +108,6 @@ namespace localizacion_de_circulos {
 			listVertex[i].addEdge(new Edge(id, listVertex[i], listVertex[j], weight));
 		}
 		
-		public void closestPairPoints() {
-			//no es usable :v
-			//ya que dentro de la generacion del grafo se es mas eficiente
-			//pero si es funcional
-			float minDist = 500, aux;
-			
-			for(int i = 0; i < listVertex.Count; i++) {
-				for(int j = i+1; j < listVertex.Count; j++) {
-					aux = listVertex[i].Circle.distance(listVertex[j].Circle);
-					
-					if(aux < minDist) {
-						minDist = aux;
-						closestPair(listVertex[i] , listVertex[j]);
-					}
-				}
-			}
-			distance = minDist;
-		}
-		
 		public void closestPair(Vertex o, Vertex d) {
 			origen  = o;
 			destino = d;
@@ -151,12 +129,64 @@ namespace localizacion_de_circulos {
 				return "Más cercanos:  No hay par más cercanos.";
 		}
 		
+		public void matriz() {
+			Matriz = new int[listVertex.Count, listVertex.Count];
+		}
+		
+		
+		public String generarSubGrafo() {
+			subGrafo(0);
+			
+			String s = "";
+			for(int i = 0; i < listVertex.Count; i++) {
+				//s += i + " -> " + listVertex[i].subGrafo.Count + "\n";
+				/*s += i + "-> ";
+				foreach(int index in listVertex[i].subGrafo) {
+					s += index + " " ;
+				}
+				s += "\n";*/
+			}
+			return s;
+		}
+		
+		public String subGrafos() {
+			List<List<int>> subgrafos = new List<List<int>>();
+			for(int i = 0; i < listVertex.Count; i++) {
+				if(!subgrafos.Contains(listVertex[i].subGrafo)) {
+					subgrafos.Add(listVertex[i].subGrafo);
+				}
+			}
+			String s = "";
+			for(int i=0; i < subgrafos.Count; i++) {
+				s += "Grafo " + (i+1) + "\n";
+				for(int j=0; j < subgrafos[i].Count; j++) {
+					s += subgrafos[i][j] + " ";
+				}
+				s += "\n\n";
+			}
+			return s;
+		}
+		
+		private void subGrafo(int vertex) {
+			if(listVertex[vertex].subGrafo.Contains(vertex) ) {
+				return;
+			} else {
+				listVertex[vertex].subGrafo.Add(vertex);
+				for(int i = vertex; i < listVertex.Count; i++) {
+					for(int j = 0; j < listVertex.Count; j++) {
+						if(Matriz[i, j] == 1) {
+							listVertex[j].subGrafo = listVertex[i].subGrafo;
+							subGrafo(j);
+						}
+					}
+				}
+			}
+		}
 		
 		public void Clear() {
 			origen = null;
 			destino = null;
 			distance = 0;
-			isCircuitHamilton = true;
 		}
 		
 

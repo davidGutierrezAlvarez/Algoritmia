@@ -16,22 +16,18 @@ namespace localizacion_de_circulos
 	/// </summary>
 	public class Hamilton {
 		Graph listCircuits;
-		String[] cases;
 		public double weight;
 		
 		public Graph ListCircuits { get { return listCircuits; } }
 		
-		public string[] Cases { get { return cases; } }
 		public Hamilton() {
 			listCircuits = new Graph();
-			cases = new string[0];
 			weight = 100000;
 		}
 		
 		public Hamilton(Graph lg) {
 			listCircuits = new Graph(lg);
 			addLastConection();
-			cases = new string[lg.getVertexCount()+2];
 			newWeight();
 		}
 		
@@ -47,15 +43,6 @@ namespace localizacion_de_circulos
 			ListCircuits.ListVertex.Add(ListCircuits.GetVertex()[0]);
 		}
 		
-		public void print() {
-			//String s = "";
-			for(int i = 0; i < listCircuits.getVertexCount()-1; i++) {
-				cases[i] = ""+listCircuits.GetVertex()[i].Id;
-				//s += ""+listCircuits.GetVertex()[i].Id + " - " +listCircuits.GetVertex()[i+1].Id +" -> " + listWeight[i+1] + "\n";
-			}
-			cases[cases.Length-2] =(""+listCircuits.GetVertex()[0].Id);
-			cases[cases.Length-1] = (""+(int)weight);
-			//System.Windows.Forms.MessageBox.Show(s);
-		}
+		
 	}
 }
