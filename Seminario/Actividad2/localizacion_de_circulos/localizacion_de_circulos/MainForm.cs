@@ -22,7 +22,7 @@ namespace localizacion_de_circulos {
 		
 	public partial class MainForm : Form {
 		int mov, movX, movY;
-		int x1=0,y1,x2,y2, idCircleSelct=0;
+		int idCircleSelct= -1;
 		Graph graph = new Graph();
 		List<Bitmap> images = new List<Bitmap>();
 		
@@ -138,7 +138,7 @@ namespace localizacion_de_circulos {
 		void Clean() {
 			//limpia la lista de datos
 			listBoxCircles.Items.Clear();
-			figures = new LinkedList<Figure>();
+			figures = new List<Figure>();
 			treeViewCircles.Nodes.Clear();
 			//limpio el grafo
 			lblclosestPair.Text = "Más cercanos:";
@@ -176,29 +176,7 @@ namespace localizacion_de_circulos {
 			
 			MessageBox.Show("El analisis se ha compeltado con exito.");
 			
-			/*
-			if(saveFileDialog1.ShowDialog() == DialogResult.OK) {
-				pictureBoxOrigen.Image.Save(saveFileDialog1.FileName, System.Drawing.Imaging.ImageFormat.Png);
-			}*/
-			/*
-			String s = "    ";
-			for(int i = 0; i < graph.getVertex().Count; i++) {
-				s += i + " ";
-			}
-			s += "\n";
-			for(int i = 0; i < graph.getVertex().Count; i++) {
-				s += i + "| ";
-				for(int j = 0; j < graph.getVertex().Count; j++) {
-					if(graph.Matriz[i,j] == 1) {
-						s += "1 ";
-					} else {
-						s += "0 ";
-					}
-				}
-					s += "\n";
-			}
-			
-			MessageBox.Show(s);*/
+			graph.generarSubGrafo();
 		}
 			
 		void analizeImg() {
@@ -219,7 +197,7 @@ namespace localizacion_de_circulos {
 							searchCenter(x, y, Color.Black);
 							if(isCircle(Color.White)) {
 								//si es un circulo debe pintarlo de otro color
-								figures.AddLast(new Figure(circle));
+								figures.Add(new Figure(circle));
 								//
 								listBoxCircles.Items.Add(circle.ToString());
 								//añado el circlo al Grafo
@@ -235,18 +213,18 @@ namespace localizacion_de_circulos {
 		void LblGenerateClick(object sender, EventArgs e) {
 			//cambia la vista a la imagen modificada
             tabControl.SelectedIndex = 0;
-            int circleInit = listBoxCircles.SelectedIndex-1;
+            //int circleInit = listBoxCircles.SelectedIndex-1;
             //limpio el circulo generado para hacer un recorrido limpio
 			pictureBoxOrigen.Image = bmp;
             //generar animacion del grafo
             
-            if(circleInit < 0) {
+            if(idCircleSelct < 0) {
             	MessageBox.Show("Primero debe seleccionar un Vertice.");
             	return;
             }
             //inicializo mi auxiliar
             
-            if(!circuitHamiltonian(circleInit)) {
+            if(!circuitHamiltonian(idCircleSelct)) {
 				MessageBox.Show("El circuito no se puede generar");
             }
             
@@ -537,9 +515,20 @@ namespace localizacion_de_circulos {
 			return false;
 		}
 		
+		Figure pixelInArea2(Figure c1) {
+			//calcula coliciones entre 2 circulos o un circulo y un pixel
+			foreach(Figure c in figures) {
+				if(c.collision(c1)) {
+					return c;
+				}
+			}
+			return null;
+		}
+		
 		bool circuitHamiltonian(int oneVertex) {
-			graph.generarSubGrafo();
+			
 			//me genera los subgrafos...
+			MessageBox.Show(graph.subGrafos());
 			
 			int subGrafoCount = graph.getVertex()[oneVertex].subGrafo.Count;
 			
@@ -633,7 +622,6 @@ namespace localizacion_de_circulos {
 				}
 			} while(circuit.getVertex().Count > 0);
 			if(existeCamino) {
-				MessageBox.Show(graph.subGrafos());
 				if(subGrafoCount != graph.getVertex().Count) {
 					MessageBox.Show("No existe grafo\npero si un subgrafo a trazar");
 				}
@@ -656,44 +644,69 @@ namespace localizacion_de_circulos {
 		
 		void PictureBoxOrigenMouseClick(object sender, MouseEventArgs e) {
 			//MessageBox.Show("x: "+ e.X +"\ny: "+ e.Y);
+			Point p = ajustarZoom(e);
+			Figure c = new Figure();
+			Graphics g = Graphics.FromImage(bmp);
 			
-			if(x1 == 0) {
-				x1 = e.X;
-				y1 = e.Y;
+			if((c = pixelInArea2( new Figure(p.X, p.Y, 1))) != null) {
+				//drawCenter(f);
+				Brush b = new SolidBrush(circuitLineColor);
+				g.Clear(Color.Transparent);
+				g.FillEllipse(b, c.X-(c.R+2), c.Y-(c.R+2), c.R*2+5, c.R*2+5);
+				g.DrawImage(images[0], c.X-(c.R+2), c.Y-(c.R+2), c.R*2+5, c.R*2+5);
+				pictureBoxOrigen.Image = bmp;
+				idCircleSelct = figures.IndexOf(c);
 			} else {
-				x2 = e.X;
-				y2 = e.Y;
-				
-				x1 *= (bmp.Height/pictureBoxOrigen.Height);
-				x2 *= (bmp.Height/pictureBoxOrigen.Height);
-				y1 *= (bmp.Height/pictureBoxOrigen.Height);
-				y2 *= (bmp.Height/pictureBoxOrigen.Height);
-				
-				//DDA(new Figure(x1, y1, 1), new Figure(x2, y2, 1), lineColor);
-				x1=0;
+				g.Clear(Color.Transparent);
+				pictureBoxOrigen.Image = bmp;
+				idCircleSelct = -1;
 			}
-			
 		}
 		
 		void ListBoxCirclesSelectedIndexChanged(object sender, EventArgs e) {
-			int idCircle = listBoxCircles.SelectedIndex-1;
+			idCircleSelct = listBoxCircles.SelectedIndex-1;
 			Graphics g = Graphics.FromImage(bmp);
 			
-			if(idCircle >= 0) {
+			if(idCircleSelct >= 0) {
 				Brush b = new SolidBrush(circuitLineColor);
-				Figure c = new Figure(graph.getVertex()[idCircle].Circle);
+				Figure c = new Figure(graph.getVertex()[idCircleSelct].Circle);
 				
 				g.Clear(Color.Transparent);
 				g.FillEllipse(b, c.X-(c.R+2), c.Y-(c.R+2), c.R*2+5, c.R*2+5);
+				g.DrawImage(images[0], c.X-(c.R+2), c.Y-(c.R+2), c.R*2+5, c.R*2+5);
 				
-				pictureBoxOrigen.Image = bmp;
-				idCircleSelct = idCircle;
-				
+				pictureBoxOrigen.Image = bmp;				
 			} else {
 				g.Clear(Color.Transparent);
 				pictureBoxOrigen.Image = bmp;
+				idCircleSelct = -1;
 			}
-		}	
+		}
+
+		Point ajustarZoom(MouseEventArgs e) {
+			int X, Y;
+			int w_i = pictureBoxOrigen.Image.Width; 
+            int h_i = pictureBoxOrigen.Image.Height;
+            int w_c = pictureBoxOrigen.Width;
+            int h_c = pictureBoxOrigen.Height;
+             float imageRatio = w_i / (float)h_i;
+            float containerRatio = w_c / (float)h_c; 
+
+            if (imageRatio >= containerRatio) {
+                float scaleFactor = w_c / (float)w_i;
+                float scaledHeight = h_i * scaleFactor;
+                float filler = Math.Abs(h_c - scaledHeight) / 2;  
+                X = (int)(e.X / scaleFactor);
+                Y = (int)((e.Y - filler) / scaleFactor);
+            } else {
+                float scaleFactor = h_c / (float)h_i;
+                float scaledWidth = w_i * scaleFactor;
+                float filler = Math.Abs(w_c - scaledWidth) / 2;
+             	X = (int)((e.X - filler) / scaleFactor);
+               	Y = (int)(e.Y / scaleFactor);
+            }
+            return new Point(X,Y);
+		}		
 		
 	}
 }

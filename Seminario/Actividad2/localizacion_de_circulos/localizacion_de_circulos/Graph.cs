@@ -124,19 +124,10 @@ namespace localizacion_de_circulos {
 			Matriz = new int[listVertex.Count, listVertex.Count];
 		}
 		
-		public String generarSubGrafo() {
-			subGrafo(0);
-			
-			String s = "";
+		public void generarSubGrafo() {
 			for(int i = 0; i < listVertex.Count; i++) {
-				//s += i + " -> " + listVertex[i].subGrafo.Count + "\n";
-				/*s += i + "-> ";
-				foreach(int index in listVertex[i].subGrafo) {
-					s += index + " " ;
-				}
-				s += "\n";*/
+				subGrafo(i);
 			}
-			return s;
 		}
 		
 		public String subGrafos() {
@@ -158,16 +149,14 @@ namespace localizacion_de_circulos {
 		}
 		
 		private void subGrafo(int vertex) {
-			if(listVertex[vertex].subGrafo.Contains(vertex) ) {
-				return;
-			} else {
+			if(!listVertex[vertex].subGrafo.Contains(vertex)) {
 				listVertex[vertex].subGrafo.Add(vertex);
-				for(int i = vertex; i < listVertex.Count; i++) {
-					for(int j = 0; j < listVertex.Count; j++) {
-						if(Matriz[i, j] == 1) {
-							listVertex[j].subGrafo = listVertex[i].subGrafo;
-							subGrafo(j);
-						}
+				for(int j = 0; j < listVertex.Count; j++) {
+					if(Matriz[vertex, j] == 1) {
+						Matriz[vertex, j] = 0;
+						Matriz[j, vertex] = 0;
+						listVertex[j].subGrafo = listVertex[vertex].subGrafo;
+						subGrafo(j);
 					}
 				}
 			}

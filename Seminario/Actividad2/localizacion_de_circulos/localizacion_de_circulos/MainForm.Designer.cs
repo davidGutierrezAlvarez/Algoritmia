@@ -321,7 +321,7 @@ namespace localizacion_de_circulos
 		private System.Drawing.Bitmap bmpImage;
 		private System.Drawing.Bitmap bmpBackGround;
 		private Figure circle = new Figure();
-		private System.Collections.Generic.LinkedList<Figure> figures;
+		private System.Collections.Generic.List<Figure> figures;
 		private System.Drawing.Color lineColor = new System.Drawing.Color();
 		private System.Drawing.Color circuitLineColor = new System.Drawing.Color();
 		private System.Drawing.Color textColor = new System.Drawing.Color();
