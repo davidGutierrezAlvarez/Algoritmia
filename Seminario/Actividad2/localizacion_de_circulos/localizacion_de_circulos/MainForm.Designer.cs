@@ -318,7 +318,7 @@ namespace localizacion_de_circulos
 		private System.Windows.Forms.TabPage tabOrigen;
 		private System.Windows.Forms.TabControl tabControl;
 		private System.Drawing.Bitmap bmp;
-		private System.Drawing.Bitmap bmpAux;
+		private System.Drawing.Bitmap bmpImage;
 		private System.Drawing.Bitmap bmpBackGround;
 		private Figure circle = new Figure();
 		private System.Collections.Generic.LinkedList<Figure> figures;

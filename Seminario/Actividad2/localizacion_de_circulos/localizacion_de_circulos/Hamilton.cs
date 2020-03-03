@@ -34,13 +34,13 @@ namespace localizacion_de_circulos
 		
 		
 		void newWeight() {
-			for(int i = 0; i < ListCircuits.getVertexCount()-1; i++) {
-				weight += ListCircuits.GetVertex()[i].Circle.distance(ListCircuits.GetVertex()[i+1].Circle);
+			for(int i = 0; i < ListCircuits.getVertex().Count-1; i++) {
+				weight += ListCircuits.getVertex()[i].Circle.distance(ListCircuits.getVertex()[i+1].Circle);
 			}
 		}
 		
 		void addLastConection() {
-			ListCircuits.ListVertex.Add(ListCircuits.GetVertex()[0]);
+			ListCircuits.getVertex().Add(ListCircuits.getVertex()[0]);
 		}
 		
 		

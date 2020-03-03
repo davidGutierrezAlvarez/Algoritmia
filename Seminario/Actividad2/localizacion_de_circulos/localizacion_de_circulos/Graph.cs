@@ -72,12 +72,10 @@ namespace localizacion_de_circulos {
 		public int[,] Matriz;
 		
 		//Getters
-		public List<Vertex> ListVertex { get { return listVertex; } }
 		public float Distance {
 			get { return distance;  }
 			set { distance = value; }
 		}
-		
 		
 		public Graph() {
 			listVertex = new List<Vertex>();
@@ -87,11 +85,7 @@ namespace localizacion_de_circulos {
 			listVertex = new List<Vertex>(g.listVertex);
 		}
 		
-		public int getVertexCount() {
-			return listVertex.Count;
-		}
-		
-		public List<Vertex> GetVertex() {
+		public List<Vertex> getVertex() {
 			return listVertex;
 		}
 
@@ -114,11 +108,8 @@ namespace localizacion_de_circulos {
 		}
 		
 		public bool vertexInCircuit(Vertex v) {
-			foreach(Vertex vertex in listVertex) {
-				if(vertex.Id == v.Id) {
-					return true;
-				}
-			}
+			if(listVertex.Contains(v))
+				return true;
 			return false;
 		}
 		
@@ -132,7 +123,6 @@ namespace localizacion_de_circulos {
 		public void matriz() {
 			Matriz = new int[listVertex.Count, listVertex.Count];
 		}
-		
 		
 		public String generarSubGrafo() {
 			subGrafo(0);
@@ -189,7 +179,6 @@ namespace localizacion_de_circulos {
 			distance = 0;
 		}
 		
-
 	}
 
 }
