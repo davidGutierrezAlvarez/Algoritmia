@@ -180,7 +180,6 @@ namespace localizacion_de_circulos {
 		}
 			
 		void analizeImg() {
-			Figure toroide = new Figure();
 			//agrega el texto visible del formato que tiene la lista
 			listBoxCircles.Items.Add("(x, y) -> radio");
 			int id = 0;
