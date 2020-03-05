@@ -39,7 +39,7 @@ namespace Actividad3 {
 				tabControl.SelectedIndex = 0;
 				bmp = new Bitmap(openFileImage.FileName);
 				bmpBackGround = new Bitmap(openFileImage.FileName);
-				pictureBoxInit.Image = bmpBackGround;
+				pictureBoxInit.Image = bmp;
 				
 				pictureBoxSecond.Image = bmp;
 				
@@ -51,9 +51,9 @@ namespace Actividad3 {
 				drawLbl();
 				//dibujo los caminos
 				drawEdges(graph);
-				pictureBoxSecond.BackgroundImage = bmp;
+				pictureBoxSecond.BackgroundImage = bmpBackGround;
 				pictureBoxSecond.BackgroundImageLayout = ImageLayout.Zoom;
-				bmp = new Bitmap(bmp);
+				bmp = new Bitmap(bmpBackGround);
 				pictureBoxSecond.Image = bmp;
 				tabControl.SelectedIndex = 1;
 			}
@@ -80,13 +80,13 @@ namespace Actividad3 {
 		}
 		
 		void LblGenerateTreeClick(object sender, EventArgs e) {
-			if(idCircleSelct == -1) {
+			/*if(idCircleSelct == -1) {
 				MessageBox.Show("Debe seleccionar un circulo primero");
 				return;
 			}
 			float diametro = (graph.getVertex()[idCircleSelct].Circle.R*2);
-			float total = diametro * graph.getVertex()[idCircleSelct].EL.Count;
-			overlayTree o = new overlayTree(total);
+			float total = diametro * graph.getVertex()[idCircleSelct].EL.Count;*/
+			overlayTree o = new overlayTree(0);
 			o.ShowDialog();
 			if(o.tree == -1) {
 				MessageBox.Show("tienes que seleccionar");
@@ -98,7 +98,7 @@ namespace Actividad3 {
 				Kruskal k = new Kruskal(graph);
 				k.kruskal();
 				foreach(Edge ee in k.minim) {
-					DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue);
+					DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue, 10, 20);
 				}
 			}
 			
@@ -111,64 +111,57 @@ namespace Actividad3 {
 		
 		void drawLbl() {
 			//dibujar etiqueta
-			int size = 22;
-			Graphics grap = Graphics.FromImage(bmp);
+			
+			int size = graph.getVertex()[0].Circle.R+3;
+			Graphics grap = Graphics.FromImage(bmpBackGround);
+			if (grap == null)
+				return;
 			Font font = new Font("Arial", size);
 			SolidBrush brocha = new SolidBrush(Color.White);
 			
-			for(int i = 0; i < graph.getVertex().Count; i++)
-				grap.DrawString(""+i, font, brocha, graph.getVertex()[i].Circle.X-(size/2+1), graph.getVertex()[i].Circle.Y-(size/2+4));
+			for(int i = 0; i < graph.getVertex().Count; i++) {
+				if(i < 10)
+					grap.DrawString(""+i, font, brocha, graph.getVertex()[i].Circle.X-(size/3+size/4), graph.getVertex()[i].Circle.Y-(size/2+size/5));
+				else
+					grap.DrawString(""+i, font, brocha, graph.getVertex()[i].Circle.X-(size/2+10), graph.getVertex()[i].Circle.Y-(size/2+4));
+			}
 			pictureBoxSecond.Refresh();
 		}
 		
-		void generateEdges() {//genera las aristas entre los vertices
-			//esta funcion se encarga tambien del closestPairPoints
-			//esto dentro del primer if
-			float weight = 0, minDist = bmp.Width;//peso -> ponderacion
+		void generateEdges() {
+			//genera las aristas entre los vertices
+			float weight = 0;//peso -> ponderacion
 			int id = -1;
-			
-			graph.matriz();//genero la matriz 
 			
 			for(int i = 0; i < graph.getVertex().Count; i++) {
 				for(int j = i+1; j < graph.getVertex().Count; j++) {
 					//obtengo la distancia entre el centro de los circulos
 					weight = graph.getVertex()[i].Circle.distance(graph.getVertex()[j].Circle);
 					
-					if(weight < minDist) {
-						minDist = weight;
-						graph.closestPair(graph.getVertex()[i] , graph.getVertex()[j]);
-					}
-					
 					if(!collisionDDA(graph.getVertex()[i].Circle, graph.getVertex()[j].Circle, bmp)) {
-						//si encuentra una colision...
+						//si no encuentra una colision...
 						graph.addEdge(++id, i, j, weight);
-						graph.addEdge(++id, j, i, weight);
-						//trazo la recta para validar las nuevas colisiones
-						graph.Matriz[i,j] = 1;
-						graph.Matriz[j,i] = 1;
+						//graph.addEdge(++id, j, i, weight);
 					}
 				}
 			}
-			//al terminar obtiene la menor distancia
-			graph.Distance = minDist;
 		}
 		
 		void drawEdges(Graph graph) {
 			//dibuja los caminos del grafo
 			for(int i = 0; i<graph.getVertex().Count;i++) {
 				for(int j = 0; j<graph.getVertex()[i].EL.Count;j++) {
-					DDA(graph.getVertex()[i].Circle, graph.getVertex()[i].EL[j].Destino.Circle, Color.Red);
+					DDA(graph.getVertex()[i].Circle, graph.getVertex()[i].EL[j].Destino.Circle, Color.Red, 2, 1);
 				}
 			}
 		}
 		
-		void DDA(Figure c1, Figure c2, Color color) {
+		void DDA(Figure c1, Figure c2, Color color, int R, int parpadeo) {
+			float r1 = c1.R + R/2, r2 = c2.R + R/2;
 			int x1 = c1.X, y1 = c1.Y, x2 = c2.X, y2 = c2.Y;
 			
-			float ax, ay, x, y, res, i = 0;
+			float ax, ay, x, y, res, i = 0, distanceLineActual;
 			
-			
-			//res = Math.Abs(x2 - x1) >= Math.Abs(y2 - y1) ? Math.Abs(x2 - x1) : Math.Abs(y2 - y1);
 			if(Math.Abs(x2 - x1) >= Math.Abs(y2 - y1)) {
 				res = Math.Abs(x2 - x1);
 			} else {
@@ -180,31 +173,38 @@ namespace Actividad3 {
 			x = (float)x1;
 			y = (float)y1;
 			
+			Graphics g = Graphics.FromImage(bmpBackGround);
+			
+			Brush b;
+			
+			b = R == 2 ?  new SolidBrush(Color.Red) : new SolidBrush(Color.Blue);
+			
+				
+			
 			while(i <= res) {
-				pintar((int)x, (int)y, color);
+				distanceLineActual = c1.distance((int)x, (int)y);
+				if(distanceLineActual > r1 && distanceLineActual < c1.distance(c2)-r2) {
+					//este condicional impide el analizis dentro del area de los circulos
+					//g.Clear(Color.Transparent);
+					g.FillEllipse(b, x-(R/2), y-(R/2), R, R);
+				}
+				
 				x += ax;
 				y += ay;
 				i++;
 				
 				//genera una simple aimacion 
-				//if(i%40 == 0)
-				// 	pictureBoxOrigen.Refresh();
+				if(i%parpadeo == 0)
+				 	pictureBoxSecond.Refresh();
 			}
 			pictureBoxSecond.Refresh();	
 		}
 		
-		void pintar(int x, int y, Color color) {
-			if(x >= 0 && x < bmp.Width && y >= 0 && y < bmp.Height)
-				bmp.SetPixel(x, y, color);
-		}
-		
 		bool collisionDDA(Figure c1, Figure c2, Bitmap bmp_) {
 			float r1 = c1.R + 5, r2 = c2.R + 5;
-
-			
 			int x1 = c1.X, y1 = c1.Y, x2 = c2.X, y2 = c2.Y;
-			float ax, ay, x, y, res, i = 0, distanceLineActual;
 			
+			float ax, ay, x, y, res, i = 0, distanceLineActual;
 			
 			if(Math.Abs(x2 - x1) >= Math.Abs(y2 - y1)) {
 				res = Math.Abs(x2 - x1);
@@ -227,7 +227,6 @@ namespace Actividad3 {
 					if(collision((int)(x + ax), (int)y, bmp_))
 						return true;
 				}
-				
 				x += ax;
 				y += ay;
 				i++;
@@ -242,7 +241,6 @@ namespace Actividad3 {
 				return false;
 			return true;
 		}
-		
 		
 		Figure pixelInArea(Figure c1) {
 			//calcula coliciones entre 2 circulos o un circulo y un pixel

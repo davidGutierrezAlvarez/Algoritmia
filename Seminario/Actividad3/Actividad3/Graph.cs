@@ -65,16 +65,6 @@ namespace Actividad3 {
 		
 	public class Graph {
 		List<Vertex> listVertex;
-		Vertex origen;
-		Vertex destino;
-		float distance;
-		public int[,] Matriz;
-		
-		//Getters
-		public float Distance {
-			get { return distance;  }
-			set { distance = value; }
-		}
 		
 		public Graph() {
 			listVertex = new List<Vertex>();
@@ -101,10 +91,6 @@ namespace Actividad3 {
 			listVertex[i].addEdge(new Edge(id, listVertex[i], listVertex[j], weight));
 		}
 		
-		public void closestPair(Vertex o, Vertex d) {
-			origen  = o;
-			destino = d;
-		}
 		
 		public bool vertexInCircuit(Vertex v) {
 			if(listVertex.Contains(v))
@@ -112,59 +98,9 @@ namespace Actividad3 {
 			return false;
 		}
 		
-		public override String ToString() {
-			if(origen != null)
-				return "Más cercanos: ("+ origen.Id + " y " + destino.Id + ") Distancia " + distance;
-			else
-				return "Más cercanos:  No hay par más cercanos.";
-		}
-		
-		public void matriz() {
-			Matriz = new int[listVertex.Count, listVertex.Count];
-		}
-		
-		public void generarSubGrafo() {
-			for(int i = 0; i < listVertex.Count; i++) {
-				subGrafo(i);
-			}
-		}
-		
-		public String subGrafos() {
-			List<List<int>> subgrafos = new List<List<int>>();
-			for(int i = 0; i < listVertex.Count; i++) {
-				if(!subgrafos.Contains(listVertex[i].subGrafo)) {
-					subgrafos.Add(listVertex[i].subGrafo);
-				}
-			}
-			String s = "";
-			for(int i=0; i < subgrafos.Count; i++) {
-				s += "Grafo " + (i+1) + "\n";
-				for(int j=0; j < subgrafos[i].Count; j++) {
-					s += subgrafos[i][j] + " ";
-				}
-				s += "\n\n";
-			}
-			return s;
-		}
-		
-		private void subGrafo(int vertex) {
-			if(!listVertex[vertex].subGrafo.Contains(vertex)) {
-				listVertex[vertex].subGrafo.Add(vertex);
-				for(int j = 0; j < listVertex.Count; j++) {
-					if(Matriz[vertex, j] == 1) {
-						Matriz[vertex, j] = 0;
-						Matriz[j, vertex] = 0;
-						listVertex[j].subGrafo = listVertex[vertex].subGrafo;
-						subGrafo(j);
-					}
-				}
-			}
-		}
 		
 		public void Clear() {
-			origen = null;
-			destino = null;
-			distance = 0;
+			listVertex.Clear();
 		}
 		
 	}
