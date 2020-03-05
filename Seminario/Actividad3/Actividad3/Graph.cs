@@ -31,6 +31,11 @@ namespace Actividad3 {
 			this.destino = v2;
 			this.weight = Weight;
 		}
+		public Edge() { }
+		
+		public int CompareTo(Edge e) {
+			return this.Weight.CompareTo(e.Weight);
+		}
 	}
 		
 	public class Vertex { /*grafo*/
@@ -38,7 +43,6 @@ namespace Actividad3 {
 		public List<int> subGrafo;
 		Figure circle;
 		int id;//from 1 to n
-		
 		//Getters
 		public List<Edge> EL { get { return ListEdge; } }
 		public Figure Circle { get { return circle;   } }

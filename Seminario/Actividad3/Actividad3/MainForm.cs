@@ -26,9 +26,15 @@ namespace Actividad3 {
 			//
 		}
 		
+		void clear() {
+			graph.Clear();
+			graph.getVertex().Clear();
+			figures.Clear();
+		}
+		
 		void LblLoadImgClick(object sender, EventArgs e) {
 			if(openFileImage.ShowDialog() == DialogResult.OK) {
-				//clear();
+				clear();
 				//funcion para limpiar el analisis anterior...
 				tabControl.SelectedIndex = 0;
 				bmp = new Bitmap(openFileImage.FileName);
@@ -74,6 +80,27 @@ namespace Actividad3 {
 		}
 		
 		void LblGenerateTreeClick(object sender, EventArgs e) {
+			if(idCircleSelct == -1) {
+				MessageBox.Show("Debe seleccionar un circulo primero");
+				return;
+			}
+			float diametro = (graph.getVertex()[idCircleSelct].Circle.R*2);
+			float total = diametro * graph.getVertex()[idCircleSelct].EL.Count;
+			overlayTree o = new overlayTree(total);
+			o.ShowDialog();
+			if(o.tree == -1) {
+				MessageBox.Show("tienes que seleccionar");
+				return;
+			} else if(o.tree == 0) {
+				MessageBox.Show("Prim");
+			} else {
+				MessageBox.Show("Kruskal");
+				Kruskal k = new Kruskal(graph);
+				k.kruskal();
+				foreach(Edge ee in k.minim) {
+					DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue);
+				}
+			}
 			
 		}
 		
