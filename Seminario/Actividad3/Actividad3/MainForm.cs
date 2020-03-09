@@ -34,7 +34,7 @@ namespace Actividad3 {
 			graph.vertex().Clear();
 			listBoxVertex.Items.Clear();
 			treeSelect = false;
-			idVertexSelct = -1;
+			idVertexSelect = -1;
 		}
 		
 		void LblLoadImgClick(object sender, EventArgs e) {
@@ -67,6 +67,7 @@ namespace Actividad3 {
 				Graphics g = Graphics.FromImage(bmp);
 				g.Clear(Color.Transparent);
 				pictureBoxSecond.Image = bmp;
+				bmpBackGround2 = new Bitmap(bmpBackGround);
 			}
 		}
 		
@@ -96,13 +97,15 @@ namespace Actividad3 {
 				MessageBox.Show("Debe seleccionar una imagen primero");
 				return;
 			}
-			
+			if(idVertexSelect == -1) {
+				MessageBox.Show("Debe seleccionar un vertice primero");
+				return;
+			}
 			//escojer con que algoritmo dibujar...
-			SelecTree ST = new SelecTree(idVertexSelct);
+			SelecTree ST = new SelecTree();
 			ST.ShowDialog();
 			
 			if(ST.select == -1) {
-				MessageBox.Show("Debe seleccionar una opcion");
 				return;
 			}
 			//contador de tiempo init
@@ -113,12 +116,14 @@ namespace Actividad3 {
 			//contador de tiempo init
 			//genero arbol con prim
 			prim = new Prim(graph);
-			prim.generate();
+			prim.generate(idVertexSelect);
 			//contador de tiempo finish
 			
 			//Color[] c = {Color.Red, Color.Blue, Color.Green, Color.Black, Color.Pink};
 			//int k = 0;
-			
+			//generar copia del fondo antes de dibujar
+			bmpBackGround = new Bitmap(bmpBackGround2);
+			pictureBoxSecond.BackgroundImage = bmpBackGround;
 			Edge ee;
 			if(ST.select == 1) {
 				//Kruskal
@@ -132,14 +137,17 @@ namespace Actividad3 {
 				}
 			} else {
 				//prim
-				MessageBox.Show("En construccion");
+				for(int i = 0; i < prim.edges.Count; i++){
+					ee = prim.edges[i];
+					DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue, 8, 15, pictureBoxSecond);
+				}
 				return;
 			}
 			treeSelect = true;
 		}
 		
 		void LblAnimateClick(object sender, EventArgs e) {
-			if(idVertexSelct == -1) {
+			if(idVertexSelect == -1) {
 				MessageBox.Show("Debe seleccionar un vertice primero");
 				return;
 			}
@@ -147,8 +155,8 @@ namespace Actividad3 {
 				MessageBox.Show("debe eleccionar un arbol de\nrecubrimiento minimo primero");
 				return;
 			}
-			int diametro = (graph.vertex()[idVertexSelct].Circle.R*2);
-			int total = diametro * graph.vertex()[idVertexSelct].Edge.Count;
+			int diametro = (graph.vertex()[idVertexSelect].Circle.R*2);
+			int total = diametro * graph.vertex()[idVertexSelect].Edge.Count;
 			overlayTree o = new overlayTree(total);
 			o.ShowDialog();
 			if(o.tree == -1) {
@@ -187,7 +195,7 @@ namespace Actividad3 {
 					if(!collisionDDA(graph.vertex()[i].Circle, graph.vertex()[j].Circle, bmp)) {
 						//si no encuentra una colision...
 						graph.addEdge(++id, i, j, weight);
-						//graph.addEdge(++id, j, i, weight);
+						graph.addEdge(++id, j, i, weight);
 					}
 				}
 			}
@@ -330,10 +338,10 @@ namespace Actividad3 {
 				c = v.Circle;
 				g.FillEllipse(bc, c.X-(c.R+4), c.Y-(c.R+4), c.R*2+8, c.R*2+8);
 				
-				idVertexSelct = graph.vertex().IndexOf(v);
+				idVertexSelect = graph.vertex().IndexOf(v);
 			} else {
 				g.Clear(Color.Transparent);
-				idVertexSelct = -1;
+				idVertexSelect = -1;
 			}
 			pictureBoxSecond.Refresh();
 		}

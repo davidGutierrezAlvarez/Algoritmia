@@ -124,7 +124,6 @@ namespace Actividad3
 		private System.Windows.Forms.Label lblClosed;
 		int mov, movX, movY;
 		public int select = -1;
-		int vertex;
 		
 		
 		void LblClosedClick(object sender, EventArgs e) { this.Close(); }

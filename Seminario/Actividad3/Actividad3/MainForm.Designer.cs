@@ -325,9 +325,10 @@ namespace Actividad3
 		private System.Windows.Forms.TabControl tabControl;
 		private System.Drawing.Bitmap bmp;
 		private System.Drawing.Bitmap bmpBackGround;
+		private System.Drawing.Bitmap bmpBackGround2;
 		private Figure circle = new Figure();
 		Graph graph = new Graph();
-		int idVertexSelct;
+		int idVertexSelect;
 		bool treeSelect;
 		Kruskal kruskal;
 		Prim prim;

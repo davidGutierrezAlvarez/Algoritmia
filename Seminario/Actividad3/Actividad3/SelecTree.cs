@@ -17,13 +17,12 @@ namespace Actividad3
 	/// </summary>
 	public partial class SelecTree : Form
 	{
-		public SelecTree(int idVertex)
+		public SelecTree()
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
-			vertex = idVertex;
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//

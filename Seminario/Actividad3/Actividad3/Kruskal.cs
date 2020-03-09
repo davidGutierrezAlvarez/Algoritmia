@@ -7,11 +7,9 @@
  * Para cambiar esta plantilla use Herramientas | Opciones | Codificación | Editar Encabezados Estándar
  */
 using System;
-using System.Drawing;
 using System.Collections.Generic;
 
-namespace Actividad3
-{
+namespace Actividad3 {
 	/// <summary>
 	/// Description of Kruskal.
 	/// </summary>
@@ -53,7 +51,7 @@ namespace Actividad3
 				u = e.Origen;
 				v = e.Destino;
 				//si no es conexo unirlos
-				if(!adyacente(u, v)) {
+				if(!conexo(u, v)) {
 					//actualizo la matriz
 					Matriz[u.Id, v.Id] = 1;
 					Matriz[v.Id, u.Id] = 1;
@@ -68,21 +66,21 @@ namespace Actividad3
 			}
 		}
 	
-		bool adyacente(Vertex u, Vertex v) {
+		bool conexo(Vertex u, Vertex v) {
 			temp = new List<int>();
-			matriz(u.Id);
+			adyacente(u.Id);
 			if(temp.Contains(v.Id)) {
 				return true;
 			}
 			return false;
 		}
 	
-		void matriz(int vertex) {
+		void adyacente(int vertex) {
 			if(!temp.Contains(vertex)) {
 				temp.Add(vertex);
 				for(int i = 0; i < graph.vertex().Count; i++) {
 					if(Matriz[vertex, i] == 1) {
-						matriz(i);
+						adyacente(i);
 					}
 				}
 			}

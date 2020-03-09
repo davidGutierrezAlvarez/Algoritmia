@@ -119,8 +119,6 @@ namespace Actividad3 {
 			listVertex.Clear();
 		}
 		
-		
-		
 	}
 
 }
