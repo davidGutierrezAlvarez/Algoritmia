@@ -7,6 +7,7 @@
  * Para cambiar esta plantilla use Herramientas | Opciones | Codificación | Editar Encabezados Estándar
  */
  using System;
+ using System.Drawing;
  using System.Windows.Forms;
  
  
@@ -75,6 +76,8 @@ namespace Actividad3
 			this.lblPrim.Text = "PRIM";
 			this.lblPrim.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			this.lblPrim.Click += new System.EventHandler(this.LblPrimClick);
+			this.lblPrim.MouseLeave += new System.EventHandler(this.LblPrimMouseLeave);
+			this.lblPrim.MouseHover += new System.EventHandler(this.LblPrimMouseHover);
 			// 
 			// lblKruskal
 			// 
@@ -88,6 +91,8 @@ namespace Actividad3
 			this.lblKruskal.Text = "KRUSKAL";
 			this.lblKruskal.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			this.lblKruskal.Click += new System.EventHandler(this.LblKruskalClick);
+			this.lblKruskal.MouseLeave += new System.EventHandler(this.LblKruskalMouseLeave);
+			this.lblKruskal.MouseHover += new System.EventHandler(this.LblKruskalMouseHover);
 			// 
 			// lblSize
 			// 
@@ -105,7 +110,7 @@ namespace Actividad3
 			this.lblClosed.BackColor = System.Drawing.Color.Transparent;
 			this.lblClosed.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.lblClosed.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblClosed.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+			this.lblClosed.ForeColor = System.Drawing.Color.Red;
 			this.lblClosed.Location = new System.Drawing.Point(369, -4);
 			this.lblClosed.Name = "lblClosed";
 			this.lblClosed.Size = new System.Drawing.Size(25, 35);
@@ -140,7 +145,7 @@ namespace Actividad3
 		private System.Windows.Forms.NumericUpDown numValue;
 		int mov, movX, movY;
 		public int tree = -1;
-		double diametro;
+		public int diametro;
 		
 		
 		void LblClosedClick(object sender, EventArgs e) { this.Close(); }
@@ -160,5 +165,11 @@ namespace Actividad3
 			mov = 0;
 		}
 		
+		
+		void LblPrimMouseHover(object sender, EventArgs e) { lblPrim.ForeColor = Color.Red; }
+		void LblPrimMouseLeave(object sender, EventArgs e) { lblPrim.ForeColor = Color.White; }
+		
+		void LblKruskalMouseHover(object sender, EventArgs e) { lblKruskal.ForeColor = Color.Red; }
+		void LblKruskalMouseLeave(object sender, EventArgs e) { lblKruskal.ForeColor = Color.White; }
 	}
 }

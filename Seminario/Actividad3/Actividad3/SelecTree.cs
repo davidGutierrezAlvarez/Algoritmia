@@ -1,8 +1,8 @@
 ﻿/*
  * Creado por SharpDevelop.
- * Usuario: david
- * Fecha: 04/03/2020
- * Hora: 11:55 p. m.
+ * Usuario: dagur
+ * Fecha: 08/03/2020
+ * Hora: 07:15 p. m.
  * 
  * Para cambiar esta plantilla use Herramientas | Opciones | Codificación | Editar Encabezados Estándar
  */
@@ -10,44 +10,38 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Actividad3 {
+namespace Actividad3
+{
 	/// <summary>
-	/// Description of overlayTree.
+	/// Description of SelecTree.
 	/// </summary>
-	public partial class overlayTree : Form {
-		public overlayTree(int diametro) {
+	public partial class SelecTree : Form
+	{
+		public SelecTree(int idVertex)
+		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
-			lblSize.Text += " " + diametro;
-			this.diametro = diametro;
+			vertex = idVertex;
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 		}
 		
 		void LblPrimClick(object sender, System.EventArgs e) {
-			if(numValue.Value < (int)diametro) {
-				MessageBox.Show("valor muy pequeño");
+			if(vertex == -1) {
+				MessageBox.Show("Primero seleccione un Vertice");
 				return;
 			}
-			diametro = (int)numValue.Value;
-			tree = 0;
+			select = 0;
 			this.Close();
 		}
 		
 		void LblKruskalClick(object sender, System.EventArgs e) {
-			if(numValue.Value < (int)diametro) {
-				MessageBox.Show("valor muy pequeño");
-				return;
-			}
-			diametro = (int)numValue.Value;
-			tree = 1;
+			select = 1;
 			this.Close();
 		}
-		
-		
 		
 	}
 }

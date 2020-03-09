@@ -10,17 +10,20 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Actividad3 {
 	
 	public partial class MainForm : Form {
 		int mov, movX, movY;
+		Brush bc = new SolidBrush(Color.Red);
 		public MainForm() {
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
 			resize();
+			
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
@@ -28,8 +31,10 @@ namespace Actividad3 {
 		
 		void clear() {
 			graph.Clear();
-			graph.getVertex().Clear();
-			figures.Clear();
+			graph.vertex().Clear();
+			listBoxVertex.Items.Clear();
+			treeSelect = false;
+			idVertexSelct = -1;
 		}
 		
 		void LblLoadImgClick(object sender, EventArgs e) {
@@ -43,6 +48,9 @@ namespace Actividad3 {
 				
 				pictureBoxSecond.Image = bmp;
 				
+				pictureBoxKruskal.Image = bmpBackGround;
+				pictureBoxPrim.Image = bmpBackGround;
+				
 				//analiso la imagen en busca de circulos
 				analizeImg();
 				//genera las lineans con DDA
@@ -53,9 +61,12 @@ namespace Actividad3 {
 				drawEdges(graph);
 				pictureBoxSecond.BackgroundImage = bmpBackGround;
 				pictureBoxSecond.BackgroundImageLayout = ImageLayout.Zoom;
-				bmp = new Bitmap(bmpBackGround);
-				pictureBoxSecond.Image = bmp;
 				tabControl.SelectedIndex = 1;
+				//limpio bitmap para usarlo como lienzo en blanco
+				bmp = new Bitmap(bmp);
+				Graphics g = Graphics.FromImage(bmp);
+				g.Clear(Color.Transparent);
+				pictureBoxSecond.Image = bmp;
 			}
 		}
 		
@@ -68,8 +79,9 @@ namespace Actividad3 {
 						if(pixelInArea( new Figure(x, y, 1)) == null) {
 							circle.searchCenter(x, y, bmp);
 							if(circle.isCircle(bmp)) {
-								figures.Add(new Figure(circle));
 								graph.addVertex(new Figure(circle),  id);
+								listBoxVertex.Items.Add(
+									graph.vertex()[graph.vertex().Count-1].ToString());
 								id++;
 							}
 						}
@@ -80,50 +92,84 @@ namespace Actividad3 {
 		}
 		
 		void LblGenerateTreeClick(object sender, EventArgs e) {
-			/*if(idCircleSelct == -1) {
-				MessageBox.Show("Debe seleccionar un circulo primero");
+			if(openFileImage.FileName == "file") {
+				MessageBox.Show("Debe seleccionar una imagen primero");
 				return;
 			}
-			float diametro = (graph.getVertex()[idCircleSelct].Circle.R*2);
-			float total = diametro * graph.getVertex()[idCircleSelct].EL.Count;*/
-			overlayTree o = new overlayTree(0);
+			
+			//escojer con que algoritmo dibujar...
+			SelecTree ST = new SelecTree(idVertexSelct);
+			ST.ShowDialog();
+			
+			if(ST.select == -1) {
+				MessageBox.Show("Debe seleccionar una opcion");
+				return;
+			}
+			//contador de tiempo init
+			//genero arbol con kruskal
+			kruskal = new Kruskal(graph);
+			kruskal.generate();
+			//contador de tiempo finish
+			//contador de tiempo init
+			//genero arbol con prim
+			prim = new Prim(graph);
+			prim.generate();
+			//contador de tiempo finish
+			
+			//Color[] c = {Color.Red, Color.Blue, Color.Green, Color.Black, Color.Pink};
+			//int k = 0;
+			
+			Edge ee;
+			if(ST.select == 1) {
+				//Kruskal
+				for(int i = 0; i < kruskal.minimumPath.vertex().Count; i++) {
+					for(int j = 0; j < kruskal.minimumPath.vertex()[i].Edge.Count; j++) {
+						ee = kruskal.minimumPath.vertex()[i].Edge[j];
+						if(ee.Id%2 == 0)
+						DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue, 8, 15, pictureBoxSecond);
+						//MessageBox.Show(ee.Id + "->" + ee.Origen.Id + " - " + ee.Destino.Id);
+					}
+				}
+			} else {
+				//prim
+				MessageBox.Show("En construccion");
+				return;
+			}
+			treeSelect = true;
+		}
+		
+		void LblAnimateClick(object sender, EventArgs e) {
+			if(idVertexSelct == -1) {
+				MessageBox.Show("Debe seleccionar un vertice primero");
+				return;
+			}
+			if(!treeSelect) {
+				MessageBox.Show("debe eleccionar un arbol de\nrecubrimiento minimo primero");
+				return;
+			}
+			int diametro = (graph.vertex()[idVertexSelct].Circle.R*2);
+			int total = diametro * graph.vertex()[idVertexSelct].Edge.Count;
+			overlayTree o = new overlayTree(total);
 			o.ShowDialog();
 			if(o.tree == -1) {
 				MessageBox.Show("tienes que seleccionar");
 				return;
-			} else if(o.tree == 0) {
-				MessageBox.Show("Prim");
-			} else {
-				MessageBox.Show("Kruskal");
-				Kruskal k = new Kruskal(graph);
-				k.kruskal();
-				foreach(Edge ee in k.minim) {
-					DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue, 10, 20);
-				}
 			}
-			
-		}
-		
-		
-		void LblAnimateClick(object sender, EventArgs e) {
-			
 		}
 		
 		void drawLbl() {
-			//dibujar etiqueta
-			
-			int size = graph.getVertex()[0].Circle.R+3;
+			int size = graph.vertex()[0].Circle.R+3;
 			Graphics grap = Graphics.FromImage(bmpBackGround);
 			if (grap == null)
 				return;
 			Font font = new Font("Arial", size);
 			SolidBrush brocha = new SolidBrush(Color.White);
 			
-			for(int i = 0; i < graph.getVertex().Count; i++) {
+			for(int i = 0; i < graph.vertex().Count; i++) {
 				if(i < 10)
-					grap.DrawString(""+i, font, brocha, graph.getVertex()[i].Circle.X-(size/3+size/4), graph.getVertex()[i].Circle.Y-(size/2+size/5));
+					grap.DrawString(""+i, font, brocha, graph.vertex()[i].Circle.X-(size/3+size/4), graph.vertex()[i].Circle.Y-(size/2+size/5));
 				else
-					grap.DrawString(""+i, font, brocha, graph.getVertex()[i].Circle.X-(size/2+10), graph.getVertex()[i].Circle.Y-(size/2+4));
+					grap.DrawString(""+i, font, brocha, graph.vertex()[i].Circle.X-(size/2+10), graph.vertex()[i].Circle.Y-(size/2+4));
 			}
 			pictureBoxSecond.Refresh();
 		}
@@ -133,12 +179,12 @@ namespace Actividad3 {
 			float weight = 0;//peso -> ponderacion
 			int id = -1;
 			
-			for(int i = 0; i < graph.getVertex().Count; i++) {
-				for(int j = i+1; j < graph.getVertex().Count; j++) {
+			for(int i = 0; i < graph.vertex().Count; i++) {
+				for(int j = i+1; j < graph.vertex().Count; j++) {
 					//obtengo la distancia entre el centro de los circulos
-					weight = graph.getVertex()[i].Circle.distance(graph.getVertex()[j].Circle);
+					weight = graph.vertex()[i].Circle.distance(graph.vertex()[j].Circle);
 					
-					if(!collisionDDA(graph.getVertex()[i].Circle, graph.getVertex()[j].Circle, bmp)) {
+					if(!collisionDDA(graph.vertex()[i].Circle, graph.vertex()[j].Circle, bmp)) {
 						//si no encuentra una colision...
 						graph.addEdge(++id, i, j, weight);
 						//graph.addEdge(++id, j, i, weight);
@@ -149,14 +195,16 @@ namespace Actividad3 {
 		
 		void drawEdges(Graph graph) {
 			//dibuja los caminos del grafo
-			for(int i = 0; i<graph.getVertex().Count;i++) {
-				for(int j = 0; j<graph.getVertex()[i].EL.Count;j++) {
-					DDA(graph.getVertex()[i].Circle, graph.getVertex()[i].EL[j].Destino.Circle, Color.Red, 2, 1);
+			//Color[] c = {Color.Red, Color.Blue};
+			//int k = 0;
+			for(int i = 0; i<graph.vertex().Count;i++) {
+				for(int j = 0; j<graph.vertex()[i].Edge.Count;j++) {
+					DDA(graph.vertex()[i].Circle, graph.vertex()[i].Edge[j].Destino.Circle, Color.Red, 2, 20, pictureBoxSecond);
 				}
 			}
 		}
 		
-		void DDA(Figure c1, Figure c2, Color color, int R, int parpadeo) {
+		void DDA(Figure c1, Figure c2, Color color, int R, int parpadeo, PictureBox pb) {
 			float r1 = c1.R + R/2, r2 = c2.R + R/2;
 			int x1 = c1.X, y1 = c1.Y, x2 = c2.X, y2 = c2.Y;
 			
@@ -174,12 +222,7 @@ namespace Actividad3 {
 			y = (float)y1;
 			
 			Graphics g = Graphics.FromImage(bmpBackGround);
-			
-			Brush b;
-			
-			b = R == 2 ?  new SolidBrush(Color.Red) : new SolidBrush(Color.Blue);
-			
-				
+			Brush b = new SolidBrush(color);
 			
 			while(i <= res) {
 				distanceLineActual = c1.distance((int)x, (int)y);
@@ -195,9 +238,9 @@ namespace Actividad3 {
 				
 				//genera una simple aimacion 
 				if(i%parpadeo == 0)
-				 	pictureBoxSecond.Refresh();
+				 	pb.Refresh();
 			}
-			pictureBoxSecond.Refresh();	
+			pb.Refresh();	
 		}
 		
 		bool collisionDDA(Figure c1, Figure c2, Bitmap bmp_) {
@@ -242,12 +285,10 @@ namespace Actividad3 {
 			return true;
 		}
 		
-		Figure pixelInArea(Figure c1) {
+		Vertex pixelInArea(Figure c1) {
 			//calcula coliciones entre 2 circulos o un circulo y un pixel
-			foreach(Figure c in figures) {
-				if(c.collision(c1)) {
-					return c;
-				}
+			foreach(Vertex v in graph.vertex()) {
+				if(v.Circle.collision(c1)) { return v; }
 			}
 			return null;
 		}
@@ -280,19 +321,23 @@ namespace Actividad3 {
 		
 		void PictureBoxSecondMouseClick(object sender, MouseEventArgs e) {
 			Point p = ajustarZoom(e);
+			Vertex v = new Vertex();
 			Figure c = new Figure();
 			Graphics g = Graphics.FromImage(bmp);
 			
-			if((c = pixelInArea( new Figure(p.X, p.Y, 1))) != null) {
-				Brush b = new SolidBrush(Color.Red);
+			if((v = pixelInArea( new Figure(p.X, p.Y, 1))) != null) {
 				g.Clear(Color.Transparent);
-				g.FillEllipse(b, c.X-(c.R+4), c.Y-(c.R+4), c.R*2+8, c.R*2+8);
-				idCircleSelct = figures.IndexOf(c);
+				c = v.Circle;
+				g.FillEllipse(bc, c.X-(c.R+4), c.Y-(c.R+4), c.R*2+8, c.R*2+8);
+				
+				idVertexSelct = graph.vertex().IndexOf(v);
 			} else {
 				g.Clear(Color.Transparent);
-				idCircleSelct = -1;
+				idVertexSelct = -1;
 			}
 			pictureBoxSecond.Refresh();
 		}
+		
+		
 	}
 }

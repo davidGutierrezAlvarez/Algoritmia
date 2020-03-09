@@ -47,6 +47,8 @@ namespace Actividad3
 			this.tabSecond = new System.Windows.Forms.TabPage();
 			this.pictureBoxSecond = new System.Windows.Forms.PictureBox();
 			this.tabResult = new System.Windows.Forms.TabPage();
+			this.pictureBoxPrim = new System.Windows.Forms.PictureBox();
+			this.pictureBoxKruskal = new System.Windows.Forms.PictureBox();
 			this.lblMinimized = new System.Windows.Forms.Label();
 			this.lblMaximized = new System.Windows.Forms.Label();
 			this.lblClosed = new System.Windows.Forms.Label();
@@ -56,11 +58,15 @@ namespace Actividad3
 			this.lblAnimate = new System.Windows.Forms.Label();
 			this.panelbtn = new System.Windows.Forms.Panel();
 			this.openFileImage = new System.Windows.Forms.OpenFileDialog();
+			this.listBoxVertex = new System.Windows.Forms.ListBox();
 			this.tabControl.SuspendLayout();
 			this.tabInit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxInit)).BeginInit();
 			this.tabSecond.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxSecond)).BeginInit();
+			this.tabResult.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxPrim)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxKruskal)).BeginInit();
 			this.panelSize.SuspendLayout();
 			this.panelbtn.SuspendLayout();
 			this.SuspendLayout();
@@ -120,13 +126,33 @@ namespace Actividad3
 			// 
 			// tabResult
 			// 
+			this.tabResult.BackColor = System.Drawing.Color.DimGray;
+			this.tabResult.Controls.Add(this.pictureBoxPrim);
+			this.tabResult.Controls.Add(this.pictureBoxKruskal);
 			this.tabResult.Location = new System.Drawing.Point(4, 34);
 			this.tabResult.Name = "tabResult";
 			this.tabResult.Padding = new System.Windows.Forms.Padding(3);
 			this.tabResult.Size = new System.Drawing.Size(389, 367);
 			this.tabResult.TabIndex = 2;
 			this.tabResult.Text = "Extra";
-			this.tabResult.UseVisualStyleBackColor = true;
+			// 
+			// pictureBoxPrim
+			// 
+			this.pictureBoxPrim.Location = new System.Drawing.Point(180, 0);
+			this.pictureBoxPrim.Name = "pictureBoxPrim";
+			this.pictureBoxPrim.Size = new System.Drawing.Size(209, 134);
+			this.pictureBoxPrim.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pictureBoxPrim.TabIndex = 1;
+			this.pictureBoxPrim.TabStop = false;
+			// 
+			// pictureBoxKruskal
+			// 
+			this.pictureBoxKruskal.Location = new System.Drawing.Point(0, 0);
+			this.pictureBoxKruskal.Name = "pictureBoxKruskal";
+			this.pictureBoxKruskal.Size = new System.Drawing.Size(170, 134);
+			this.pictureBoxKruskal.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pictureBoxKruskal.TabIndex = 0;
+			this.pictureBoxKruskal.TabStop = false;
 			// 
 			// lblMinimized
 			// 
@@ -160,7 +186,7 @@ namespace Actividad3
 			this.lblClosed.BackColor = System.Drawing.Color.Transparent;
 			this.lblClosed.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.lblClosed.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblClosed.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+			this.lblClosed.ForeColor = System.Drawing.Color.Red;
 			this.lblClosed.Location = new System.Drawing.Point(82, 0);
 			this.lblClosed.Name = "lblClosed";
 			this.lblClosed.Size = new System.Drawing.Size(25, 35);
@@ -238,7 +264,16 @@ namespace Actividad3
 			// 
 			// openFileImage
 			// 
-			this.openFileImage.FileName = "openFileImage";
+			this.openFileImage.FileName = "file";
+			// 
+			// listBoxVertex
+			// 
+			this.listBoxVertex.FormattingEnabled = true;
+			this.listBoxVertex.ItemHeight = 16;
+			this.listBoxVertex.Location = new System.Drawing.Point(413, 198);
+			this.listBoxVertex.Name = "listBoxVertex";
+			this.listBoxVertex.Size = new System.Drawing.Size(197, 84);
+			this.listBoxVertex.TabIndex = 10;
 			// 
 			// MainForm
 			// 
@@ -246,6 +281,7 @@ namespace Actividad3
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
 			this.ClientSize = new System.Drawing.Size(878, 540);
+			this.Controls.Add(this.listBoxVertex);
 			this.Controls.Add(this.panelbtn);
 			this.Controls.Add(this.panelSize);
 			this.Controls.Add(this.tabControl);
@@ -262,10 +298,16 @@ namespace Actividad3
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxInit)).EndInit();
 			this.tabSecond.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxSecond)).EndInit();
+			this.tabResult.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxPrim)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxKruskal)).EndInit();
 			this.panelSize.ResumeLayout(false);
 			this.panelbtn.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.ListBox listBoxVertex;
+		private System.Windows.Forms.PictureBox pictureBoxKruskal;
+		private System.Windows.Forms.PictureBox pictureBoxPrim;
 		private System.Windows.Forms.OpenFileDialog openFileImage;
 		private System.Windows.Forms.Panel panelbtn;
 		private System.Windows.Forms.Label lblAnimate;
@@ -284,9 +326,11 @@ namespace Actividad3
 		private System.Drawing.Bitmap bmp;
 		private System.Drawing.Bitmap bmpBackGround;
 		private Figure circle = new Figure();
-		private System.Collections.Generic.List<Figure> figures = new System.Collections.Generic.List<Figure>();
 		Graph graph = new Graph();
-		int idCircleSelct = -1;
+		int idVertexSelct;
+		bool treeSelect;
+		Kruskal kruskal;
+		Prim prim;
 		
 		void LblLoadImgMouseHover(object sender, EventArgs e) { lblLoadImg.ForeColor = Color.Red; }
 		void LblLoadImgMouseLeave(object sender, EventArgs e) { lblLoadImg.ForeColor = Color.White; }
@@ -337,6 +381,20 @@ namespace Actividad3
 			pictureBoxInit.Height   = this.Height - 65;
 			pictureBoxSecond.Width  = this.Width - panelbtn.Width - 35;
 			pictureBoxSecond.Height = this.Height - 65;
+			
+			pictureBoxKruskal.Location = new Point(0, 0);
+			pictureBoxKruskal.Width = tabControl.Width/2 - 5;
+			pictureBoxKruskal.Height= tabControl.Height/2;
+			
+			pictureBoxPrim.Location = new Point(pictureBoxKruskal.Width + 5, 0);
+			pictureBoxPrim.Width    = tabControl.Width/2 - 5;
+			pictureBoxPrim.Height   = tabControl.Height/2;
+			
+			//listVertex
+			listBoxVertex.Location = new Point(tabControl.Width + 10, listBoxVertex.Top);
+			listBoxVertex.Width    = panelbtn.Width;
+			listBoxVertex.Height   = tabControl.Bottom - panelbtn.Bottom;
+			
 			//botones
 			panelbtn.Location = new Point(tabControl.Width + 10, panelbtn.Top);
 			//closed

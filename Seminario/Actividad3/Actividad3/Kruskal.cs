@@ -17,52 +17,57 @@ namespace Actividad3
 	/// </summary>
 	public class Kruskal {
 		Graph graph;
-		Graph minimumPath;
+		public Graph minimumPath;
 		List<Edge> edges;
-		public List<Edge> minim;
 		int[,] Matriz;
 		List<int> temp;
+		int isTreeMinimumPath;
 		
 		public Kruskal(Graph graph) {
 			this.graph = graph;
 			minimumPath = new Graph();
+			minimumPath.Copy(graph);
 			edges = new List<Edge>();
-			minim = new List<Edge>();
-			Matriz = new int[graph.getVertex().Count, graph.getVertex().Count];
+			Matriz = new int[graph.vertex().Count, graph.vertex().Count];
+			isTreeMinimumPath = 0;
 		}
 		
 		void edgesByOrder() {
-			for(int i = 0; i < graph.getVertex().Count; i++) {
-				for(int j = 0; j < graph.getVertex()[i].EL.Count; j++) {
-						edges.Add(graph.getVertex()[i].EL[j]);
+			for(int i = 0; i < graph.vertex().Count; i++) {
+				for(int j = 0; j < graph.vertex()[i].Edge.Count; j++) {
+						edges.Add(graph.vertex()[i].Edge[j]);
 				}
 			}
 			edges.Sort((x, y) => x.CompareTo(y));
 		}
 		
 		
-		public void kruskal() {
+		public void generate() {
 			//ordenar caminos
 			edgesByOrder();
 			Vertex u = new Vertex();
 			Vertex v = new Vertex();
+			int id = -1;
 			
 			foreach(Edge e in edges) {
-				//si no es conexo unirlos
 				u = e.Origen;
 				v = e.Destino;
+				//si no es conexo unirlos
 				if(!adyacente(u, v)) {
 					//actualizo la matriz
 					Matriz[u.Id, v.Id] = 1;
 					Matriz[v.Id, u.Id] = 1;
 					//agregar adyaciencia
-					minim.Add(e);
+					isTreeMinimumPath++;
+					//minimumPath.addEdge(e);
+					minimumPath.addEdge(++id, e.Origen.Id, e.Destino.Id, (float)e.Weight);
+					minimumPath.addEdge(++id, e.Destino.Id, e.Origen.Id, (float)e.Weight);
 				}
-				if(minim.Count == graph.getVertex().Count-1)
+				if(isTreeMinimumPath == graph.vertex().Count-1)
 					return;
 			}
 		}
-		
+	
 		bool adyacente(Vertex u, Vertex v) {
 			temp = new List<int>();
 			matriz(u.Id);
@@ -75,7 +80,7 @@ namespace Actividad3
 		void matriz(int vertex) {
 			if(!temp.Contains(vertex)) {
 				temp.Add(vertex);
-				for(int i = 0; i < graph.getVertex().Count; i++) {
+				for(int i = 0; i < graph.vertex().Count; i++) {
 					if(Matriz[vertex, i] == 1) {
 						matriz(i);
 					}

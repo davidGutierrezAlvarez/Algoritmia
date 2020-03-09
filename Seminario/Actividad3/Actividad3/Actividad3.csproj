@@ -58,8 +58,13 @@
     <Compile Include="overlayTree.Designer.cs">
       <DependentUpon>overlayTree.cs</DependentUpon>
     </Compile>
+    <Compile Include="Prim.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelecTree.cs" />
+    <Compile Include="SelecTree.Designer.cs">
+      <DependentUpon>SelecTree.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainForm.resx">
@@ -67,6 +72,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="overlayTree.resx">
       <DependentUpon>overlayTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelecTree.resx">
+      <DependentUpon>SelecTree.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -26,10 +26,16 @@ namespace Actividad3 {
 		public double Weight  { get { return weight;  } }
 		
 		public Edge(int id, Vertex v1, Vertex v2, double Weight) {
-			this.id = id;
-			this.origen = v1;
+			this.id      = id;
+			this.origen  = v1;
 			this.destino = v2;
-			this.weight = Weight;
+			this.weight  = Weight;
+		}
+		public Edge(Edge e) {
+			this.id      = e.id;
+			this.origen  = e.origen;
+			this.destino = e.destino;
+			this.weight  = e.weight;
 		}
 		public Edge() { }
 		
@@ -40,25 +46,33 @@ namespace Actividad3 {
 		
 	public class Vertex { /*grafo*/
 		List<Edge> ListEdge;
-		public List<int> subGrafo;
 		Figure circle;
 		int id;//from 1 to n
 		//Getters
-		public List<Edge> EL { get { return ListEdge; } }
-		public Figure Circle { get { return circle;   } }
-		public int Id        { get { return id;       } }
+		public List<Edge> Edge { get { return ListEdge; } }
+		public Figure Circle   { get { return circle;   } }
+		public int Id          { get { return id;       } }
 		
-		public Vertex() { this.subGrafo = new List<int>(); }
+		public Vertex() { }
 		
 		public Vertex(Figure c, int id) {
-			this.id = id;
-			this.circle = c;
+			this.id       = id;
+			this.circle   = c;
 			this.ListEdge = new List<Edge>();
-			this.subGrafo = new List<int>();
 		}
 		
-		public void addEdge(Edge v) {
-			this.ListEdge.Add(v);
+		public Vertex(Vertex v) {
+			this.id     = v.id;
+			this.circle = v.circle;
+			this.ListEdge = new List<Edge>();
+		}
+		
+		public void addEdge(Edge e) {
+			this.ListEdge.Add(e);
+		}
+		
+		public override String ToString() {
+			return id + " - (" + circle.X + ", " + circle.Y + ") -> " + circle.R;
 		}
 		
 	}
@@ -74,7 +88,13 @@ namespace Actividad3 {
 			listVertex = new List<Vertex>(g.listVertex);
 		}
 		
-		public List<Vertex> getVertex() {
+		public void Copy(Graph g) {
+			foreach(Vertex v in g.listVertex) {
+				this.listVertex.Add(new Vertex(v));
+			}
+		}
+		
+		public List<Vertex> vertex() {
 			return listVertex;
 		}
 
@@ -91,17 +111,15 @@ namespace Actividad3 {
 			listVertex[i].addEdge(new Edge(id, listVertex[i], listVertex[j], weight));
 		}
 		
-		
-		public bool vertexInCircuit(Vertex v) {
-			if(listVertex.Contains(v))
-				return true;
-			return false;
+		public void addEdge(Edge e) {
+			listVertex[e.Origen.Id].addEdge(new Edge(e));
 		}
-		
 		
 		public void Clear() {
 			listVertex.Clear();
 		}
+		
+		
 		
 	}
 
