@@ -29,10 +29,6 @@ namespace Actividad3
 		}
 		
 		void LblPrimClick(object sender, System.EventArgs e) {
-			if(vertex == -1) {
-				MessageBox.Show("Primero seleccione un Vertice");
-				return;
-			}
 			select = 0;
 			this.Close();
 		}

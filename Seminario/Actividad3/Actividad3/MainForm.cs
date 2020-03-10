@@ -121,9 +121,11 @@ namespace Actividad3 {
 			
 			//Color[] c = {Color.Red, Color.Blue, Color.Green, Color.Black, Color.Pink};
 			//int k = 0;
+			
 			//generar copia del fondo antes de dibujar
 			bmpBackGround = new Bitmap(bmpBackGround2);
 			pictureBoxSecond.BackgroundImage = bmpBackGround;
+			
 			Edge ee;
 			if(ST.select == 1) {
 				//Kruskal
@@ -141,9 +143,32 @@ namespace Actividad3 {
 					ee = prim.edges[i];
 					DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue, 8, 15, pictureBoxSecond);
 				}
-				return;
 			}
 			treeSelect = true;
+
+		}
+		
+		
+		void k() {
+			//generar copia del fondo antes de dibujar
+			//generar copia del fondo antes de dibujar
+			ThreadStart procceso = new ThreadStart(() =>
+			                                       {
+			bmpBackGround = new Bitmap(bmpBackGround2);
+			pictureBoxSecond.BackgroundImage = bmpBackGround;
+			Edge ee;
+			
+			for(int i = 0; i < kruskal.minimumPath.vertex().Count; i++) {
+				for(int j = 0; j < kruskal.minimumPath.vertex()[i].Edge.Count; j++) {
+					ee = kruskal.minimumPath.vertex()[i].Edge[j];
+					if(ee.Id%2 == 0)
+					DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue, 8, 15, pictureBoxSecond);
+					//MessageBox.Show(ee.Id + "->" + ee.Origen.Id + " - " + ee.Destino.Id);
+				}
+			}
+			                                       });
+			Thread sub = new Thread(procceso);
+			sub.Start();
 		}
 		
 		void LblAnimateClick(object sender, EventArgs e) {
@@ -181,6 +206,7 @@ namespace Actividad3 {
 			}
 			pictureBoxSecond.Refresh();
 		}
+		
 		
 		void generateEdges() {
 			//genera las aristas entre los vertices
@@ -345,6 +371,7 @@ namespace Actividad3 {
 			}
 			pictureBoxSecond.Refresh();
 		}
+		
 		
 		
 	}

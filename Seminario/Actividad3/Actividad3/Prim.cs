@@ -61,6 +61,7 @@ namespace Actividad3 {
 				
 				if(count==0) 
 					break;
+				
 				u = e.Origen;
 				v = e.Destino;
 				
@@ -69,7 +70,7 @@ namespace Actividad3 {
 				graph.vertex()[u.Id].Edge.Remove(e);
 				
 				if(!conexo(u, v)) {
-					//actualizo la matriz
+					//actualizo la matriz de adyacencia
 					Matriz[u.Id, v.Id] = 1;
 					Matriz[v.Id, u.Id] = 1;
 					//agregar adyaciencia
