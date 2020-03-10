@@ -46,7 +46,9 @@ namespace Actividad3 {
 		
 		public void generate(int vertex) {
 			List<int> candidatos = new List<int>();
+			List<int> lista      = new List<int>();
 			candidatos.Add(vertex);
+			foreach(Vertex v_ in graph.vertex()) lista.Add(v_.Id);
 			
 			Vertex u = new Vertex();
 			Vertex v = new Vertex();
@@ -59,14 +61,22 @@ namespace Actividad3 {
 					candidato(i);
 				}
 				
-				if(count==0) 
-					break;
 				
 				u = e.Origen;
 				v = e.Destino;
 				
 				//eliminar el candidato seleccionado
 				//no puede volver a ser candidato
+				lista.Remove(u.Id);
+				if(count == 0) {
+					if(lista.Count > 0) {
+						candidato(lista[0]);
+						candidatos.Add(lista[0]);
+						lista.Remove(lista[0]);
+					} else {
+						break;
+					}
+				}
 				graph.vertex()[u.Id].Edge.Remove(e);
 				
 				if(!conexo(u, v)) {

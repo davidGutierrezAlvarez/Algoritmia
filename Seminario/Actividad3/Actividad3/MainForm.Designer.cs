@@ -59,6 +59,8 @@ namespace Actividad3
 			this.panelbtn = new System.Windows.Forms.Panel();
 			this.openFileImage = new System.Windows.Forms.OpenFileDialog();
 			this.listBoxVertex = new System.Windows.Forms.ListBox();
+			this.lblKrukal = new System.Windows.Forms.Label();
+			this.lblPrim = new System.Windows.Forms.Label();
 			this.tabControl.SuspendLayout();
 			this.tabInit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBoxInit)).BeginInit();
@@ -199,7 +201,7 @@ namespace Actividad3
 			this.panelSize.Controls.Add(this.lblMinimized);
 			this.panelSize.Controls.Add(this.lblClosed);
 			this.panelSize.Controls.Add(this.lblMaximized);
-			this.panelSize.Location = new System.Drawing.Point(490, -6);
+			this.panelSize.Location = new System.Drawing.Point(623, -6);
 			this.panelSize.Name = "panelSize";
 			this.panelSize.Size = new System.Drawing.Size(120, 35);
 			this.panelSize.TabIndex = 4;
@@ -275,12 +277,32 @@ namespace Actividad3
 			this.listBoxVertex.Size = new System.Drawing.Size(197, 84);
 			this.listBoxVertex.TabIndex = 10;
 			// 
+			// lblKrukal
+			// 
+			this.lblKrukal.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblKrukal.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+			this.lblKrukal.Location = new System.Drawing.Point(2, 2);
+			this.lblKrukal.Name = "lblKrukal";
+			this.lblKrukal.Size = new System.Drawing.Size(295, 23);
+			this.lblKrukal.TabIndex = 11;
+			// 
+			// lblPrim
+			// 
+			this.lblPrim.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblPrim.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+			this.lblPrim.Location = new System.Drawing.Point(310, 2);
+			this.lblPrim.Name = "lblPrim";
+			this.lblPrim.Size = new System.Drawing.Size(295, 23);
+			this.lblPrim.TabIndex = 12;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
 			this.ClientSize = new System.Drawing.Size(878, 540);
+			this.Controls.Add(this.lblPrim);
+			this.Controls.Add(this.lblKrukal);
 			this.Controls.Add(this.listBoxVertex);
 			this.Controls.Add(this.panelbtn);
 			this.Controls.Add(this.panelSize);
@@ -305,6 +327,8 @@ namespace Actividad3
 			this.panelbtn.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label lblPrim;
+		private System.Windows.Forms.Label lblKrukal;
 		private System.Windows.Forms.ListBox listBoxVertex;
 		private System.Windows.Forms.PictureBox pictureBoxKruskal;
 		private System.Windows.Forms.PictureBox pictureBoxPrim;

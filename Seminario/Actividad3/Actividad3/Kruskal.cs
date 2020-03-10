@@ -16,7 +16,8 @@ namespace Actividad3 {
 	public class Kruskal {
 		Graph graph;
 		public Graph minimumPath;
-		List<Edge> edges;
+		public List<Edge> edges;
+		List<Edge> lEdges;
 		int[,] Matriz;
 		List<int> temp;
 		int isTreeMinimumPath;
@@ -26,6 +27,7 @@ namespace Actividad3 {
 			minimumPath = new Graph();
 			minimumPath.Copy(graph);
 			edges = new List<Edge>();
+			lEdges = new List<Edge>();
 			Matriz = new int[graph.vertex().Count, graph.vertex().Count];
 			isTreeMinimumPath = 0;
 		}
@@ -33,10 +35,10 @@ namespace Actividad3 {
 		void edgesByOrder() {
 			for(int i = 0; i < graph.vertex().Count; i++) {
 				for(int j = 0; j < graph.vertex()[i].Edge.Count; j++) {
-						edges.Add(graph.vertex()[i].Edge[j]);
+						lEdges.Add(graph.vertex()[i].Edge[j]);
 				}
 			}
-			edges.Sort((x, y) => x.CompareTo(y));
+			lEdges.Sort((x, y) => x.CompareTo(y));
 		}
 		
 		
@@ -47,7 +49,7 @@ namespace Actividad3 {
 			Vertex v = new Vertex();
 			int id = -1;
 			
-			foreach(Edge e in edges) {
+			foreach(Edge e in lEdges) {
 				u = e.Origen;
 				v = e.Destino;
 				//si no es conexo unirlos
@@ -57,7 +59,7 @@ namespace Actividad3 {
 					Matriz[v.Id, u.Id] = 1;
 					//agregar adyaciencia
 					isTreeMinimumPath++;
-					//minimumPath.addEdge(e);
+					edges.Add(e);
 					minimumPath.addEdge(++id, e.Origen.Id, e.Destino.Id, (float)e.Weight);
 					minimumPath.addEdge(++id, e.Destino.Id, e.Origen.Id, (float)e.Weight);
 				}

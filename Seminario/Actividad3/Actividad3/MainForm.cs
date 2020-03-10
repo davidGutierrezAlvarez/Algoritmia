@@ -35,6 +35,10 @@ namespace Actividad3 {
 			listBoxVertex.Items.Clear();
 			treeSelect = false;
 			idVertexSelect = -1;
+			lblKrukal.Text = "K. Vertice " + " Destinos ";
+			lblPrim.Text = "P. Vertice " + " Destinos ";
+			lblKrukal.ForeColor = Color.WhiteSmoke;
+			lblPrim.ForeColor = Color.WhiteSmoke;
 		}
 		
 		void LblLoadImgClick(object sender, EventArgs e) {
@@ -119,31 +123,40 @@ namespace Actividad3 {
 			prim.generate(idVertexSelect);
 			//contador de tiempo finish
 			
-			//Color[] c = {Color.Red, Color.Blue, Color.Green, Color.Black, Color.Pink};
-			//int k = 0;
+			Color[] c = {Color.BlueViolet, Color.Pink};
+			int[] size = {14, 8}, parpadeo = {15, 10000};
 			
-			//generar copia del fondo antes de dibujar
+			//cargar copia del fondo antes de dibujar
 			bmpBackGround = new Bitmap(bmpBackGround2);
 			pictureBoxSecond.BackgroundImage = bmpBackGround;
 			
-			Edge ee;
 			if(ST.select == 1) {
 				//Kruskal
-				for(int i = 0; i < kruskal.minimumPath.vertex().Count; i++) {
-					for(int j = 0; j < kruskal.minimumPath.vertex()[i].Edge.Count; j++) {
-						ee = kruskal.minimumPath.vertex()[i].Edge[j];
-						if(ee.Id%2 == 0)
-						DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue, 8, 15, pictureBoxSecond);
-						//MessageBox.Show(ee.Id + "->" + ee.Origen.Id + " - " + ee.Destino.Id);
-					}
+				foreach(Edge ee in kruskal.edges) {
+					DDA(ee.Origen.Circle, ee.Destino.Circle, c[0], size[0], parpadeo[0], pictureBoxSecond);
 				}
+				lblKrukal.ForeColor = c[0];
+				//prim
+				bmpBackGround = new Bitmap(bmpBackGround);
+				foreach(Edge ee in prim.edges) {
+					DDA(ee.Origen.Circle, ee.Destino.Circle, c[1], size[1], parpadeo[1], pictureBoxSecond);
+				}
+				lblPrim.ForeColor = c[1];
 			} else {
 				//prim
-				for(int i = 0; i < prim.edges.Count; i++){
-					ee = prim.edges[i];
-					DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue, 8, 15, pictureBoxSecond);
+				foreach(Edge ee in prim.edges) {
+					DDA(ee.Origen.Circle, ee.Destino.Circle, c[0], size[0], parpadeo[0], pictureBoxSecond);
 				}
+				lblPrim.ForeColor = c[0];
+				bmpBackGround = new Bitmap(bmpBackGround);
+				//Kruskal
+				foreach(Edge ee in kruskal.edges) {
+					DDA(ee.Origen.Circle, ee.Destino.Circle, c[1], size[1], parpadeo[1], pictureBoxSecond);
+				}
+				lblKrukal.ForeColor = c[1];
 			}
+			
+			pictureBoxSecond.BackgroundImage = bmpBackGround;
 			treeSelect = true;
 
 		}
@@ -365,9 +378,17 @@ namespace Actividad3 {
 				g.FillEllipse(bc, c.X-(c.R+4), c.Y-(c.R+4), c.R*2+8, c.R*2+8);
 				
 				idVertexSelect = graph.vertex().IndexOf(v);
+				
+				if(treeSelect) {
+					lblKrukal.Text = "K. Vertice " + idVertexSelect + " Destinos " + kruskal.minimumPath.vertex()[idVertexSelect].Edge.Count;
+					lblPrim.Text = "P. Vertice " + idVertexSelect + " Destinos " + prim.minimumPath.vertex()[idVertexSelect].Edge.Count;
+				}
+					
 			} else {
 				g.Clear(Color.Transparent);
 				idVertexSelect = -1;
+					lblKrukal.Text = "K. Vertice " + " Destinos ";
+					lblPrim.Text = "P. Vertice " + " Destinos ";
 			}
 			pictureBoxSecond.Refresh();
 		}
