@@ -47,6 +47,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animate.cs" />
     <Compile Include="Figure.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Kruskal.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="overlayTree.Designer.cs">
       <DependentUpon>overlayTree.cs</DependentUpon>
     </Compile>
+    <Compile Include="Particle.cs" />
     <Compile Include="Prim.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

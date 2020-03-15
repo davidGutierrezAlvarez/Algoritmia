@@ -7,16 +7,21 @@
  * Para cambiar esta plantilla use Herramientas | Opciones | Codificación | Editar Encabezados Estándar
  */
 using System;
+using System.Timers;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Threading;
 
 namespace Actividad3 {
-	
+	delegate void Lambda();
 	public partial class MainForm : Form {
 		int mov, movX, movY;
+		bool animation = false;
+		List<Particle> particles;
 		Brush bc = new SolidBrush(Color.Red);
+		String timeK = "", timeP = "";
 		public MainForm() {
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -35,8 +40,8 @@ namespace Actividad3 {
 			listBoxVertex.Items.Clear();
 			treeSelect = false;
 			idVertexSelect = -1;
-			lblKrukal.Text = "K. Vertice " + " Destinos ";
-			lblPrim.Text = "P. Vertice " + " Destinos ";
+			lblKrukal.Text = "K. Vertice " + " Destinos " + timeK;
+			lblPrim.Text = "P. Vertice " + " Destinos " + timeP;
 			lblKrukal.ForeColor = Color.WhiteSmoke;
 			lblPrim.ForeColor = Color.WhiteSmoke;
 		}
@@ -113,15 +118,25 @@ namespace Actividad3 {
 				return;
 			}
 			//contador de tiempo init
+			DateTime dt = new DateTime();
+			dt = DateTime.Now;
 			//genero arbol con kruskal
 			kruskal = new Kruskal(graph);
 			kruskal.generate();
+			TimeSpan transcurrio = DateTime.Now - dt;
 			//contador de tiempo finish
+			timeK = transcurrio.TotalMilliseconds.ToString();
+			
 			//contador de tiempo init
+			DateTime dt2 = new DateTime();
 			//genero arbol con prim
 			prim = new Prim(graph);
 			prim.generate(idVertexSelect);
 			//contador de tiempo finish
+			TimeSpan transcurrio2 = DateTime.Now - dt2;
+			timeP = transcurrio2.Milliseconds.ToString();
+			
+			MessageBox.Show(timeK + " - " + timeP);
 			
 			Color[] c = {Color.BlueViolet, Color.Pink};
 			int[] size = {14, 8}, parpadeo = {15, 10000};
@@ -154,34 +169,13 @@ namespace Actividad3 {
 					DDA(ee.Origen.Circle, ee.Destino.Circle, c[1], size[1], parpadeo[1], pictureBoxSecond);
 				}
 				lblKrukal.ForeColor = c[1];
+				
 			}
 			
 			pictureBoxSecond.BackgroundImage = bmpBackGround;
 			treeSelect = true;
+			//timer1.Enabled = true;
 
-		}
-		
-		
-		void k() {
-			//generar copia del fondo antes de dibujar
-			//generar copia del fondo antes de dibujar
-			ThreadStart procceso = new ThreadStart(() =>
-			                                       {
-			bmpBackGround = new Bitmap(bmpBackGround2);
-			pictureBoxSecond.BackgroundImage = bmpBackGround;
-			Edge ee;
-			
-			for(int i = 0; i < kruskal.minimumPath.vertex().Count; i++) {
-				for(int j = 0; j < kruskal.minimumPath.vertex()[i].Edge.Count; j++) {
-					ee = kruskal.minimumPath.vertex()[i].Edge[j];
-					if(ee.Id%2 == 0)
-					DDA(ee.Origen.Circle, ee.Destino.Circle, Color.Blue, 8, 15, pictureBoxSecond);
-					//MessageBox.Show(ee.Id + "->" + ee.Origen.Id + " - " + ee.Destino.Id);
-				}
-			}
-			                                       });
-			Thread sub = new Thread(procceso);
-			sub.Start();
 		}
 		
 		void LblAnimateClick(object sender, EventArgs e) {
@@ -193,13 +187,101 @@ namespace Actividad3 {
 				MessageBox.Show("debe eleccionar un arbol de\nrecubrimiento minimo primero");
 				return;
 			}
-			int diametro = (graph.vertex()[idVertexSelect].Circle.R*2);
-			int total = diametro * graph.vertex()[idVertexSelect].Edge.Count;
-			overlayTree o = new overlayTree(total);
+			int diametro = (graph.vertex()[idVertexSelect].Circle.R*2) + 10;
+			int totalK = diametro * kruskal.minimumPath.vertex()[idVertexSelect].Edge.Count;
+			int totalP = diametro * prim.minimumPath.vertex()[idVertexSelect].Edge.Count;
+			overlayTree o = new overlayTree(totalK, totalP);
 			o.ShowDialog();
+			
+			particles = new List<Particle>();
+			
 			if(o.tree == -1) {
 				MessageBox.Show("tienes que seleccionar");
 				return;
+			}
+			
+			if(o.tree == 1) {
+				animate(kruskal.minimumPath, o.diametroK);
+			}else {
+				animate(prim.minimumPath, o.diametroP);
+			}
+			
+			
+			
+		}
+		
+		void animate(Graph gr, int diametro) {
+			List<int> visitados = new List<int>();
+			List<int> destinos  = new List<int>();
+			List<int> aux       = new List<int>();
+			destinos.Add(idVertexSelect);
+			int count, d_part;
+							
+			Lambda AddParticles = () => {
+				int id_e = 0;
+				
+				foreach(int id_o in destinos) {
+					foreach(Edge edge in gr.vertex()[id_o].Edge) {
+						count = gr.vertex()[id_o].Edge.Count;
+						if(!visitados.Contains(edge.Destino.Id)) {
+							
+							//encontrar la particula que me llevo a este punto
+							if(destinos.Count == 1 && visitados.Count == 0) {
+								//primer origen
+								d_part = diametro/count;
+							} else {
+								//encontrar diametro antecesor de la particula
+								count--;
+								d_part = particles.Find(x => x.destino == edge.Origen.Id).diametro/count;
+								
+							}
+							
+							//guardo las nuevas aristas
+							if(edge.Destino.Circle.R*2 < d_part) {
+								particles.Add(new Particle(id_o, id_e, d_part));
+								particles[particles.Count-1].destino = edge.Destino.Id;
+								
+								//guardo los nuevos destinos
+								aux.Add(edge.Destino.Id);
+							}
+						}
+						id_e++;
+					}
+					id_e=0;
+					visitados.Add(id_o);
+				}
+				destinos.Clear();
+				destinos.AddRange(aux);
+				aux.Clear();
+			};
+			
+			Graphics g    = Graphics.FromImage(bmp);
+			
+			bool gameOver = false;
+			int  anima;
+			
+			while(!gameOver) {
+				anima = particles.Count;
+				g.Clear(Color.Transparent);
+				foreach(Particle p in particles) {
+					Edge edge = gr.vertex()[p.origen].Edge[p.actualEdge];
+					if(p.isWalking()) {
+						p.walk(edge);
+					} else {
+						anima--;
+					}
+					int x = edge.setPos(p.getPos()).X;
+					int y = edge.setPos(p.getPos()).Y;
+					
+					g.FillEllipse(bc, x-(p.diametro/2), y-(p.diametro/2), p.diametro, p.diametro);
+				}
+				
+				pictureBoxSecond.Refresh();
+				
+				if(anima == 0) {
+					AddParticles();
+					if(destinos.Count == 0) { gameOver = true; }
+				}
 			}
 		}
 		
@@ -226,15 +308,21 @@ namespace Actividad3 {
 			float weight = 0;//peso -> ponderacion
 			int id = -1;
 			
+			List<Point> points = new List<Point>();
+			
 			for(int i = 0; i < graph.vertex().Count; i++) {
 				for(int j = i+1; j < graph.vertex().Count; j++) {
 					//obtengo la distancia entre el centro de los circulos
 					weight = graph.vertex()[i].Circle.distance(graph.vertex()[j].Circle);
 					
-					if(!collisionDDA(graph.vertex()[i].Circle, graph.vertex()[j].Circle, bmp)) {
+					points = collisionDDA(graph.vertex()[i].Circle, graph.vertex()[j].Circle, bmp);
+					
+					if(points != null) {
 						//si no encuentra una colision...
-						graph.addEdge(++id, i, j, weight);
-						graph.addEdge(++id, j, i, weight);
+						graph.addEdge(++id, i, j, weight, points);
+						List<Point> pointsR = new List<Point>(points);
+						pointsR.Reverse();
+						graph.addEdge(++id, j, i, weight, pointsR);
 					}
 				}
 			}
@@ -290,7 +378,7 @@ namespace Actividad3 {
 			pb.Refresh();	
 		}
 		
-		bool collisionDDA(Figure c1, Figure c2, Bitmap bmp_) {
+		List<Point> collisionDDA(Figure c1, Figure c2, Bitmap bmp_) {
 			float r1 = c1.R + 5, r2 = c2.R + 5;
 			int x1 = c1.X, y1 = c1.Y, x2 = c2.X, y2 = c2.Y;
 			
@@ -306,6 +394,7 @@ namespace Actividad3 {
 			ay = (y2 - y1) / res;
 			x = (float)x1;
 			y = (float)y1;
+			List<Point> points = new List<Point>();
 			
 			while(i <= res) {
 				distanceLineActual = c1.distance((int)x, (int)y);
@@ -313,15 +402,16 @@ namespace Actividad3 {
 					//este condicional impide el analizis dentro del area de los circulos
 					//esto evitara notar colisiones con el mismo circulo
 					if(collision((int)x, (int)y, bmp_))
-						return true;
+						return null;
 					if(collision((int)(x + ax), (int)y, bmp_))
-						return true;
+						return null;
 				}
+				points.Add(new Point((int)x, (int)y));
 				x += ax;
 				y += ay;
 				i++;
 			}
-			return false;
+			return points;
 		}
 		
 		bool collision(int x, int y, Bitmap bmp_) {
@@ -377,21 +467,22 @@ namespace Actividad3 {
 				c = v.Circle;
 				g.FillEllipse(bc, c.X-(c.R+4), c.Y-(c.R+4), c.R*2+8, c.R*2+8);
 				
-				idVertexSelect = graph.vertex().IndexOf(v);
+				idVertexSelect = v.Id;
 				
 				if(treeSelect) {
-					lblKrukal.Text = "K. Vertice " + idVertexSelect + " Destinos " + kruskal.minimumPath.vertex()[idVertexSelect].Edge.Count;
-					lblPrim.Text = "P. Vertice " + idVertexSelect + " Destinos " + prim.minimumPath.vertex()[idVertexSelect].Edge.Count;
+					lblKrukal.Text = "K. Vertice " + idVertexSelect + " Destinos " + kruskal.minimumPath.vertex()[idVertexSelect].Edge.Count + " - " + timeK;
+					lblPrim.Text = "P. Vertice " + idVertexSelect + " Destinos " + prim.minimumPath.vertex()[idVertexSelect].Edge.Count + " - "+ timeP;
 				}
 					
 			} else {
 				g.Clear(Color.Transparent);
 				idVertexSelect = -1;
-					lblKrukal.Text = "K. Vertice " + " Destinos ";
-					lblPrim.Text = "P. Vertice " + " Destinos ";
+					lblKrukal.Text = "K. Vertice " + " Destinos " + " - " + timeK;
+					lblPrim.Text = "P. Vertice " + " Destinos " + " - " + timeP;
 			}
 			pictureBoxSecond.Refresh();
 		}
+		
 		
 		
 		

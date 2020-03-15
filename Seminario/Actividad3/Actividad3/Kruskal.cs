@@ -60,8 +60,10 @@ namespace Actividad3 {
 					//agregar adyaciencia
 					isTreeMinimumPath++;
 					edges.Add(e);
-					minimumPath.addEdge(++id, e.Origen.Id, e.Destino.Id, (float)e.Weight);
-					minimumPath.addEdge(++id, e.Destino.Id, e.Origen.Id, (float)e.Weight);
+					minimumPath.addEdge(++id, e.Origen.Id, e.Destino.Id, (float)e.Weight, e.path);
+					List<System.Drawing.Point> pathR = new List<System.Drawing.Point>(e.path);
+					pathR.Reverse();
+					minimumPath.addEdge(++id, e.Destino.Id, e.Origen.Id, (float)e.Weight, pathR);
 				}
 				if(isTreeMinimumPath == graph.vertex().Count-1)
 					return;

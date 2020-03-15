@@ -55,7 +55,7 @@ namespace Actividad3 {
 			int id = -1;
 			
 			while(isTreeMinimumPath != graph.vertex().Count-1) {
-				e = new Edge(1, new Vertex(), new Vertex(), 99999999);
+				e = new Edge(1, new Vertex(), new Vertex(), 99999999, null);
 				count = 0;
 				foreach(int i in candidatos) {
 					candidato(i);
@@ -88,8 +88,10 @@ namespace Actividad3 {
 					//agregar candidato
 					isTreeMinimumPath++;
 					edges.Add(e);
-					minimumPath.addEdge(++id, e.Origen.Id, e.Destino.Id, (float)e.Weight);
-					minimumPath.addEdge(++id, e.Destino.Id, e.Origen.Id, (float)e.Weight);
+					minimumPath.addEdge(++id, e.Origen.Id, e.Destino.Id, (float)e.Weight, e.path);
+					List<System.Drawing.Point> pathR = new List<System.Drawing.Point>(e.path);
+					pathR.Reverse();
+					minimumPath.addEdge(++id, e.Destino.Id, e.Origen.Id, (float)e.Weight, pathR);
 				}
 			}
 		}

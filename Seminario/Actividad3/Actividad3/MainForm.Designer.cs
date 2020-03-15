@@ -9,6 +9,7 @@
  
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Actividad3
@@ -281,18 +282,18 @@ namespace Actividad3
 			// 
 			this.lblKrukal.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblKrukal.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-			this.lblKrukal.Location = new System.Drawing.Point(2, 2);
+			this.lblKrukal.Location = new System.Drawing.Point(10, 508);
 			this.lblKrukal.Name = "lblKrukal";
-			this.lblKrukal.Size = new System.Drawing.Size(295, 23);
+			this.lblKrukal.Size = new System.Drawing.Size(450, 23);
 			this.lblKrukal.TabIndex = 11;
 			// 
 			// lblPrim
 			// 
 			this.lblPrim.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblPrim.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-			this.lblPrim.Location = new System.Drawing.Point(310, 2);
+			this.lblPrim.Location = new System.Drawing.Point(450, 508);
 			this.lblPrim.Name = "lblPrim";
-			this.lblPrim.Size = new System.Drawing.Size(295, 23);
+			this.lblPrim.Size = new System.Drawing.Size(450, 23);
 			this.lblPrim.TabIndex = 12;
 			// 
 			// MainForm
@@ -300,7 +301,7 @@ namespace Actividad3
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
-			this.ClientSize = new System.Drawing.Size(878, 540);
+			this.ClientSize = new System.Drawing.Size(900, 540);
 			this.Controls.Add(this.lblPrim);
 			this.Controls.Add(this.lblKrukal);
 			this.Controls.Add(this.listBoxVertex);
@@ -400,12 +401,13 @@ namespace Actividad3
 		void resize() {
 			//tab
 			tabControl.Width = this.Width - panelbtn.Width - 15;
-			tabControl.Height = this.Height - 40;
+			tabControl.Height = this.Height - 40 - 25;
+			
 			//picturebox
-			pictureBoxInit.Width    = this.Width - panelbtn.Width - 35;
-			pictureBoxInit.Height   = this.Height - 65;
-			pictureBoxSecond.Width  = this.Width - panelbtn.Width - 35;
-			pictureBoxSecond.Height = this.Height - 65;
+			pictureBoxInit.Width    = tabControl.Width - 20;
+			pictureBoxInit.Height   = tabControl.Height- 30;
+			pictureBoxSecond.Width  = tabControl.Width - 20;
+			pictureBoxSecond.Height = tabControl.Height- 30;
 			
 			pictureBoxKruskal.Location = new Point(0, 0);
 			pictureBoxKruskal.Width = tabControl.Width/2 - 5;
@@ -422,8 +424,16 @@ namespace Actividad3
 			
 			//botones
 			panelbtn.Location = new Point(tabControl.Width + 10, panelbtn.Top);
+			
 			//closed
 			panelSize.Location = new Point(this.Width - 90, 0);
+			
+			//lbl infotext
+			lblKrukal.Location = new Point( lblKrukal.Left, tabControl.Bottom+7);
+			lblPrim.Location   = new Point( this.Width/2,   tabControl.Bottom+7);
+			
+			lblKrukal.Width    = this.Width/2;
+			lblPrim.Width    = this.Width/2;
 		}
 		
 		

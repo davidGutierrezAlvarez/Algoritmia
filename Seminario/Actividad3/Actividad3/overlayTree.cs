@@ -15,34 +15,36 @@ namespace Actividad3 {
 	/// Description of overlayTree.
 	/// </summary>
 	public partial class overlayTree : Form {
-		public overlayTree(int diametro) {
+		public overlayTree(int diametroK, int diametroP) {
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
-			lblSize.Text += " " + diametro;
-			this.diametro = diametro;
+			lblK.Text += " " + diametroK;
+			lblP.Text += " " + diametroP;
+			this.diametroK = diametroK;
+			this.diametroP = diametroP;
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 		}
 		
 		void LblPrimClick(object sender, System.EventArgs e) {
-			if(numValue.Value < (int)diametro) {
+			if(numValue.Value < diametroP) {
 				MessageBox.Show("valor muy pequeño");
 				return;
 			}
-			diametro = (int)numValue.Value;
+			diametroP = (int)numValue.Value;
 			tree = 0;
 			this.Close();
 		}
 		
 		void LblKruskalClick(object sender, System.EventArgs e) {
-			if(numValue.Value < (int)diametro) {
+			if(numValue.Value < diametroK) {
 				MessageBox.Show("valor muy pequeño");
 				return;
 			}
-			diametro = (int)numValue.Value;
+			diametroK = (int)numValue.Value;
 			tree = 1;
 			this.Close();
 		}

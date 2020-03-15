@@ -45,6 +45,8 @@ namespace Actividad3
 			this.lblKruskal = new System.Windows.Forms.Label();
 			this.lblSize = new System.Windows.Forms.Label();
 			this.lblClosed = new System.Windows.Forms.Label();
+			this.lblK = new System.Windows.Forms.Label();
+			this.lblP = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numValue)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -53,7 +55,7 @@ namespace Actividad3
 			this.numValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(30)))), ((int)(((byte)(20)))));
 			this.numValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.numValue.ForeColor = System.Drawing.SystemColors.Info;
-			this.numValue.Location = new System.Drawing.Point(136, 97);
+			this.numValue.Location = new System.Drawing.Point(136, 122);
 			this.numValue.Maximum = new decimal(new int[] {
 									-727379969,
 									232,
@@ -69,7 +71,7 @@ namespace Actividad3
 			this.lblPrim.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.lblPrim.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblPrim.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-			this.lblPrim.Location = new System.Drawing.Point(0, 170);
+			this.lblPrim.Location = new System.Drawing.Point(0, 180);
 			this.lblPrim.Name = "lblPrim";
 			this.lblPrim.Size = new System.Drawing.Size(200, 35);
 			this.lblPrim.TabIndex = 1;
@@ -84,7 +86,7 @@ namespace Actividad3
 			this.lblKruskal.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.lblKruskal.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblKruskal.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-			this.lblKruskal.Location = new System.Drawing.Point(200, 170);
+			this.lblKruskal.Location = new System.Drawing.Point(200, 180);
 			this.lblKruskal.Name = "lblKruskal";
 			this.lblKruskal.Size = new System.Drawing.Size(200, 35);
 			this.lblKruskal.TabIndex = 2;
@@ -98,7 +100,7 @@ namespace Actividad3
 			// 
 			this.lblSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblSize.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-			this.lblSize.Location = new System.Drawing.Point(0, 48);
+			this.lblSize.Location = new System.Drawing.Point(0, 38);
 			this.lblSize.Name = "lblSize";
 			this.lblSize.Size = new System.Drawing.Size(400, 23);
 			this.lblSize.TabIndex = 3;
@@ -118,12 +120,36 @@ namespace Actividad3
 			this.lblClosed.Text = "x";
 			this.lblClosed.Click += new System.EventHandler(this.LblClosedClick);
 			// 
+			// lblK
+			// 
+			this.lblK.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblK.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+			this.lblK.Location = new System.Drawing.Point(200, 84);
+			this.lblK.Name = "lblK";
+			this.lblK.Size = new System.Drawing.Size(200, 23);
+			this.lblK.TabIndex = 5;
+			this.lblK.Text = "Kruskal: ";
+			this.lblK.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			// 
+			// lblP
+			// 
+			this.lblP.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblP.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+			this.lblP.Location = new System.Drawing.Point(0, 84);
+			this.lblP.Name = "lblP";
+			this.lblP.Size = new System.Drawing.Size(200, 23);
+			this.lblP.TabIndex = 6;
+			this.lblP.Text = "Prim: ";
+			this.lblP.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			// 
 			// overlayTree
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(30)))));
 			this.ClientSize = new System.Drawing.Size(400, 235);
+			this.Controls.Add(this.lblP);
+			this.Controls.Add(this.lblK);
 			this.Controls.Add(this.lblClosed);
 			this.Controls.Add(this.lblSize);
 			this.Controls.Add(this.lblKruskal);
@@ -138,6 +164,8 @@ namespace Actividad3
 			((System.ComponentModel.ISupportInitialize)(this.numValue)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label lblP;
+		private System.Windows.Forms.Label lblK;
 		private System.Windows.Forms.Label lblClosed;
 		private System.Windows.Forms.Label lblSize;
 		private System.Windows.Forms.Label lblKruskal;
@@ -145,7 +173,7 @@ namespace Actividad3
 		private System.Windows.Forms.NumericUpDown numValue;
 		int mov, movX, movY;
 		public int tree = -1;
-		public int diametro;
+		public int diametroK, diametroP;
 		
 		
 		void LblClosedClick(object sender, EventArgs e) { this.Close(); }

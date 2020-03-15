@@ -7,6 +7,7 @@
  * Para cambiar esta plantilla use Herramientas | Opciones | Codificación | Editar Encabezados Estándar
  */
 using System;
+using System.Drawing;
 using System.Collections.Generic;
 
 namespace Actividad3 {
@@ -18,6 +19,7 @@ namespace Actividad3 {
 		Vertex destino;
 		int id;
 		double weight;
+		public List<Point> path;
 		
 		//Getters
 		public Vertex Origen  { get { return origen;  } }
@@ -25,19 +27,25 @@ namespace Actividad3 {
 		public int Id         { get { return id;      } }
 		public double Weight  { get { return weight;  } }
 		
-		public Edge(int id, Vertex v1, Vertex v2, double Weight) {
+		public Edge(int id, Vertex v1, Vertex v2, double Weight, List<Point> listp) {
 			this.id      = id;
 			this.origen  = v1;
 			this.destino = v2;
 			this.weight  = Weight;
+			path         = listp;
 		}
 		public Edge(Edge e) {
 			this.id      = e.id;
 			this.origen  = e.origen;
 			this.destino = e.destino;
 			this.weight  = e.weight;
+			path         = e.path;
 		}
 		public Edge() { }
+		
+		public Point setPos(int index) {
+			return path[index];
+		}
 		
 		public int CompareTo(Edge e) {
 			return this.Weight.CompareTo(e.Weight);
@@ -107,8 +115,8 @@ namespace Actividad3 {
 			listVertex.Add(new Vertex(circle, id));
 		}
 		
-		public void addEdge(int id, int i, int j, float weight) {
-			listVertex[i].addEdge(new Edge(id, listVertex[i], listVertex[j], weight));
+		public void addEdge(int id, int i, int j, float weight, List<Point> listp) {
+			listVertex[i].addEdge(new Edge(id, listVertex[i], listVertex[j], weight, listp));
 		}
 		
 		public void addEdge(Edge e) {
